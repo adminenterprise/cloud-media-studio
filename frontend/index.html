@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8"><title>Demo App</title>
+<h1>Demo 3-Tier</h1>
+<p id="host"></p>
+<input id="name" placeholder="Tên item"><button onclick="add()">Thêm</button>
+<ul id="list"></ul>
+<script>
+async function load() {
+  const info = await (await fetch('/api/info')).json();
+  document.getElementById('host').textContent = 'Served by: ' + info.hostname;
+  const items = await (await fetch('/api/items')).json();
+  document.getElementById('list').innerHTML = items.map(i => `<li>${i.name}</li>`).join('');
+}
+async function add() {
+  await fetch('/api/items', { method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ name: document.getElementById('name').value }) });
+  load();
+}
+load();
+</script>
