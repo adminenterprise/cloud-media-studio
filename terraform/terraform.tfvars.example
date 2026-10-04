@@ -1,0 +1,20 @@
+# ==========================================
+# CẤU HÌNH THAM SỐ MẪU CHO MÔI TRƯỜNG PRODUCTION
+# Sao chép tệp này thành `terraform.tfvars` khi chạy thử nghiệm
+# ==========================================
+
+aws_region   = "ap-southeast-1"
+project_name = "enterprise-cloud-devsecops"
+environment  = "production"
+
+vpc_cidr           = "10.0.0.0/16"
+availability_zones = ["ap-southeast-1a", "ap-southeast-1b"]
+
+public_subnet_cidrs      = ["10.0.1.0/24", "10.0.2.0/24"]
+private_app_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+private_db_subnet_cidrs  = ["10.0.20.0/24", "10.0.21.0/24"]
+
+# FinOps: Bật NAT khi test kết nối mạng cho EC2/ECS
+# Khi không test hoặc chỉ dựng hạ tầng cơ bản, có thể đặt false để tiết kiệm credit
+enable_nat_gateway = true
+single_nat_gateway = true
