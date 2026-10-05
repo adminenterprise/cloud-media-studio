@@ -13,7 +13,6 @@ const pool = mysql.createPool({
   connectionLimit: 5,
 });
 
-// ALB Health Check dùng endpoint này (không gọi DB)
 app.get('/health', (_, res) => res.json({ status: 'ok' }));
 
 // Hiện hostname để demo Self-Healing: F5 thấy đổi container/instance
@@ -29,7 +28,6 @@ app.post('/api/items', async (req, res) => {
   res.status(201).json({ ok: true });
 });
 
-// Dùng cho demo WAF (dùng tham số hóa nên app an toàn, WAF vẫn chặn ở lớp trước)
 app.get('/api/search', async (req, res) => {
   const [rows] = await pool.query('SELECT * FROM items WHERE name LIKE ?', [`%${req.query.q || ''}%`]);
   res.json(rows);
