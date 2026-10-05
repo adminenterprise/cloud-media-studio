@@ -1,0 +1,39 @@
+# ==============================================================================
+# THÔNG SỐ CẤU HÌNH FINOPS & IAM (SAO CHÉP THÀNH terraform.tfvars ĐỂ SỬ DỤNG)
+# ==============================================================================
+
+aws_region   = "ap-southeast-1"
+project_name = "enterprise-cloud-devsecops"
+environment  = "production"
+
+# Ngân sách và các ngưỡng cảnh báo ($ USD)
+budget_limit_usd                 = "200.0"
+alert_threshold_1_percent        = 10.0   # $20 USD
+alert_threshold_2_percent        = 25.0   # $50 USD (Khẩn cấp)
+alert_threshold_forecast_percent = 80.0   # $160 USD
+
+# Điền danh sách email thực tế của nhóm để nhận cảnh báo tự động
+notification_emails = [
+  "minhquan10092006@gmail.com",
+  "hungpham@example.com"
+]
+
+# Tùy chỉnh tên người dùng IAM nếu cần thiết
+member_users = {
+  member1 = {
+    username = "member1-network-iac"
+    role     = "Network and Infrastructure as Code Lead"
+  }
+  member2 = {
+    username = "member2-compute-container"
+    role     = "Compute and Container Specialist"
+  }
+  member3 = {
+    username = "member3-data-finops"
+    role     = "Database Storage and FinOps Specialist"
+  }
+  member4 = {
+    username = "member4-security-devsecops"
+    role     = "Security Compliance and DevSecOps Specialist"
+  }
+}
