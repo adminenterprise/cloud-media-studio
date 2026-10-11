@@ -12,10 +12,10 @@ concurrency:
 
 permissions:
   contents: read
-  security-events: write # để upload kết quả Trivy (SARIF) lên GitHub Security tab
+  security-events: write # de upload ket qua Trivy (SARIF) len GitHub Security tab
 
 jobs:
-  # ============ BACKEND: build + smoke test ============
+  # ============ BACKEND: build + smoke test + trivy scan ============
   backend:
     name: Build & Test Backend
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
           node server.js &
           SERVER_PID=$!
           
-          # Đợi server khởi động (tối đa 30s)
+          # Doi server khoi dong (toi da 30s)
           for i in $(seq 1 30); do
             if curl -sf http://localhost:3000/health > /dev/null 2>&1; then
               echo "Server is up after ${i}s"
@@ -72,8 +72,8 @@ jobs:
       - name: Build backend Docker image
         run: docker build -t backend:ci ./backend
 
-      - name: Trivy scan backend image (fail nếu có CRITICAL/HIGH)
-        uses: aquasecurity/trivy-action@0.29.0
+      - name: Trivy scan backend image (fail neu co CRITICAL/HIGH)
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: backend:ci
           format: table
@@ -83,7 +83,7 @@ jobs:
           vuln-type: os,library
 
       - name: Trivy scan backend image (SARIF cho Security tab)
-        uses: aquasecurity/trivy-action@0.29.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: backend:ci
           format: sarif
@@ -98,7 +98,7 @@ jobs:
         with:
           sarif_file: trivy-backend.sarif
 
-  # ============ FRONTEND: build + test nginx container ============
+  # ============ FRONTEND: build + test nginx container + trivy scan ============
   frontend:
     name: Build & Test Frontend
     runs-on: ubuntu-latest
@@ -113,8 +113,8 @@ jobs:
       - name: Build frontend Docker image
         run: docker build -t frontend:ci ./frontend
 
-      - name: Trivy scan frontend image (fail nếu có CRITICAL/HIGH)
-        uses: aquasecurity/trivy-action@0.29.0
+      - name: Trivy scan frontend image (fail neu co CRITICAL/HIGH)
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: frontend:ci
           format: table
@@ -124,7 +124,7 @@ jobs:
           vuln-type: os,library
 
       - name: Trivy scan frontend image (SARIF cho Security tab)
-        uses: aquasecurity/trivy-action@0.29.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: frontend:ci
           format: sarif
@@ -166,7 +166,7 @@ jobs:
           
           docker rm -f frontend-test
 
-  # ============ INTEGRATION: full stack với docker compose ============
+  # ============ INTEGRATION: full stack voi docker compose ============
   integration:
     name: Integration Test (docker compose)
     runs-on: ubuntu-latest
@@ -181,7 +181,7 @@ jobs:
 
       - name: Wait for stack to be healthy
         run: |
-          # Đợi frontend (proxy) sẵn sàng, tối đa 60s
+          # Doi frontend (proxy) san sang, toi da 60s
           for i in $(seq 1 60); do
             if curl -sf http://localhost:8080 > /dev/null 2>&1; then
               echo "Stack is up after ${i}s"
@@ -213,7 +213,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{"name":"ci-test-item"}' | grep -q '"ok":true' || { echo "POST /api/items failed"; exit 1; }
           
-          echo "--- GET /api/items (đọc DB) ---"
+          echo "--- GET /api/items (doc DB) ---"
           curl -sf http://localhost:8080/api/items | grep -q 'ci-test-item' || { echo "GET /api/items failed"; exit 1; }
           
           echo "--- GET /api/search?q=ci (WAF demo) ---"
