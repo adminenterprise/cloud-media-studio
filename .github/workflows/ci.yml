@@ -108,7 +108,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validate nginx config
-        run: docker run --rm -v $PWD/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine nginx -t
+        # --add-host để nginx -t resolve được hostname "backend" (trong compose thì hostname này tồn tại sẵn)
+        run: docker run --rm --add-host backend:127.0.0.1 -v $PWD/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine nginx -t
 
       - name: Build frontend Docker image
         run: docker build -t frontend:ci ./frontend
