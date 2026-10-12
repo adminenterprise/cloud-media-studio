@@ -40,7 +40,7 @@
 
 - [ ] **Thành viên 1 (Mạng & IaC)**: 1/7 hoàn thành (14.3%)
 - [ ] **Thành viên 2 (Tính toán & Container)**: 0/7 hoàn thành (0.0%)
-- [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 0/7 hoàn thành (0.0%)
+- [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 1/7 hoàn thành (14.3%)
 - [ ] **Thành viên 4 (Bảo mật & DevSecOps)**: 0/7 hoàn thành (0.0%)
 
 ---
@@ -54,7 +54,7 @@
 - [ ] **[Thành viên 2] Tính toán & Container**: Xây dựng mã nguồn ứng dụng web 3 tầng mẫu (NodeJS/Python), viết `Dockerfile` đóng gói và kiểm thử container cục bộ.
   - *Kết quả bàn giao (`Deliverable`)*: Mã nguồn backend/frontend và Dockerfile chạy mượt trên local.
   - *Ghi chú*: Không cần giao diện phức tạp, tập trung vào API.
-- [ ] **[Thành viên 3] Dữ liệu & FinOps**: Cấu hình IAM User cho 4 thành viên theo nguyên tắc đặc quyền tối thiểu (`Least Privilege`), thiết lập AWS Budgets cảnh báo $20/$50 gửi email.
+- [x] **[Thành viên 3] Dữ liệu & FinOps**: Cấu hình IAM User cho 4 thành viên theo nguyên tắc đặc quyền tối thiểu (`Least Privilege`), thiết lập AWS Budgets cảnh báo $20/$50 gửi email.
   - *Kết quả bàn giao (`Deliverable`)*: 4 tài khoản IAM phân quyền rõ ràng, ảnh chụp AWS Budgets cảnh báo email.
   - *Ghi chú*: Bắt buộc hoàn thành sớm để kiểm soát ngân sách $200.
 - [ ] **[Thành viên 4] Bảo mật & DevSecOps**: Khởi tạo kho chứa GitHub repo, thiết lập quy chuẩn Gitflow và tạo AWS Secrets Manager lưu trữ thông tin nhạy cảm ban đầu.
