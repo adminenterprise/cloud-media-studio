@@ -126,7 +126,7 @@ jobs:
 
       - name: Smoke test - run container & check index.html
         run: |
-          docker run -d --name frontend-test -p 8080:80 frontend:ci
+          docker run -d --name frontend-test --add-host backend:127.0.0.1 -p 8080:80 frontend:ci
           
           for i in $(seq 1 30); do
             if curl -sf http://localhost:8080 > /dev/null 2>&1; then
