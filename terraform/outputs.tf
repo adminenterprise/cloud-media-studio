@@ -71,3 +71,31 @@ output "private_db_route_table_id" {
   description = "Route Table ID cho Private DB Subnets"
   value       = aws_route_table.private_db.id
 }
+
+# ------------------------------------------------------------------------------
+# 6. SECURITY GROUP IDS (BÀN GIAO CHO CÁC THÀNH VIÊN — TUẦN 2)
+# ------------------------------------------------------------------------------
+output "alb_security_group_id" {
+  description = "Security Group ID cho ALB (Bàn giao cho Member 2 gắn vào Load Balancer)"
+  value       = aws_security_group.alb.id
+}
+
+output "app_security_group_id" {
+  description = "Security Group ID cho App Servers EC2/ECS (Bàn giao cho Member 2)"
+  value       = aws_security_group.app.id
+}
+
+output "db_security_group_id" {
+  description = "Security Group ID cho RDS MySQL/Aurora (Bàn giao cho Member 3)"
+  value       = aws_security_group.db.id
+}
+
+output "efs_security_group_id" {
+  description = "Security Group ID cho Amazon EFS (Bàn giao cho Member 2 mount storage)"
+  value       = aws_security_group.efs.id
+}
+
+output "bastion_security_group_id" {
+  description = "Security Group ID cho Bastion Host (Admin SSH access)"
+  value       = aws_security_group.bastion.id
+}
