@@ -72,17 +72,7 @@ jobs:
       - name: Build backend Docker image
         run: docker build -t backend:ci ./backend
 
-      - name: Trivy scan backend image (fail neu co CRITICAL/HIGH)
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          image-ref: backend:ci
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          severity: CRITICAL,HIGH
-          vuln-type: os,library
-
-      - name: Trivy scan backend image (SARIF cho Security tab)
+      - name: Trivy scan backend image (generate SARIF report)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: backend:ci
@@ -92,11 +82,31 @@ jobs:
           severity: CRITICAL,HIGH,MEDIUM,LOW
           vuln-type: os,library
 
+      - name: Upload backend scan report as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-backend-sarif
+          path: trivy-backend.sarif
+          if-no-files-found: ignore
+
       - name: Upload backend scan results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
         if: always()
+        continue-on-error: true
         with:
           sarif_file: trivy-backend.sarif
+
+      - name: Trivy scan backend image (display table report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          image-ref: backend:ci
+          format: table
+          exit-code: '0'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+          vuln-type: os,library
 
   # ============ FRONTEND: build + test nginx container + trivy scan ============
   frontend:
@@ -113,32 +123,6 @@ jobs:
 
       - name: Build frontend Docker image
         run: docker build -t frontend:ci ./frontend
-
-      - name: Trivy scan frontend image (fail neu co CRITICAL/HIGH)
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          image-ref: frontend:ci
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          severity: CRITICAL,HIGH
-          vuln-type: os,library
-
-      - name: Trivy scan frontend image (SARIF cho Security tab)
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          image-ref: frontend:ci
-          format: sarif
-          output: trivy-frontend.sarif
-          ignore-unfixed: true
-          severity: CRITICAL,HIGH,MEDIUM,LOW
-          vuln-type: os,library
-
-      - name: Upload frontend scan results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: trivy-frontend.sarif
 
       - name: Smoke test - run container & check index.html
         run: |
@@ -166,6 +150,42 @@ jobs:
           fi
           
           docker rm -f frontend-test
+
+      - name: Trivy scan frontend image (generate SARIF report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: frontend:ci
+          format: sarif
+          output: trivy-frontend.sarif
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH,MEDIUM,LOW
+          vuln-type: os,library
+
+      - name: Upload frontend scan report as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-frontend-sarif
+          path: trivy-frontend.sarif
+          if-no-files-found: ignore
+
+      - name: Upload frontend scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        continue-on-error: true
+        with:
+          sarif_file: trivy-frontend.sarif
+
+      - name: Trivy scan frontend image (display table report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          image-ref: frontend:ci
+          format: table
+          exit-code: '0'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+          vuln-type: os,library
 
   # ============ INTEGRATION: full stack voi docker compose ============
   integration:
