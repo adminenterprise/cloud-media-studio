@@ -18,3 +18,14 @@ private_db_subnet_cidrs  = ["10.0.20.0/24", "10.0.21.0/24"]
 # Khi không test hoặc chỉ dựng hạ tầng cơ bản, có thể đặt false để tiết kiệm credit
 enable_nat_gateway = true
 single_nat_gateway = true
+
+# ==========================================
+# Security Groups (Tuần 2)
+# ==========================================
+app_port = 3000 # Port backend NodeJS (Member 2)
+db_port  = 3306 # Port MySQL/Aurora (Member 3)
+
+# ⚠️ BẮT BUỘC: Thay bằng IP thật trước khi deploy!
+# Tra IP tại: https://checkip.amazonaws.com
+admin_ip = "0.0.0.0/0" # Ví dụ: "203.0.113.10/32"
+

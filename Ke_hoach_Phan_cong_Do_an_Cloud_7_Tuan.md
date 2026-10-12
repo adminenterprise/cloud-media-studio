@@ -12,6 +12,16 @@
   - Nhánh chính: `main` (Bật Branch Protection, cấm push trực tiếp, bắt buộc Pull Request và duyệt code).
   - Nhánh thành viên: Theo tên hoặc phân mảng của từng thành viên (`quan`, `duc`, `tuan`, v.v.).
 - **Ngân sách**: Gói tài trợ sinh viên $200 (Ước tính tiêu thụ tối ưu: $45 - $65).
+- **Sản phẩm bàn giao nộp đồ án (Yêu cầu chính thức từ Giảng viên)**:
+  1. **File Slide thuyết trình (`.pptx` / Google Slides)**: Nhóm tự thiết kế, trình bày súc tích kiến trúc tổng thể, quy trình triển khai và kết quả các kịch bản thực nghiệm.
+  2. **File Docs Báo cáo đồ án (`.docx` / `.pdf` — Độ dài tối thiểu 30 trang)**:
+     - Trình bày toàn diện quy trình dự án từ đầu đến cuối (Tuần 1 đến Tuần 7).
+     - Đặt vấn đề, phân tích yêu cầu doanh nghiệp và phương án giải quyết bằng AWS Cloud Native & DevSecOps.
+     - Thiết kế chi tiết kiến trúc đa tầng (3-Tier Multi-AZ), IaC Terraform, Tầng Tính toán & Container (Docker/ECS), Tầng Dữ liệu & FinOps (Kiểm soát $200), Tầng An ninh DevSecOps (AWS WAF, Secrets Manager, CI/CD).
+     - Tổng hợp kết quả thực nghiệm, minh chứng hình ảnh thực tế từ AWS Console và đánh giá bài học kinh nghiệm.
+  3. **Video Demo & Trình diễn trực tiếp**:
+     - Video quay sẵn kịch bản chạy sản phẩm tại nhà (dùng làm minh chứng nộp kèm và backup khi bảo vệ).
+     - Trình diễn trực tiếp (Live Demo) các kịch bản cốt lõi: Self-Healing, WAF Defense, Quản trị FinOps.
 
 ---
 
