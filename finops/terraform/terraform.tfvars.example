@@ -37,3 +37,24 @@ member_users = {
     role     = "Security Compliance and DevSecOps Specialist"
   }
 }
+
+# ==============================================================================
+# TUẦN 2: CẤU HÌNH RDS MYSQL & S3 (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+
+# --- Thông số nhận bàn giao từ Member 1 ---
+# Lấy giá trị bằng lệnh: cd terraform/ && terraform output
+vpc_id                   = "vpc-xxxxxxxxx"                              # Điền VPC ID thực từ Member 1 (terraform output vpc_id)
+rds_db_subnet_group_name = "enterprise-cloud-devsecops-db-subnet-group" # Từ Member 1 (terraform output rds_db_subnet_group_name)
+db_security_group_id     = ""                                           # Từ Member 1 (terraform output db_security_group_id) — Để trống sẽ tự tạo SG
+private_app_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+
+# --- RDS MySQL (FinOps Optimized) ---
+rds_engine_version        = "8.0"
+rds_instance_class        = "db.t3.micro" # FinOps: ~$0.018/hr | Nhớ STOP khi không dùng!
+rds_allocated_storage     = 20            # 20 GB gp2 khởi tạo
+rds_max_allocated_storage = 50            # Auto-scale tối đa 50 GB
+rds_db_name               = "appdb"       # Khớp với backend/server.js của Member 2
+rds_master_username       = "admin"
+rds_master_password       = "YOUR_STRONG_PASSWORD_HERE" # Mật khẩu admin RDS
+rds_multi_az              = false                       # false = tiết kiệm (dev/test) | true = bật khi demo bảo vệ đồ án

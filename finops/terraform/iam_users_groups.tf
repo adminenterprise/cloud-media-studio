@@ -42,9 +42,9 @@ resource "aws_iam_user" "member1" {
   path = "/team/"
 
   tags = {
-    Role        = var.member_users["member1"].role
-    Track       = "Network-IaC"
-    TeamMember  = "Member 1 - Team Leader"
+    Role       = var.member_users["member1"].role
+    Track      = "Network-IaC"
+    TeamMember = "Member 1 - Team Leader"
   }
 }
 
@@ -53,9 +53,9 @@ resource "aws_iam_user" "member2" {
   path = "/team/"
 
   tags = {
-    Role        = var.member_users["member2"].role
-    Track       = "Compute-Container"
-    TeamMember  = "Member 2"
+    Role       = var.member_users["member2"].role
+    Track      = "Compute-Container"
+    TeamMember = "Member 2"
   }
 }
 
@@ -64,9 +64,9 @@ resource "aws_iam_user" "member3" {
   path = "/team/"
 
   tags = {
-    Role        = var.member_users["member3"].role
-    Track       = "Data-FinOps"
-    TeamMember  = "Member 3 - Pham The Hung"
+    Role       = var.member_users["member3"].role
+    Track      = "Data-FinOps"
+    TeamMember = "Member 3 - Pham The Hung"
   }
 }
 
@@ -75,9 +75,9 @@ resource "aws_iam_user" "member4" {
   path = "/team/"
 
   tags = {
-    Role        = var.member_users["member4"].role
-    Track       = "Security-DevSecOps"
-    TeamMember  = "Member 4"
+    Role       = var.member_users["member4"].role
+    Track      = "Security-DevSecOps"
+    TeamMember = "Member 4"
   }
 }
 

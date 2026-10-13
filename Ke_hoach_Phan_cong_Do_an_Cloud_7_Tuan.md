@@ -38,9 +38,9 @@
 
 ## 3. BẢNG TIẾN ĐỘ TỔNG QUAN (DASHBOARD)
 
-- [ ] **Thành viên 1 (Mạng & IaC)**: 1/7 hoàn thành (14.3%)
+- [ ] **Thành viên 1 (Mạng & IaC)**: 2/7 hoàn thành (28.6%)
 - [ ] **Thành viên 2 (Tính toán & Container)**: 0/7 hoàn thành (0.0%)
-- [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 1/7 hoàn thành (14.3%)
+- [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 2/7 hoàn thành (28.6%)
 - [ ] **Thành viên 4 (Bảo mật & DevSecOps)**: 0/7 hoàn thành (0.0%)
 
 ---
@@ -62,13 +62,13 @@
   - *Ghi chú*: Chuẩn bị môi trường cho đường ống CI/CD.
 
 ### Tuần 2: Tầng Lưu Trữ, Dữ Liệu & Máy Chủ Tính Toán
-- [ ] **[Thành viên 1] Mạng & IaC**: Viết cấu hình Security Group (tường lửa ảo) kiểm soát chặt chẽ inbound/outbound giữa các tầng web, app và database.
+- [x] **[Thành viên 1] Mạng & IaC**: Viết cấu hình Security Group (tường lửa ảo) kiểm soát chặt chẽ inbound/outbound giữa các tầng web, app và database.
   - *Kết quả bàn giao (`Deliverable`)*: File `security_groups.tf` và tài liệu quy tắc mở cổng.
   - *Ghi chú*: Tuân thủ nghiêm ngặt Principle of Least Privilege.
 - [ ] **[Thành viên 2] Tính toán & Container**: Triển khai EC2 Auto Scaling Group đặt sau Application Load Balancer (`ALB`), mount ổ đĩa chia sẻ Amazon EFS.
   - *Kết quả bàn giao (`Deliverable`)*: ALB DNS endpoint truy cập được trang web, mount EFS thành công.
   - *Ghi chú*: Kiểm thử co giãn tải (`Scale in/out`) cơ bản.
-- [ ] **[Thành viên 3] Dữ liệu & FinOps**: Khởi tạo Amazon RDS MySQL / Aurora Serverless trong Private Subnet; tạo S3 Bucket lưu trữ tài nguyên tĩnh.
+- [x] **[Thành viên 3] Dữ liệu & FinOps**: Khởi tạo Amazon RDS MySQL / Aurora Serverless trong Private Subnet; tạo S3 Bucket lưu trữ tài nguyên tĩnh.
   - *Kết quả bàn giao (`Deliverable`)*: Endpoint kết nối RDS, S3 Bucket kích hoạt mã hóa SSE-S3.
   - *Ghi chú*: Chọn cấu hình db.t3.micro hoặc 0.5 ACU để tiết kiệm chi phí.
 - [ ] **[Thành viên 4] Bảo mật & DevSecOps**: Tích hợp Amazon Cognito User Pool để quản lý chức năng đăng ký, xác thực đăng nhập và cấp phát JWT token.

@@ -71,3 +71,78 @@ variable "member_users" {
     }
   }
 }
+
+# ==============================================================================
+# TUẦN 2: BIẾN CẤU HÌNH RDS MYSQL (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+
+variable "vpc_id" {
+  description = "VPC ID từ Member 1 (chạy: cd terraform/ && terraform output vpc_id)"
+  type        = string
+}
+
+variable "rds_db_subnet_group_name" {
+  description = "RDS DB Subnet Group Name từ Member 1 (terraform output rds_db_subnet_group_name)"
+  type        = string
+}
+
+variable "db_security_group_id" {
+  description = "Security Group ID cho RDS bàn giao từ Member 1 (terraform output db_security_group_id). Nếu để trống, sẽ tạo SG cục bộ."
+  type        = string
+  default     = ""
+}
+
+variable "private_app_subnet_cidrs" {
+  description = "CIDR blocks của Private App Subnets — dùng cho Security Group rule (port 3306) nếu tạo SG cục bộ"
+  type        = list(string)
+  default     = ["10.0.10.0/24", "10.0.11.0/24"]
+}
+
+variable "rds_engine_version" {
+  description = "Phiên bản MySQL Engine"
+  type        = string
+  default     = "8.0"
+}
+
+variable "rds_instance_class" {
+  description = "Instance class cho RDS (db.t3.micro = ~$0.018/hr — FinOps optimized)"
+  type        = string
+  default     = "db.t3.micro"
+}
+
+variable "rds_allocated_storage" {
+  description = "Dung lượng ổ đĩa ban đầu (GB)"
+  type        = number
+  default     = 20
+}
+
+variable "rds_max_allocated_storage" {
+  description = "Dung lượng ổ đĩa tối đa khi auto-scale (GB)"
+  type        = number
+  default     = 50
+}
+
+variable "rds_db_name" {
+  description = "Tên database mặc định khởi tạo khi tạo RDS instance (khớp với appdb trong backend/server.js của Member 2)"
+  type        = string
+  default     = "appdb"
+}
+
+variable "rds_master_username" {
+  description = "Tài khoản admin RDS MySQL"
+  type        = string
+  default     = "admin"
+  sensitive   = true
+}
+
+variable "rds_master_password" {
+  description = "Mật khẩu admin RDS MySQL (Tuần 4: Member 4 sẽ chuyển sang AWS Secrets Manager)"
+  type        = string
+  sensitive   = true
+}
+
+variable "rds_multi_az" {
+  description = "Bật Multi-AZ cho High Availability (false = tiết kiệm dev/test, true = bật khi demo bảo vệ)"
+  type        = bool
+  default     = false
+}
