@@ -72,3 +72,54 @@ output "iam_console_login_hint" {
   description = "Đường dẫn đăng nhập IAM Console"
   value       = "https://<your-aws-account-id>.signin.aws.amazon.com/console"
 }
+
+# ==============================================================================
+# TUẦN 2: RDS MYSQL OUTPUTS — BÀN GIAO CHO MEMBER 2 & MEMBER 4
+# ==============================================================================
+output "rds_endpoint" {
+  description = "RDS MySQL Endpoint đầy đủ (Bàn giao cho Member 2 cấu hình DB_HOST)"
+  value       = aws_db_instance.mysql_primary.endpoint
+}
+
+output "rds_address" {
+  description = "RDS MySQL Address (hostname only, không có port)"
+  value       = aws_db_instance.mysql_primary.address
+}
+
+output "rds_port" {
+  description = "RDS MySQL Port (mặc định 3306)"
+  value       = aws_db_instance.mysql_primary.port
+}
+
+output "rds_db_name" {
+  description = "Tên database mặc định đã khởi tạo"
+  value       = aws_db_instance.mysql_primary.db_name
+}
+
+output "rds_identifier" {
+  description = "RDS Instance Identifier (dùng cho lệnh stop/start CLI tiết kiệm credit)"
+  value       = aws_db_instance.mysql_primary.identifier
+}
+
+output "rds_security_group_id" {
+  description = "Security Group ID của RDS (dùng cho liên kết tường lửa giữa các tier)"
+  value       = aws_security_group.rds.id
+}
+
+# ==============================================================================
+# TUẦN 2: S3 STATIC ASSETS OUTPUTS
+# ==============================================================================
+output "s3_static_assets_bucket" {
+  description = "Tên S3 Bucket tài nguyên tĩnh"
+  value       = aws_s3_bucket.static_assets.id
+}
+
+output "s3_static_assets_arn" {
+  description = "ARN của S3 Bucket (dùng cho IAM Policy và CloudFront OAI Tuần 3)"
+  value       = aws_s3_bucket.static_assets.arn
+}
+
+output "s3_static_assets_domain" {
+  description = "Regional Domain Name của S3 Bucket (dùng cho CloudFront Origin)"
+  value       = aws_s3_bucket.static_assets.bucket_regional_domain_name
+}
