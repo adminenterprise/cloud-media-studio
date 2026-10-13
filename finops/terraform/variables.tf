@@ -86,8 +86,14 @@ variable "rds_db_subnet_group_name" {
   type        = string
 }
 
+variable "db_security_group_id" {
+  description = "Security Group ID cho RDS bàn giao từ Member 1 (terraform output db_security_group_id). Nếu để trống, sẽ tạo SG cục bộ."
+  type        = string
+  default     = ""
+}
+
 variable "private_app_subnet_cidrs" {
-  description = "CIDR blocks của Private App Subnets — dùng cho Security Group rule (port 3306)"
+  description = "CIDR blocks của Private App Subnets — dùng cho Security Group rule (port 3306) nếu tạo SG cục bộ"
   type        = list(string)
   default     = ["10.0.10.0/24", "10.0.11.0/24"]
 }
@@ -117,9 +123,9 @@ variable "rds_max_allocated_storage" {
 }
 
 variable "rds_db_name" {
-  description = "Tên database mặc định khởi tạo khi tạo RDS instance"
+  description = "Tên database mặc định khởi tạo khi tạo RDS instance (khớp với appdb trong backend/server.js của Member 2)"
   type        = string
-  default     = "enterprise_db"
+  default     = "appdb"
 }
 
 variable "rds_master_username" {

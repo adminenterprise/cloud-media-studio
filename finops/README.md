@@ -184,24 +184,28 @@ Khi nộp báo cáo tiến độ Tuần 1 cho Nhóm trưởng và Giảng viên,
 
 ## 7. TRIỂN KHAI QUA TERRAFORM
 
-### Bước 1: Lấy thông số từ Member 1
+### Bước 1: Lấy thông số từ Member 1 (Đã hoàn thành Tuần 2)
 
-Trước tiên cần lấy giá trị VPC và Subnet Group từ module mạng của Member 1:
+Lấy các giá trị VPC, Subnet Group và Database Security Group từ module mạng của Member 1:
 ```bash
 cd terraform/
 terraform output vpc_id
 terraform output rds_db_subnet_group_name
+terraform output db_security_group_id
 ```
 
 ### Bước 2: Cập nhật terraform.tfvars
 
-Mở tệp `finops/terraform/terraform.tfvars` và điền giá trị thực:
+Mở tệp `finops/terraform/terraform.tfvars` và điền giá trị thực nhận từ Member 1:
 ```hcl
-# Thay thế bằng giá trị thực từ Member 1
-vpc_id                   = "vpc-0abc123def456"   # Từ bước 1
+# Nhận bàn giao từ Member 1
+vpc_id                   = "vpc-0abc123def456"
 rds_db_subnet_group_name = "enterprise-cloud-devsecops-db-subnet-group"
+db_security_group_id     = "sg-0abc123def456"  # SG chuẩn SG-to-SG của Member 1 (db-sg)
 
-# Đặt mật khẩu mạnh cho RDS admin
+# Cấu hình RDS (khớp với appdb trong backend/server.js của Member 2)
+rds_db_name         = "appdb"
+rds_master_username = "admin"
 rds_master_password = "YourStr0ng!P@ssw0rd#2026"
 ```
 
@@ -265,16 +269,28 @@ chmod +x stop_rds.sh
 
 ---
 
-## 9. NẠP DỮ LIỆU KHỞI TẠO (INIT.SQL) TỪ MEMBER 2
+## 9. NẠP DỮ LIỆU KHỞI TẠO (INIT.SQL) CHO MEMBER 2
 
-Sau khi RDS ở trạng thái `Available`, kết nối và nạp schema từ file [`db/init.sql`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/db/init.sql) của Member 2:
+Sau khi RDS ở trạng thái `Available`, Member 3 thực hiện nạp schema từ file [`db/init.sql`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/db/init.sql) để Member 2 (Backend NodeJS) có thể truy vấn ngay:
 
+### Cách 1: Sử dụng Script tự động (Khuyên dùng)
+```powershell
+# PowerShell:
+.\finops\scripts\init_db.ps1 -Host "rds-endpoint" -Password "YourPassword"
+```
 ```bash
-# Lấy endpoint RDS
-RDS_ENDPOINT=$(cd finops/terraform && terraform output -raw rds_address)
+# Bash:
+./finops/scripts/init_db.sh <rds-endpoint> <password>
+```
 
-# Kết nối và nạp schema (cần MySQL client)
-mysql -h $RDS_ENDPOINT -u admin -p enterprise_db < db/init.sql
+### Cách 2: Chạy lệnh trực tiếp qua MySQL CLI hoặc Docker
+```bash
+# Chạy trực tiếp nếu máy đã cài MySQL client
+mysql -h <rds-endpoint> -P 3306 -u admin -p appdb < db/init.sql
+
+# Hoặc chạy thông qua Docker Container
+docker run --rm -v "${PWD}/db/init.sql:/init.sql" mysql:8.0 \
+  mysql -h <rds-endpoint> -P 3306 -u admin -p'YourPassword' appdb < /init.sql
 ```
 
 ---

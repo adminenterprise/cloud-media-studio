@@ -6,9 +6,12 @@
 # Chi phí: ~$0.018/giờ | Nhớ STOP khi không dùng để tiết kiệm credit $200!
 
 # ------------------------------------------------------------------------------
-# 1. SECURITY GROUP CHO RDS (Least Privilege — Chỉ port 3306 từ App Subnets)
+# 1. SECURITY GROUP CHO RDS (Tự động dùng SG của Member 1 hoặc tạo mới)
 # ------------------------------------------------------------------------------
+# Nếu nhận db_security_group_id từ Member 1: Sử dụng trực tiếp SG-to-SG rule của Member 1
+# Nếu không cung cấp: Tự động khởi tạo Security Group cục bộ cho phép port 3306 từ Private App Subnets
 resource "aws_security_group" "rds" {
+  count       = var.db_security_group_id != "" ? 0 : 1
   name_prefix = "${var.project_name}-rds-sg-"
   description = "Security Group cho RDS MySQL - Chi cho phep ket noi tu Private App Subnets (Port 3306)"
   vpc_id      = var.vpc_id
@@ -139,7 +142,7 @@ resource "aws_db_instance" "mysql_primary" {
 
   # Mạng (Bàn giao từ Member 1)
   db_subnet_group_name   = var.rds_db_subnet_group_name
-  vpc_security_group_ids = [aws_security_group.rds.id]
+  vpc_security_group_ids = var.db_security_group_id != "" ? [var.db_security_group_id] : [aws_security_group.rds[0].id]
 
   # High Availability
   multi_az            = var.rds_multi_az # false khi dev, true khi demo bảo vệ

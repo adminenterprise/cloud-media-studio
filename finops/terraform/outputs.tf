@@ -102,8 +102,8 @@ output "rds_identifier" {
 }
 
 output "rds_security_group_id" {
-  description = "Security Group ID của RDS (dùng cho liên kết tường lửa giữa các tier)"
-  value       = aws_security_group.rds.id
+  description = "Security Group ID của RDS (Dùng từ Member 1 hoặc tự tạo)"
+  value       = var.db_security_group_id != "" ? var.db_security_group_id : try(aws_security_group.rds[0].id, "")
 }
 
 # ==============================================================================
