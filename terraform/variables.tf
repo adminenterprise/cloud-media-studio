@@ -66,3 +66,24 @@ variable "single_nat_gateway" {
   type        = bool
   default     = true
 }
+
+# ==========================================
+# Security Group Variables (Tuần 2)
+# ==========================================
+variable "app_port" {
+  description = "Application port for backend server (NodeJS default: 3000)"
+  type        = number
+  default     = 3000
+}
+
+variable "db_port" {
+  description = "Database port for RDS MySQL/Aurora (MySQL default: 3306)"
+  type        = number
+  default     = 3306
+}
+
+variable "admin_ip" {
+  description = "Admin IP CIDR for Bastion Host SSH access (e.g., '203.0.113.10/32'). Use /32 for single IP."
+  type        = string
+  default     = "0.0.0.0/0" # TODO: Thay bằng IP thật của quản trị viên trước khi deploy production
+}
