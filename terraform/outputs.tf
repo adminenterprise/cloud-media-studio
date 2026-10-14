@@ -99,3 +99,39 @@ output "bastion_security_group_id" {
   description = "Security Group ID cho Bastion Host (Admin SSH access)"
   value       = aws_security_group.bastion.id
 }
+
+# ------------------------------------------------------------------------------
+# 7. CLOUDFRONT CDN (TUẦN 3 — BÀN GIAO CHO MEMBER 4 GẮN WAF & KIỂM THỬ)
+# ------------------------------------------------------------------------------
+output "cloudfront_distribution_id" {
+  description = "CloudFront Distribution ID (Dùng để gắn AWS WAF ở Tuần 4)"
+  value       = aws_cloudfront_distribution.main.id
+}
+
+output "cloudfront_distribution_arn" {
+  description = "CloudFront Distribution ARN"
+  value       = aws_cloudfront_distribution.main.arn
+}
+
+output "cloudfront_domain_name" {
+  description = "Tên miền mặc định của CloudFront (Dùng để truy cập kiểm thử web tĩnh & API)"
+  value       = aws_cloudfront_distribution.main.domain_name
+}
+
+output "cloudfront_hosted_zone_id" {
+  description = "CloudFront Route 53 Zone ID (Z2FDTNDATAQYW2)"
+  value       = aws_cloudfront_distribution.main.hosted_zone_id
+}
+
+# ------------------------------------------------------------------------------
+# 8. ROUTE 53 DNS (TUẦN 3)
+# ------------------------------------------------------------------------------
+output "route53_zone_id" {
+  description = "Route 53 Public Hosted Zone ID"
+  value       = try(aws_route53_zone.primary[0].zone_id, "Route 53 chưa được bật (enable_route53 = false)")
+}
+
+output "route53_name_servers" {
+  description = "Danh sách Name Servers của Route 53 (cần cấu hình tại Registrar nếu có custom domain)"
+  value       = try(aws_route53_zone.primary[0].name_servers, [])
+}
