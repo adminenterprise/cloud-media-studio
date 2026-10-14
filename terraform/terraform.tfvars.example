@@ -29,3 +29,11 @@ db_port  = 3306 # Port MySQL/Aurora (Member 3)
 # Tra IP tại: https://checkip.amazonaws.com
 admin_ip = "0.0.0.0/0" # Ví dụ: "203.0.113.10/32"
 
+# ==========================================
+# CloudFront & Route 53 (Tuần 3)
+# ==========================================
+s3_static_assets_bucket_name = "enterprise-cloud-devsecops-static-assets-ap-southeast-1"
+# alb_dns_name                 = "khi-nao-member2-deploy-alb-thi-dien-vao-day.elb.amazonaws.com"
+enable_route53               = false # Đặt true nếu nhóm đã mua domain riêng
+# domain_name                  = "devsecops-enterprise.com"
+

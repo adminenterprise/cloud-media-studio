@@ -38,7 +38,7 @@
 
 ## 3. BẢNG TIẾN ĐỘ TỔNG QUAN (DASHBOARD)
 
-- [ ] **Thành viên 1 (Mạng & IaC)**: 2/7 hoàn thành (28.6%)
+- [ ] **Thành viên 1 (Mạng & IaC)**: 3/7 hoàn thành (42.9%)
 - [ ] **Thành viên 2 (Tính toán & Container)**: 0/7 hoàn thành (0.0%)
 - [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 2/7 hoàn thành (28.6%)
 - [ ] **Thành viên 4 (Bảo mật & DevSecOps)**: 0/7 hoàn thành (0.0%)
@@ -76,7 +76,7 @@
   - *Ghi chú*: Không cần tự viết code xác thực người dùng thủ công.
 
 ### Tuần 3: Chuyển Đổi Container Hóa & Tối Ưu Tải
-- [ ] **[Thành viên 1] Mạng & IaC**: Cấu hình Amazon Route 53 (phân giải tên miền) và Amazon CloudFront (CDN) tối ưu hóa tốc độ tải trang toàn cầu.
+- [x] **[Thành viên 1] Mạng & IaC**: Cấu hình Amazon Route 53 (phân giải tên miền) và Amazon CloudFront (CDN) tối ưu hóa tốc độ tải trang toàn cầu.
   - *Kết quả bàn giao (`Deliverable`)*: CloudFront distribution domain name hoạt động và chuyển tiếp đúng về ALB/S3.
   - *Ghi chú*: Tối ưu hóa bộ nhớ đệm (`caching`) cho tệp tĩnh.
 - [ ] **[Thành viên 2] Tính toán & Container**: Khởi tạo Amazon ECR, đẩy ảnh Docker lên kho lưu trữ và thiết lập ECS Task Definition chạy trên AWS Fargate.

@@ -87,3 +87,33 @@ variable "admin_ip" {
   type        = string
   default     = "0.0.0.0/0" # TODO: Thay bằng IP thật của quản trị viên trước khi deploy production
 }
+
+# ==========================================
+# CloudFront & S3 Origin Variables (Tuần 3)
+# ==========================================
+variable "s3_static_assets_bucket_name" {
+  description = "Tên S3 Bucket lưu trữ tài nguyên tĩnh từ Member 3"
+  type        = string
+  default     = "enterprise-cloud-devsecops-static-assets-ap-southeast-1"
+}
+
+variable "alb_dns_name" {
+  description = "DNS name của Application Load Balancer từ Member 2 (để trống nếu chưa tạo ALB)"
+  type        = string
+  default     = ""
+}
+
+# ==========================================
+# Route 53 DNS Variables (Tuần 3)
+# ==========================================
+variable "enable_route53" {
+  description = "Bật/Tắt Route 53 Hosted Zone & Records (Mặc định false để tối ưu FinOps $0.50/tháng nếu chưa mua domain)"
+  type        = bool
+  default     = false
+}
+
+variable "domain_name" {
+  description = "Tên miền tùy chỉnh (e.g., devsecops-enterprise.com). Để trống nếu dùng domain CloudFront mặc định"
+  type        = string
+  default     = ""
+}
