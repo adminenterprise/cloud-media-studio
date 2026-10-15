@@ -303,3 +303,198 @@ docker run --rm -v "${PWD}/db/init.sql:/init.sql" mysql:8.0 \
 | **02** | `rds-security-group-rules.png` | Security Group: Inbound chỉ port 3306 từ App Subnets (10.0.10.0/24, 10.0.11.0/24) | 🟢 Đạt chuẩn Least Privilege |
 | **03** | `s3-bucket-sse-s3-enabled.png` | S3 Console: Default encryption = SSE-S3 (AES256) | 🟢 Đạt chuẩn Encryption |
 | **04** | `s3-block-public-access.png` | S3 Console: Block all public access = ON (4/4 tích) | 🟢 Đạt chuẩn Security |
+
+---
+
+# HƯỚNG DẪN TRIỂN KHAI TUẦN 3: DYNAMODB & S3 GLACIER LIFECYCLE
+
+> **Phân mảng:** Thành viên 3 (Dữ liệu & FinOps — Phạm Thế Hùng)  
+> **Mục tiêu Tuần 3:**  
+> 1. Khởi tạo cơ sở dữ liệu phi quan hệ **Amazon DynamoDB** lưu trữ User Sessions (phiên làm việc) và Shopping Cart (giỏ hàng tạm thời), kích hoạt Time-To-Live (TTL) tự động giải phóng dữ liệu hết hạn miễn phí.  
+> 2. Thiết lập **S3 Lifecycle Configuration** tự động chuyển tài liệu cũ sang **S3 Glacier** sau 30 ngày và dọn dẹp các phiên bản cũ / upload dở dang để tối ưu chi phí lưu trữ dài hạn (>84% chi phí).
+
+---
+
+## 11. TỔNG QUAN DELIVERABLES TUẦN 3
+
+Thành viên 3 bàn giao gói giải pháp kỹ thuật hoàn chỉnh cho Tuần 3 bao gồm:
+
+| Deliverable | Vị trí tệp | Mô tả kỹ thuật | Trạng thái |
+| :--- | :--- | :--- | :---: |
+| **DynamoDB IaC** | [`finops/terraform/dynamodb.tf`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/terraform/dynamodb.tf) | 2 bảng: `user-sessions` (PK `sessionId`, GSI `userId`, TTL `expiresAt`) & `cart` (PK `userId`, SK `itemId`, TTL `expiresAt`), chuẩn `PAY_PER_REQUEST` | ✅ |
+| **S3 Lifecycle IaC** | [`finops/terraform/s3.tf`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/terraform/s3.tf) | 4 quy tắc Lifecycle: Chuyển `uploads/` và `documents/` sang Glacier sau 30 ngày, chuyển noncurrent versions sang Glacier và expire sau 90 ngày, hủy multipart sau 7 ngày | ✅ |
+| **Variables & Outputs** | [`finops/terraform/variables.tf`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/terraform/variables.tf), [`outputs.tf`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/terraform/outputs.tf) | Cấu hình tham số và xuất thông tin Table Name, Table ARN bàn giao cho Member 2 & 4 | ✅ |
+| **IAM Policy Update** | [`finops/terraform/iam_policies.tf`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/terraform/iam_policies.tf) | Bổ sung quyền Least Privilege cho ứng dụng backend (Member 2) đọc/ghi session và cart | ✅ |
+| **Test Scripts CLI** | [`finops/scripts/test_dynamodb.ps1`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/scripts/test_dynamodb.ps1), [`test_dynamodb.sh`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/scripts/test_dynamodb.sh) | Script kiểm thử tự động: kiểm tra trạng thái bảng, ghi/đọc CRUD, kiểm tra TTL và S3 Lifecycle qua terminal | ✅ |
+| **Dữ liệu mẫu JSON** | [`finops/scripts/configs/dynamodb_sample_*.json`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/scripts/configs) | Payload mẫu chuẩn format DynamoDB AttributeValue dùng cho test và demo bảo vệ | ✅ |
+
+---
+
+## 12. PHƯƠNG PHÁP 1: TRIỂN KHAI QUA TERRAFORM (ENTERPRISE STANDARD)
+
+### Bước 1: Kiểm tra cấu hình và kế hoạch triển khai
+```bash
+cd finops/terraform
+
+# Kiểm tra cú pháp HCL
+terraform validate
+
+# Tính toán các tài nguyên bổ sung (~3-5 resources mới: 2 DynamoDB tables + S3 Lifecycle config)
+terraform plan
+```
+
+### Bước 2: Áp dụng triển khai lên AWS
+```bash
+terraform apply -auto-approve
+```
+
+### Bước 3: Xem các thông số bàn giao liên thành viên
+```bash
+# Xem danh sách bảng và ARN
+terraform output dynamodb_user_sessions_table_name
+terraform output dynamodb_user_sessions_table_arn
+terraform output dynamodb_cart_table_name
+terraform output dynamodb_cart_table_arn
+
+# Xem trạng thái S3 Lifecycle
+terraform output s3_lifecycle_status
+```
+
+> **Giao diện bàn giao:**
+> - Bàn giao cho **Member 2 (Backend)**: Đặt biến môi trường `DYNAMODB_TABLE_SESSION=enterprise-cloud-devsecops-user-sessions` và `DYNAMODB_TABLE_CART=enterprise-cloud-devsecops-cart`.
+> - Bàn giao cho **Member 4 (DevSecOps)**: Sử dụng Table ARNs để gắn vào `Task Role` của ECS Container Task Definition.
+
+---
+
+## 13. PHƯƠNG PHÁP 2: THỰC HIỆN TRÊN AWS MANAGEMENT CONSOLE (ĐỂ CHỤP ẢNH MINH CHỨNG)
+
+### PHẦN A: KHỞI TẠO DYNAMODB VỚI TTL VÀ GSI
+
+#### 1. Tạo bảng `enterprise-cloud-devsecops-user-sessions`
+1. Đăng nhập **AWS Management Console**, tìm kiếm dịch vụ **DynamoDB**.
+2. Menu trái chọn **Tables** -> Bấm nút màu cam **Create table**.
+3. Điền thông tin:
+   - **Table name**: `enterprise-cloud-devsecops-user-sessions`
+   - **Partition key**: `sessionId` (Kiểu dữ liệu: `String`)
+   - **Table settings**: Chọn **Customize settings**
+   - **Table class**: `DynamoDB Standard`
+   - **Capacity mode**: Chọn **On-demand** (FinOps khuyến nghị: chỉ trả tiền theo request thực tế phát sinh)
+   - **Encryption at rest**: Chọn `Owned by Amazon Web Services (Default)` (Miễn phí)
+4. Bấm **Create table**.
+5. **Cấu hình Global Secondary Index (GSI)**:
+   - Trong chi tiết bảng `enterprise-cloud-devsecops-user-sessions`, chọn tab **Indexes** -> Bấm **Create index**.
+   - **Partition key**: `userId` (Kiểu: `String`)
+   - **Sort key**: `createdAt` (Kiểu: `Number`)
+   - **Index name**: `userId-createdAt-index`
+   - **Attribute projections**: Chọn `All` -> Bấm **Create index**.
+6. **Kích hoạt Time-To-Live (TTL)**:
+   - Chọn tab **Additional settings** trong bảng.
+   - Tại mục *Time to Live (TTL)* -> Bấm nút **Turn on**.
+   - **TTL attribute name**: Nhập chính xác `expiresAt`.
+   - Bấm **Turn on TTL**.
+
+#### 2. Tạo bảng `enterprise-cloud-devsecops-cart`
+1. Tại màn hình **Tables** -> Bấm **Create table**.
+2. Điền thông tin:
+   - **Table name**: `enterprise-cloud-devsecops-cart`
+   - **Partition key**: `userId` (Kiểu: `String`)
+   - **Sort key**: `itemId` (Kiểu: `String`)
+   - **Table settings**: Chọn **Customize settings** -> Chọn **On-demand**.
+3. Bấm **Create table**.
+4. **Kích hoạt Time-To-Live (TTL)**:
+   - Vào tab **Additional settings** -> Bấm **Turn on TTL**.
+   - **TTL attribute name**: `expiresAt` -> Bấm **Turn on TTL**.
+
+---
+
+### PHẦN B: CẤU HÌNH S3 LIFECYCLE CHUYỂN SANG S3 GLACIER (TIẾT KIỆM CHI PHÍ)
+
+1. Mở dịch vụ **Amazon S3**, click chọn bucket `enterprise-cloud-devsecops-static-assets-<region>`.
+2. Chuyển sang tab **Management**.
+3. Tại mục *Lifecycle rules* -> Bấm nút **Create lifecycle rule**.
+4. **Quy tắc 1: Lưu trữ tài liệu cũ sang Glacier**:
+   - **Lifecycle rule name**: `archive-uploads-to-glacier-after-30-days`
+   - **Choose a rule scope**: Chọn **Limit the scope of this rule using one or more filters**.
+   - **Prefix**: Điền `uploads/`
+   - **Lifecycle rule actions**: Tích chọn:
+     * ☑ `Move current versions of objects between storage classes`
+   - **Transition current versions of objects between storage classes**:
+     * *Storage class transitions*: Chọn **Glacier Flexible Retrieval** (hoặc Glacier Instant Retrieval)
+     * *Days after object creation*: Điền `30`
+   - Bấm **Create rule**.
+5. **Quy tắc 2: Tối ưu chi phí phiên bản cũ (Noncurrent Version Management)**:
+   - Bấm **Create lifecycle rule** lần thứ 2.
+   - **Lifecycle rule name**: `manage-noncurrent-versions`
+   - **Choose a rule scope**: Chọn **Apply to all objects in the bucket** (☑ *I acknowledge...*).
+   - **Lifecycle rule actions**: Tích chọn 2 mục:
+     * ☑ `Move noncurrent versions of objects between storage classes`
+     * ☑ `Permanently delete noncurrent versions of objects`
+   - **Transitions**:
+     * Chọn **Glacier Flexible Retrieval** sau `30` ngày kể từ khi trở thành noncurrent.
+   - **Expiration**:
+     * *Days after objects become noncurrent*: Điền `90` ngày để xóa vĩnh viễn phiên bản rác.
+   - Bấm **Create rule**.
+
+---
+
+## 14. PHƯƠNG PHÁP 3: KIỂM THỬ TỰ ĐỘNG HÓA QUA AWS CLI & SCRIPTS
+
+Thành viên 3 đã đóng gói kịch bản kiểm thử toàn diện giúp xác thực hạ tầng chỉ bằng 1 câu lệnh duy nhất:
+
+### Chạy bằng PowerShell (Windows):
+```powershell
+cd finops/scripts
+
+# Kiểm thử toàn diện (Kiểm tra trạng thái + CRUD Session & Cart + S3 Lifecycle)
+.\test_dynamodb.ps1 -Action All
+
+# Hoặc chỉ kiểm tra trạng thái bảng và TTL:
+.\test_dynamodb.ps1 -Action Status
+
+# Dọn dẹp các bản ghi test sau khi chụp ảnh:
+.\test_dynamodb.ps1 -Action Cleanup
+```
+
+### Chạy bằng Bash (Linux / macOS / Git Bash):
+```bash
+cd finops/scripts
+chmod +x test_dynamodb.sh
+
+# Kiểm thử toàn diện
+./test_dynamodb.sh ap-southeast-1 enterprise-cloud-devsecops all
+```
+
+---
+
+## 15. NGUYÊN LÝ TỐI ƯU CHI PHÍ FINOPS TUẦN 3
+
+### 1. Phân tích chi phí DynamoDB: On-Demand vs. Provisioned Free Tier
+- **Mô hình On-Demand (`PAY_PER_REQUEST`)**:
+  - Không tốn bất kỳ chi phí cố định nào khi không có người dùng truy cập.
+  - Phù hợp tuyệt đối cho môi trường đồ án sinh viên, chạy demo vài giờ trong tuần.
+  - Chi phí: $1.25 cho 1 triệu Write Request Units, $0.25 cho 1 triệu Read Request Units. Trong phạm vi đồ án, chi phí thực tế gần như **$0.00**.
+- **Cơ chế Time-To-Live (TTL)**:
+  - AWS tự động xóa các items có timestamp `expiresAt` nhỏ hơn thời gian hiện tại.
+  - Quá trình quét và xóa dữ liệu hết hạn của TTL là **hoàn toàn miễn phí** (không tốn Write Capacity Units và không ảnh hưởng hiệu năng bảng).
+  - Tránh phình dung lượng lưu trữ bảng theo thời gian.
+
+### 2. Phân tích tối ưu lưu trữ S3 Glacier
+| Tiêu chí | S3 Standard | S3 Glacier Flexible Retrieval | Mức độ tối ưu FinOps |
+| :--- | :--- | :--- | :---: |
+| **Đơn giá lưu trữ** | ~$0.025 / GB / tháng | ~$0.004 / GB / tháng | 📉 **Tiết kiệm 84% chi phí** |
+| **Mục đích sử dụng** | Ảnh đại diện, avatar web truy cập thường xuyên | Hóa đơn giao dịch cũ, hồ sơ lưu trữ sau 30 ngày | Chuẩn vòng đời dữ liệu doanh nghiệp |
+| **Cơ chế tự động** | Dữ liệu nạp ban đầu | Chuyển đổi tự động qua S3 Lifecycle Rule | 100% tự động không cần can thiệp tay |
+
+---
+
+## 16. DANH MỤC ẢNH MINH CHỨNG HOÀN THÀNH TUẦN 3 (DELIVERABLE CHECKLIST)
+
+Khi nộp báo cáo tiến độ Tuần 3, Thành viên 3 chuẩn bị 4 bức ảnh minh chứng sau:
+
+| STT | Tên ảnh minh chứng | Nội dung cần thể hiện trên ảnh | Tiêu chuẩn đánh giá |
+| :---: | :--- | :--- | :---: |
+| **01** | `dynamodb-tables-active.png` | Danh sách bảng DynamoDB trên Console: `user-sessions` và `cart` đều ở trạng thái `Active`, chế độ `On-Demand` | 🟢 Đạt chuẩn NoSQL |
+| **02** | `dynamodb-ttl-and-gsi.png` | Chi tiết bảng `user-sessions` hiển thị TTL `expiresAt = Enabled` và GSI `userId-createdAt-index = Active` | 🟢 Đạt chuẩn FinOps & Indexing |
+| **03** | `s3-lifecycle-glacier-rules.png` | Tab Management của S3 Bucket hiển thị 2 Lifecycle Rules chuyển `uploads/` sang `Glacier` sau 30 ngày | 🟢 Đạt chuẩn FinOps Storage |
+| **04** | `dynamodb-crud-cli-test.png` | Terminal chạy script `test_dynamodb.ps1` trả về kết quả `[OK]` ghi đọc dữ liệu độ trễ thấp và hiển thị đầy đủ quy tắc S3 | 🟢 Đạt chuẩn Automation |
+

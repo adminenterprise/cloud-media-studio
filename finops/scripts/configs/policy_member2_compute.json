@@ -57,6 +57,26 @@
           ]
         }
       }
+    },
+    {
+      "Sid": "AllowDynamoDbSessionAndCartAccess",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:*:*:table/*user-sessions*",
+        "arn:aws:dynamodb:*:*:table/*user-sessions*/index/*",
+        "arn:aws:dynamodb:*:*:table/*cart*",
+        "arn:aws:dynamodb:*:*:table/*cart*/index/*"
+      ]
     }
   ]
 }

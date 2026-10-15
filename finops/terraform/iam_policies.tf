@@ -204,6 +204,26 @@ resource "aws_iam_policy" "member2_compute" {
             ]
           }
         }
+      },
+      {
+        Sid    = "AllowDynamoDbSessionAndCartAccess"
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:Query",
+          "dynamodb:Scan"
+        ]
+        Resource = [
+          aws_dynamodb_table.user_sessions.arn,
+          "${aws_dynamodb_table.user_sessions.arn}/index/*",
+          aws_dynamodb_table.cart.arn,
+          "${aws_dynamodb_table.cart.arn}/index/*"
+        ]
       }
     ]
   })

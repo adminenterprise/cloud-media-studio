@@ -40,7 +40,7 @@
 
 - [ ] **Thành viên 1 (Mạng & IaC)**: 2/7 hoàn thành (28.6%)
 - [ ] **Thành viên 2 (Tính toán & Container)**: 0/7 hoàn thành (0.0%)
-- [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 2/7 hoàn thành (28.6%)
+- [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 3/7 hoàn thành (42.9%)
 - [ ] **Thành viên 4 (Bảo mật & DevSecOps)**: 0/7 hoàn thành (0.0%)
 
 ---
@@ -82,7 +82,7 @@
 - [ ] **[Thành viên 2] Tính toán & Container**: Khởi tạo Amazon ECR, đẩy ảnh Docker lên kho lưu trữ và thiết lập ECS Task Definition chạy trên AWS Fargate.
   - *Kết quả bàn giao (`Deliverable`)*: Amazon ECR repository URI, ECS Cluster và Fargate Service active.
   - *Ghi chú*: Chuyển đổi hoàn toàn workload sang kiến trúc container.
-- [ ] **[Thành viên 3] Dữ liệu & FinOps**: Tạo Amazon DynamoDB lưu trữ dữ liệu phi quan hệ (User Session, Cart); cấu hình S3 Lifecycle chuyển tài liệu cũ sang S3 Glacier sau 30 ngày.
+- [x] **[Thành viên 3] Dữ liệu & FinOps**: Tạo Amazon DynamoDB lưu trữ dữ liệu phi quan hệ (User Session, Cart); cấu hình S3 Lifecycle chuyển tài liệu cũ sang S3 Glacier sau 30 ngày.
   - *Kết quả bàn giao (`Deliverable`)*: DynamoDB table active, S3 Lifecycle rule hoạt động.
   - *Ghi chú*: Tận dụng gói miễn phí của DynamoDB.
 - [ ] **[Thành viên 4] Bảo mật & DevSecOps**: Xây dựng GitHub Actions CI/CD Pipeline tự động: Chạy Unit Test và quét lỗ hổng ảnh Docker bằng công cụ Trivy.
