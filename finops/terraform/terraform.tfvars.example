@@ -58,3 +58,16 @@ rds_db_name               = "appdb"       # Khớp với backend/server.js của
 rds_master_username       = "admin"
 rds_master_password       = "YOUR_STRONG_PASSWORD_HERE" # Mật khẩu admin RDS
 rds_multi_az              = false                       # false = tiết kiệm (dev/test) | true = bật khi demo bảo vệ đồ án
+
+# ==============================================================================
+# TUẦN 3: CẤU HÌNH DYNAMODB & S3 GLACIER (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+
+# DynamoDB Billing: PAY_PER_REQUEST (On-Demand — tối ưu FinOps không tốn chi phí rảnh)
+dynamodb_billing_mode = "PAY_PER_REQUEST"
+dynamodb_enable_pitr  = false # Bật true khi diễn tập demo bảo vệ đồ án
+
+# S3 Lifecycle: Tự động chuyển đổi tài liệu sang S3 Glacier để tiết kiệm > 84% chi phí
+s3_glacier_transition_days            = 30 # Chuyển sang Glacier sau 30 ngày
+s3_noncurrent_version_expiration_days = 90 # Xóa phiên bản cũ sau 90 ngày
+

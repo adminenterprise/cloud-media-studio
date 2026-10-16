@@ -97,3 +97,78 @@ resource "aws_s3_object" "folder_uploads" {
   key     = "uploads/"
   content = ""
 }
+
+resource "aws_s3_object" "folder_documents" {
+  bucket  = aws_s3_bucket.static_assets.id
+  key     = "documents/"
+  content = ""
+}
+
+# ------------------------------------------------------------------------------
+# 7. S3 LIFECYCLE CONFIGURATION — TUẦN 3: TỐI ƯU CHI PHÍ VỚI S3 GLACIER (FINOPS)
+# ------------------------------------------------------------------------------
+# Tiết kiệm chi phí lưu trữ dài hạn:
+# - S3 Standard: ~$0.025 / GB / tháng
+# - S3 Glacier Flexible Retrieval: ~$0.004 / GB / tháng (Tiết kiệm > 84% chi phí)
+resource "aws_s3_bucket_lifecycle_configuration" "static_assets" {
+  bucket = aws_s3_bucket.static_assets.id
+
+  # Quy tắc 1: Tự động chuyển tài liệu cũ / tệp uploads sang S3 Glacier sau 30 ngày
+  rule {
+    id     = "archive-uploads-to-glacier-after-30-days"
+    status = "Enabled"
+
+    filter {
+      prefix = "uploads/"
+    }
+
+    transition {
+      days          = var.s3_glacier_transition_days
+      storage_class = "GLACIER"
+    }
+  }
+
+  # Quy tắc 2: Tự động chuyển tài liệu trong thư mục documents/ sang Glacier sau 30 ngày
+  rule {
+    id     = "archive-documents-to-glacier-after-30-days"
+    status = "Enabled"
+
+    filter {
+      prefix = "documents/"
+    }
+
+    transition {
+      days          = var.s3_glacier_transition_days
+      storage_class = "GLACIER"
+    }
+  }
+
+  # Quy tắc 3: Quản lý các phiên bản cũ (Noncurrent Versions) — tránh tốn chi phí rác
+  rule {
+    id     = "manage-noncurrent-versions"
+    status = "Enabled"
+
+    filter {}
+
+    noncurrent_version_transition {
+      noncurrent_days = var.s3_glacier_transition_days
+      storage_class   = "GLACIER"
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = var.s3_noncurrent_version_expiration_days
+    }
+  }
+
+  # Quy tắc 4: Tự động hủy các phiên tải lên nhiều phần (Multipart Upload) chưa hoàn tất sau 7 ngày
+  rule {
+    id     = "abort-incomplete-multipart-uploads"
+    status = "Enabled"
+
+    filter {}
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
