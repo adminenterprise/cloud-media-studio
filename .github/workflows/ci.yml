@@ -6,12 +6,16 @@ on:
     paths:
       - 'backend/**'
       - 'frontend/**'
+      - 'db/**'
+      - 'docker-compose.yml'
       - '.github/workflows/ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'backend/**'
       - 'frontend/**'
+      - 'db/**'
+      - 'docker-compose.yml'
       - '.github/workflows/ci.yml'
 
 concurrency:
@@ -239,11 +243,22 @@ jobs:
           curl -sf http://localhost:8080/health | grep -q '"status":"ok"' || { echo "/health failed"; exit 1; }
           
           echo "--- POST /api/items (ghi DB) ---"
-          POST_RESP=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST http://localhost:8080/api/items \
-            -H 'Content-Type: application/json' \
-            -d '{"name":"ci-test-item"}')
-          echo "$POST_RESP"
-          echo "$POST_RESP" | grep -q '"ok":true' || { echo "POST /api/items failed"; exit 1; }
+          SUCCESS=false
+          for attempt in $(seq 1 5); do
+            POST_RESP=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST http://localhost:8080/api/items \
+              -H 'Content-Type: application/json' \
+              -d '{"name":"ci-test-item"}')
+            echo "Attempt $attempt response: $POST_RESP"
+            if echo "$POST_RESP" | grep -q '"ok":true'; then
+              SUCCESS=true
+              break
+            fi
+            sleep 2
+          done
+          if [ "$SUCCESS" != "true" ]; then
+            echo "POST /api/items failed after 5 attempts"
+            exit 1
+          fi
           
           echo "--- GET /api/items (doc DB) ---"
           curl -sf http://localhost:8080/api/items | grep -q 'ci-test-item' || { echo "GET /api/items failed"; exit 1; }
