@@ -202,18 +202,19 @@ jobs:
 
       - name: Wait for stack to be healthy
         run: |
-          # Doi frontend (proxy) san sang, toi da 60s
+          # Doi toan bo stack (Frontend + Backend + Database) khoi tao xong qua /api/items, toi da 60s
+          echo "Waiting for stack and database to be ready..."
           for i in $(seq 1 60); do
-            if curl -sf http://localhost:8080 > /dev/null 2>&1; then
-              echo "Stack is up after ${i}s"
+            if curl -sf http://localhost:8080/api/items > /dev/null 2>&1; then
+              echo "Stack and Database are ready after ${i}s"
               break
             fi
             if [ "$i" -eq 60 ]; then
-              echo "Stack failed to start"
+              echo "Stack failed to start within 60s"
               docker compose logs
               exit 1
             fi
-            sleep 1
+            sleep 2
           done
 
       - name: Test endpoints through nginx proxy
@@ -230,9 +231,11 @@ jobs:
           curl -sf http://localhost:8080/health | grep -q '"status":"ok"' || { echo "/health failed"; exit 1; }
           
           echo "--- POST /api/items (ghi DB) ---"
-          curl -sf -X POST http://localhost:8080/api/items \
+          POST_RESP=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST http://localhost:8080/api/items \
             -H 'Content-Type: application/json' \
-            -d '{"name":"ci-test-item"}' | grep -q '"ok":true' || { echo "POST /api/items failed"; exit 1; }
+            -d '{"name":"ci-test-item"}')
+          echo "$POST_RESP"
+          echo "$POST_RESP" | grep -q '"ok":true' || { echo "POST /api/items failed"; exit 1; }
           
           echo "--- GET /api/items (doc DB) ---"
           curl -sf http://localhost:8080/api/items | grep -q 'ci-test-item' || { echo "GET /api/items failed"; exit 1; }
