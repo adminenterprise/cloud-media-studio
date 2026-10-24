@@ -123,3 +123,32 @@ output "s3_static_assets_domain" {
   description = "Regional Domain Name của S3 Bucket (dùng cho CloudFront Origin)"
   value       = aws_s3_bucket.static_assets.bucket_regional_domain_name
 }
+
+# ==============================================================================
+# TUẦN 3: DYNAMODB & S3 LIFECYCLE OUTPUTS — BÀN GIAO CHO MEMBER 2 & MEMBER 4
+# ==============================================================================
+output "dynamodb_user_sessions_table_name" {
+  description = "Tên bảng DynamoDB User Sessions (Bàn giao cho Member 2 cấu hình DYNAMODB_TABLE_SESSION)"
+  value       = aws_dynamodb_table.user_sessions.name
+}
+
+output "dynamodb_user_sessions_table_arn" {
+  description = "ARN bảng DynamoDB User Sessions (Dùng cho IAM Policy của Member 2 & ECS Task Role của Member 4)"
+  value       = aws_dynamodb_table.user_sessions.arn
+}
+
+output "dynamodb_cart_table_name" {
+  description = "Tên bảng DynamoDB Shopping Cart (Bàn giao cho Member 2 cấu hình DYNAMODB_TABLE_CART)"
+  value       = aws_dynamodb_table.cart.name
+}
+
+output "dynamodb_cart_table_arn" {
+  description = "ARN bảng DynamoDB Shopping Cart (Dùng cho IAM Policy của Member 2 & ECS Task Role của Member 4)"
+  value       = aws_dynamodb_table.cart.arn
+}
+
+output "s3_lifecycle_status" {
+  description = "Trạng thái cấu hình S3 Lifecycle tự động chuyển sang Glacier sau 30 ngày"
+  value       = "S3 Lifecycle Configuration ACTIVE: Transitions uploads/* and documents/* to S3 GLACIER after ${var.s3_glacier_transition_days} days | Noncurrent versions to GLACIER after ${var.s3_glacier_transition_days} days and expire after ${var.s3_noncurrent_version_expiration_days} days"
+}
+

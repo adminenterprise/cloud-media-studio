@@ -146,3 +146,32 @@ variable "rds_multi_az" {
   type        = bool
   default     = false
 }
+
+# ==============================================================================
+# TUẦN 3: BIẾN CẤU HÌNH DYNAMODB & S3 GLACIER (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+
+variable "dynamodb_billing_mode" {
+  description = "Billing mode cho DynamoDB (PAY_PER_REQUEST = On-Demand FinOps tối ưu hoặc PROVISIONED)"
+  type        = string
+  default     = "PAY_PER_REQUEST"
+}
+
+variable "dynamodb_enable_pitr" {
+  description = "Bật Point-in-time Recovery cho DynamoDB (false để tiết kiệm chi phí, true khi demo bảo vệ đồ án)"
+  type        = bool
+  default     = false
+}
+
+variable "s3_glacier_transition_days" {
+  description = "Số ngày trước khi tự động chuyển tài liệu cũ sang S3 Glacier (tiêu chuẩn: 30 ngày)"
+  type        = number
+  default     = 30
+}
+
+variable "s3_noncurrent_version_expiration_days" {
+  description = "Số ngày trước khi xóa vĩnh viễn phiên bản cũ của tệp trên S3 (FinOps tránh phình lưu trữ)"
+  type        = number
+  default     = 90
+}
+
