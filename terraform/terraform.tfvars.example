@@ -37,3 +37,18 @@ s3_static_assets_bucket_name = "enterprise-cloud-devsecops-static-assets-ap-sout
 enable_route53               = false # Đặt true nếu nhóm đã mua domain riêng
 # domain_name                  = "devsecops-enterprise.com"
 
+# ==========================================
+# ALB & AWS WAFv2 (Tuần 4 - FINOPS SWITCH)
+# ==========================================
+enable_alb_and_waf             = false # Đặt true khi cần test/demo tuần 4, đặt false để tắt tiết kiệm $
+enable_alb_deletion_protection = false # FinOps: Đặt false để dễ dàng destroy dọn dẹp credit sinh viên
+waf_rate_limit                 = 100   # Giới hạn 100 request/5 phút cho mỗi IP
+
+# ==========================================
+# Multi-VPC & Peering (Tuần 5 - 100% MIỄN PHÍ)
+# ==========================================
+management_vpc_cidr     = "10.1.0.0/16"
+management_subnet_cidrs = ["10.1.1.0/24", "10.1.2.0/24"]
+
+
+

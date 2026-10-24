@@ -135,3 +135,94 @@ output "route53_name_servers" {
   description = "Danh sách Name Servers của Route 53 (cần cấu hình tại Registrar nếu có custom domain)"
   value       = try(aws_route53_zone.primary[0].name_servers, [])
 }
+
+# ------------------------------------------------------------------------------
+# 9. APPLICATION LOAD BALANCER (TUẦN 4 — BÀN GIAO CHO MEMBER 2)
+# ------------------------------------------------------------------------------
+output "alb_id" {
+  description = "Application Load Balancer ID"
+  value       = try(aws_lb.main[0].id, "ALB chưa được bật (enable_alb_and_waf = false)")
+}
+
+output "alb_arn" {
+  description = "Application Load Balancer ARN (Dùng để gắn WAF hoặc cấu hình CloudWatch)"
+  value       = try(aws_lb.main[0].arn, "ALB chưa được bật (enable_alb_and_waf = false)")
+}
+
+output "alb_dns_name" {
+  description = "DNS công khai của ALB (Dùng để truy cập trực tiếp kiểm thử)"
+  value       = try(aws_lb.main[0].dns_name, "ALB chưa được bật (enable_alb_and_waf = false)")
+}
+
+output "alb_zone_id" {
+  description = "Route 53 Zone ID của ALB (Dùng cho Route 53 Alias record)"
+  value       = try(aws_lb.main[0].zone_id, "ALB chưa được bật (enable_alb_and_waf = false)")
+}
+
+output "alb_target_group_arn" {
+  description = "Target Group ARN (Bàn giao cho Member 2 cắm ECS Fargate / EC2 ASG)"
+  value       = try(aws_lb_target_group.app[0].arn, "Target Group chưa được bật (enable_alb_and_waf = false)")
+}
+
+output "alb_target_group_name" {
+  description = "Target Group Name"
+  value       = try(aws_lb_target_group.app[0].name, "Target Group chưa được bật (enable_alb_and_waf = false)")
+}
+
+# ------------------------------------------------------------------------------
+# 10. AWS WAFV2 WEB ACL (TUẦN 4 — BẢO MẬT & KỊCH BẢN DEMO MÀN 2)
+# ------------------------------------------------------------------------------
+output "waf_web_acl_id" {
+  description = "AWS WAFv2 Web ACL ID"
+  value       = try(aws_wafv2_web_acl.main[0].id, "WAF chưa được bật (enable_alb_and_waf = false)")
+}
+
+output "waf_web_acl_arn" {
+  description = "AWS WAFv2 Web ACL ARN"
+  value       = try(aws_wafv2_web_acl.main[0].arn, "WAF chưa được bật (enable_alb_and_waf = false)")
+}
+
+output "waf_web_acl_name" {
+  description = "Tên Web ACL bảo vệ ALB"
+  value       = try(aws_wafv2_web_acl.main[0].name, "WAF chưa được bật (enable_alb_and_waf = false)")
+}
+
+output "waf_web_acl_capacity" {
+  description = "WCU (Web ACL Capacity Units) đã sử dụng"
+  value       = try(aws_wafv2_web_acl.main[0].capacity, 0)
+}
+
+# ------------------------------------------------------------------------------
+# 11. MULTI-VPC & PEERING (TUẦN 5 — KIẾN TRÚC MỞ RỘNG DOANH NGHIỆP)
+# ------------------------------------------------------------------------------
+output "management_vpc_id" {
+  description = "Management / DevSecOps VPC ID (VPC thứ 2)"
+  value       = aws_vpc.management.id
+}
+
+output "management_vpc_cidr" {
+  description = "CIDR block của Management VPC"
+  value       = aws_vpc.management.cidr_block
+}
+
+output "management_subnet_ids" {
+  description = "Danh sách Management Subnet IDs (Nơi đặt Bastion Host / CI-CD Runners)"
+  value       = aws_subnet.management[*].id
+}
+
+output "vpc_peering_connection_id" {
+  description = "VPC Peering Connection ID giữa Production VPC và Management VPC"
+  value       = aws_vpc_peering_connection.prod_to_mgmt.id
+}
+
+output "vpc_peering_accept_status" {
+  description = "Trạng thái kết nối VPC Peering (active)"
+  value       = aws_vpc_peering_connection.prod_to_mgmt.accept_status
+}
+
+output "management_bastion_security_group_id" {
+  description = "Security Group ID của Bastion Host trong Management VPC"
+  value       = aws_security_group.management_bastion.id
+}
+
+

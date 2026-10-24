@@ -38,7 +38,7 @@
 
 ## 3. BẢNG TIẾN ĐỘ TỔNG QUAN (DASHBOARD)
 
-- [ ] **Thành viên 1 (Mạng & IaC)**: 3/7 hoàn thành (42.9%)
+- [ ] **Thành viên 1 (Mạng & IaC)**: 5/7 hoàn thành (71.4%)
 - [ ] **Thành viên 2 (Tính toán & Container)**: 0/7 hoàn thành (0.0%)
 - [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 2/7 hoàn thành (28.6%)
 - [ ] **Thành viên 4 (Bảo mật & DevSecOps)**: 0/7 hoàn thành (0.0%)
@@ -90,7 +90,7 @@
   - *Ghi chú*: Điểm nhấn thực chiến quan trọng của DevSecOps.
 
 ### Tuần 4: Bảo Mật Ứng Dụng & Giám Sát Tập Trung
-- [ ] **[Thành viên 1] Mạng & IaC**: Triển khai AWS WAF gắn trực tiếp vào ALB: Thiết lập bộ luật chặn SQL Injection, XSS và Rate Limiting (100 req/5 phút).
+- [x] **[Thành viên 1] Mạng & IaC**: Triển khai AWS WAF gắn trực tiếp vào ALB: Thiết lập bộ luật chặn SQL Injection, XSS và Rate Limiting (100 req/5 phút).
   - *Kết quả bàn giao (`Deliverable`)*: AWS WAF Web ACL gắn với ALB, trạng thái bảo vệ active.
   - *Ghi chú*: Vũ khí cốt lõi để chuẩn bị demo phòng thủ trước hội đồng.
 - [ ] **[Thành viên 2] Tính toán & Container**: Tích hợp ECS Fargate với ALB Target Group, thiết lập Health Check và hoàn thiện kết nối ứng dụng với Database.
@@ -104,7 +104,7 @@
   - *Ghi chú*: Tiêu chuẩn bắt buộc cho bảo mật cấp doanh nghiệp.
 
 ### Tuần 5: Kiến Trúc Mở Rộng & Dịch Vụ Nâng Cao
-- [ ] **[Thành viên 1] Mạng & IaC**: Khởi tạo VPC thứ 2 (Management/DevSecOps VPC) và thiết lập kết nối VPC Peering / Transit Gateway định tuyến an toàn.
+- [x] **[Thành viên 1] Mạng & IaC**: Khởi tạo VPC thứ 2 (Management/DevSecOps VPC) và thiết lập kết nối VPC Peering / Transit Gateway định tuyến an toàn.
   - *Kết quả bàn giao (`Deliverable`)*: Sơ đồ Multi-VPC, bảng Route Table định tuyến thông suốt giữa 2 VPC.
   - *Ghi chú*: Chứng minh năng lực kiến trúc mạng doanh nghiệp cao cấp.
 - [ ] **[Thành viên 2] Tính toán & Container**: Thiết lập AWS Lambda xử lý ảnh tải lên S3 và cấu hình Elastic Beanstalk / Lightsail chạy ứng dụng phụ demo.

@@ -117,3 +117,41 @@ variable "domain_name" {
   type        = string
   default     = ""
 }
+
+# ==========================================
+# ALB & AWS WAFv2 Variables (Tuần 4)
+# ==========================================
+variable "enable_alb_and_waf" {
+  description = "Bật/Tắt ALB và AWS WAFv2 (FinOps: false khi không test để tiết kiệm ~$0.0225/h và phí WAF từ $200 credit)"
+  type        = bool
+  default     = false
+}
+
+variable "enable_alb_deletion_protection" {
+  description = "Bật/Tắt bảo vệ xóa ALB (FinOps: Đặt false trong giai đoạn sinh viên để dễ destroy)"
+  type        = bool
+  default     = false
+}
+
+variable "waf_rate_limit" {
+  description = "Số lượng request tối đa từ một IP trong chu kỳ 5 phút trước khi bị WAF chặn (Đồ án yêu cầu: 100 req/5 phút)"
+  type        = number
+  default     = 100
+}
+
+# ==========================================
+# Multi-VPC & Peering Variables (Tuần 5)
+# ==========================================
+variable "management_vpc_cidr" {
+  description = "CIDR block cho Management / DevSecOps VPC thứ 2 (Không trùng với Production VPC 10.0.0.0/16)"
+  type        = string
+  default     = "10.1.0.0/16"
+}
+
+variable "management_subnet_cidrs" {
+  description = "CIDR blocks cho Management Subnets (Nơi đặt Bastion Host / CI-CD Runners)"
+  type        = list(string)
+  default     = ["10.1.1.0/24", "10.1.2.0/24"]
+}
+
+
