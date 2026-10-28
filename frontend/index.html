@@ -1,187 +1,1608 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Demo 3-Tier</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#eef2f6; --surface:#fff; --ink:#14213d; --muted:#5b6b86; --line:#d7deea;
-  --accent:#2a5bff; --accent-ink:#fff; --ok:#1e9e6a; --bad:#d64545; --panel:#14213d; --panel-ink:#f3f6fb;
-  --font:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-}
-*{box-sizing:border-box}
-html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--font);padding:clamp(16px,4vw,48px)}
-.wrap{max-width:1040px;margin:0 auto}
-h1{font-size:clamp(1.6rem,3.5vw,2.25rem);font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
-.sub{color:var(--muted);margin:0 0 28px;max-width:60ch}
-.grid{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
-@media (max-width:820px){.grid{grid-template-columns:1fr}}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enterprise Cloud DevSecOps Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-.server{background:var(--panel);color:var(--panel-ink);border-radius:20px;padding:24px;position:sticky;top:24px}
-@media (max-width:820px){.server{position:static}}
-.status{display:flex;align-items:center;gap:10px;font-weight:600}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--ok)}
-.dot[data-state=down]{background:var(--bad)}
-.label{color:#9fb0cf;font-size:.875rem;margin:22px 0 2px}
-.host{font-size:clamp(1.7rem,4vw,2.2rem);font-weight:800;letter-spacing:.02em;word-break:break-all;line-height:1.15}
-.server[data-state=down] .host{opacity:.4}
-.host.changed{animation:swap .9s ease-out}
-@keyframes swap{0%{color:#ffd166;transform:translateY(-4px)}100%{color:inherit;transform:none}}
-.note{min-height:1.5em;color:#ffd166;font-size:.9rem;margin:6px 0 0}
-.latency{color:#9fb0cf;font-size:.9rem;margin-top:2px}
-.seen{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-wrap:wrap;gap:8px}
-.seen li{background:rgba(255,255,255,.1);border-radius:999px;padding:4px 12px;font-size:.85rem}
-.seen b{font-weight:800;margin-left:6px}
+      /* Dark Theme (Default) */
+      --bg: #090d16;
+      --bg-pattern: radial-gradient(circle at 50% 0%, rgba(30, 58, 138, 0.18) 0%, transparent 60%);
+      --surface: #111827;
+      --surface-elevated: #1a2336;
+      --surface-hover: #222f46;
+      --border: #1f293d;
+      --border-subtle: #2d3b55;
+      
+      --text: #f3f4f6;
+      --text-muted: #94a3b8;
+      --text-faint: #64748b;
 
-.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px}
-h2{font-size:1.1rem;margin:0 0 14px}
-.row{display:flex;gap:10px;margin-bottom:12px}
-@media (max-width:480px){.row{flex-direction:column}}
-label{display:block;font-size:.875rem;font-weight:600;margin-bottom:4px}
-input{flex:1;min-width:0;font:inherit;color:inherit;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-button{font:inherit;font-weight:600;background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:10px 18px;cursor:pointer}
-button:hover{filter:brightness(1.1)}
-:focus-visible{outline:3px solid #8fa8ff;outline-offset:2px}
-.field{flex:1}
-.divider{border:0;border-top:1px solid var(--line);margin:20px 0}
-#list{list-style:none;margin:0;padding:0}
-#list li{padding:12px 4px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}
-#list li:last-child{border-bottom:0}
-#list .id{color:var(--muted);font-size:.875rem}
-.empty,.error{padding:16px 4px;color:var(--muted)}
-.error{color:var(--bad)}
-@media (prefers-reduced-motion:reduce){.host.changed{animation:none}}
-</style>
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-subtle: rgba(59, 130, 246, 0.15);
+      
+      --success: #10b981;
+      --success-subtle: rgba(16, 185, 129, 0.15);
+      --warning: #f59e0b;
+      --warning-subtle: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-subtle: rgba(239, 68, 68, 0.15);
+      --cyan: #06b6d4;
+      --purple: #8b5cf6;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-pattern: radial-gradient(circle at 50% 0%, rgba(219, 234, 254, 0.5) 0%, transparent 60%);
+      --surface: #ffffff;
+      --surface-elevated: #f1f5f9;
+      --surface-hover: #e2e8f0;
+      --border: #e2e8f0;
+      --border-subtle: #cbd5e1;
+
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-faint: #94a3b8;
+
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-subtle: rgba(37, 99, 235, 0.08);
+
+      --success: #059669;
+      --success-subtle: rgba(5, 150, 105, 0.1);
+      --warning: #d97706;
+      --warning-subtle: rgba(217, 119, 6, 0.1);
+      --danger: #dc2626;
+      --danger-subtle: rgba(220, 38, 38, 0.1);
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      background-image: var(--bg-pattern);
+      background-attachment: fixed;
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+      width: 100%;
+    }
+
+    /* Header Bar */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .brand-tag {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background: var(--primary-subtle);
+      color: var(--primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Buttons & Controls */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.35);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.45);
+    }
+
+    .btn-secondary {
+      background: var(--surface-elevated);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-subtle);
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: var(--radius-md);
+    }
+
+    .select-sm {
+      background: var(--surface-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 7px 10px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Status Pills */
+    .pulse-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+    }
+
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--success);
+      position: relative;
+    }
+
+    .pulse-dot.pulse::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: var(--success);
+      opacity: 0.6;
+      animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .pulse-badge[data-state="down"] .pulse-dot {
+      background: var(--danger);
+    }
+    .pulse-badge[data-state="down"] .pulse-dot.pulse::after {
+      background: var(--danger);
+    }
+
+    @keyframes ping {
+      0% { transform: scale(1); opacity: 0.7; }
+      75%, 100% { transform: scale(2.4); opacity: 0; }
+    }
+
+    /* KPI / Metric Grid */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .metric-grid { grid-template-columns: 1fr; }
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .metric-card:hover {
+      border-color: var(--border-subtle);
+      transform: translateY(-2px);
+    }
+
+    .metric-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .metric-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-icon-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .metric-value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      word-break: break-all;
+    }
+
+    .metric-sub {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Sparkline graph in metric card */
+    .sparkline-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 24px;
+      margin-top: 10px;
+      padding-top: 4px;
+    }
+
+    .sparkline-bar {
+      flex: 1;
+      background: var(--primary-subtle);
+      border-radius: 2px;
+      min-height: 3px;
+      transition: height 0.3s ease, background-color 0.3s ease;
+    }
+    .sparkline-bar.active {
+      background: var(--primary);
+    }
+
+    /* Main Dashboard Grid */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .dashboard-layout { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* 3-Tier Architecture Diagram Card */
+    .arch-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    .arch-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .arch-step:hover {
+      border-color: var(--primary);
+      background: var(--surface-hover);
+    }
+
+    .arch-step-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-subtle);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .arch-step-info { flex: 1; min-width: 0; }
+    .arch-step-tier {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-faint);
+      letter-spacing: 0.05em;
+    }
+    .arch-step-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .arch-step-meta {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .arch-connector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 16px;
+      color: var(--text-faint);
+    }
+
+    /* Replica Table / Seen Nodes */
+    .replica-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .replica-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.84rem;
+      transition: all 0.2s ease;
+    }
+
+    .replica-item.is-current {
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+    }
+
+    .replica-host {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .replica-stats {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .count-badge {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Self-Healing Event Log */
+    .event-log {
+      max-height: 160px;
+      overflow-y: auto;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .event-log::-webkit-scrollbar { width: 6px; }
+    .event-log::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
+
+    .event-line {
+      display: flex;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .event-time { color: var(--text-faint); flex-shrink: 0; }
+    .event-msg { color: var(--text-muted); word-break: break-all; }
+    .event-msg.warn { color: var(--warning); font-weight: 600; }
+    .event-msg.error { color: var(--danger); font-weight: 600; }
+    .event-msg.success { color: var(--success); }
+
+    /* Form & Input controls */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .input-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-field {
+      flex: 1;
+      min-width: 0;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-subtle);
+    }
+
+    .quick-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      font-size: 0.74rem;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chip:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Item List & Search */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 9px 12px 9px 36px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      color: var(--text);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-subtle);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-faint);
+      pointer-events: none;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-faint);
+      cursor: pointer;
+      padding: 2px;
+      display: none;
+    }
+
+    .item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.15s ease;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .item-card:hover {
+      border-color: var(--border-subtle);
+      background: var(--surface-hover);
+    }
+
+    .item-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .item-id {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-subtle);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+
+    .item-name {
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .item-badge {
+      font-size: 0.72rem;
+      color: var(--text-faint);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+
+    /* Empty and Loading States */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    .empty-icon {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      opacity: 0.7;
+    }
+    .empty-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .empty-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.86rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      max-width: 380px;
+      animation: slideIn 0.25s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(30px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.error { border-left: 4px solid var(--danger); }
+    .toast.info { border-left: 4px solid var(--primary); }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px 20px;
+      font-size: 0.78rem;
+      color: var(--text-faint);
+    }
+
+    .footer-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Host changing visual pulse */
+    .host-pulse {
+      animation: highlightHost 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes highlightHost {
+      0% { color: var(--warning); transform: scale(1.04); }
+      100% { color: inherit; transform: scale(1); }
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      color: var(--text-faint);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      padding: 3px;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+    .copy-btn:hover { color: var(--primary); }
+
+    /* Collapsible accordion */
+    details {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 0.82rem;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-muted);
+      user-select: none;
+    }
+    details[open] summary { margin-bottom: 8px; color: var(--text); }
+    details code {
+      background: var(--surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--cyan);
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>ENTERPRISE CLOUD DEVSECOPS PLATFORM</h1>
 
-  <div class="grid">
-    <aside class="server" id="server" data-state="up" aria-live="polite">
-      <div class="status"><span class="dot" id="dot" data-state="up"></span><span id="state">Đang kết nối…</span></div>
-      <p class="label">Máy chủ đang phục vụ</p>
-      <div class="host" id="host">…</div>
-      <p class="note" id="note"></p>
-      <p class="latency" id="ms"></p>
-      <p class="label">Các máy chủ đã trả lời trong phiên này</p>
-      <ul class="seen" id="seen"></ul>
-    </aside>
-
-    <main class="card">
-      <h2>Thêm item mới</h2>
-      <form class="row" id="add-form">
-        <div class="field">
-          <label for="name">Tên item</label>
-          <input id="name" required maxlength="255" autocomplete="off" placeholder="Ví dụ: Máy chủ web 01">
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">
+          <!-- Cloud Hexagon Icon -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
         </div>
-        <button type="submit" style="align-self:flex-end">Thêm item</button>
-      </form>
+        <div>
+          <div class="brand-title">
+            ENTERPRISE CLOUD DEVSECOPS
+            <span class="brand-tag">3-Tier Platform</span>
+          </div>
+          <div class="brand-desc">Containerized Observability • Self-Healing • Microservices Engine</div>
+        </div>
+      </div>
 
-      <hr class="divider">
+      <div class="header-actions">
+        <!-- Live Status Pill -->
+        <div class="pulse-badge" id="system-status-badge" data-state="up">
+          <span class="pulse-dot pulse" id="pulse-dot"></span>
+          <span id="system-status-text">Đang kết nối API…</span>
+        </div>
 
-      <h2>Danh sách item</h2>
-      <label for="search">Tìm theo tên</label>
-      <input id="search" type="search" autocomplete="off" placeholder="Nhập để tìm…" style="width:100%;margin-bottom:8px">
-      <ul id="list"></ul>
-    </main>
+        <!-- Polling speed selector -->
+        <select class="select-sm" id="poll-interval-select" title="Tần suất làm mới dữ liệu">
+          <option value="1000">Làm mới: 1s (Live)</option>
+          <option value="2000" selected>Làm mới: 2s (Chuẩn)</option>
+          <option value="5000">Làm mới: 5s</option>
+          <option value="0">Tắt tự động poll</option>
+        </select>
+
+        <!-- Manual refresh button -->
+        <button class="btn btn-secondary btn-icon" id="btn-manual-refresh" title="Làm mới ngay lập tức">
+          <svg id="refresh-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button class="btn btn-secondary btn-icon" id="btn-theme-toggle" title="Chuyển chế độ Sáng / Tối">
+          <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+
+    <!-- KPI Metric Cards Row -->
+    <section class="metric-grid">
+      <!-- Card 1: Active Serving Host -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Backend Pod / Host</span>
+          <div class="metric-icon-wrap" style="background:var(--primary-subtle);color:var(--primary)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          </div>
+        </div>
+        <div class="metric-value">
+          <span id="active-host" title="Container ID của backend đang phục vụ">--</span>
+          <button class="copy-btn" id="copy-host-btn" title="Sao chép Host ID">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <div class="metric-sub" id="host-switch-note">
+          <span>● Đang sẵn sàng nhận request</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Latency & Sparkline -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">API Latency</span>
+          <div class="metric-icon-wrap" style="background:var(--success-subtle);color:var(--success)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+        </div>
+        <div class="metric-value">
+          <span id="latency-val">--</span>
+          <span style="font-size:0.9rem;font-weight:600;color:var(--text-muted)">ms</span>
+        </div>
+        <div class="sparkline-container" id="sparkline-bars" title="Lịch sử độ trễ 12 lần đo gần nhất">
+          <!-- Bars generated via JS -->
+        </div>
+      </div>
+
+      <!-- Card 3: Database Workloads -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Tổng Workload Items</span>
+          <div class="metric-icon-wrap" style="background:var(--purple);color:#fff;background:rgba(139,92,246,0.15);color:#8b5cf6">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          </div>
+        </div>
+        <div class="metric-value" id="total-items-val">--</div>
+        <div class="metric-sub">
+          <span style="color:var(--success)">✓ Đã đồng bộ với MySQL 8.4</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Load Balancer & Replicas Count -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Số Replica ghi nhận</span>
+          <div class="metric-icon-wrap" style="background:var(--cyan);color:#fff;background:rgba(6,182,212,0.15);color:#06b6d4">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+        </div>
+        <div class="metric-value" id="replica-count-val">0</div>
+        <div class="metric-sub" id="replica-subtext">Hỗ trợ Zero-Downtime & Auto-scale</div>
+      </div>
+    </section>
+
+    <!-- Main Two-Column Layout -->
+    <div class="dashboard-layout">
+
+      <!-- LEFT COLUMN: Infrastructure, Self-Healing & Architecture -->
+      <div class="dashboard-sidebar">
+
+        <!-- 3-Tier Architecture Card -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              Kiến trúc 3 Tầng (3-Tier)
+            </div>
+            <span class="brand-tag">Docker Compose</span>
+          </div>
+
+          <div class="arch-flow">
+            <!-- Tier 1 -->
+            <div class="arch-step">
+              <div class="arch-step-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </div>
+              <div class="arch-step-info">
+                <div class="arch-step-tier">Tier 1 • Presentation</div>
+                <div class="arch-step-name">Web Frontend (Nginx Alpine)</div>
+                <div class="arch-step-meta">Port :8080 ➔ :80 / Reverse Proxy</div>
+              </div>
+              <span class="count-badge" style="color:var(--success)">Online</span>
+            </div>
+
+            <div class="arch-connector">↓</div>
+
+            <!-- Tier 2 -->
+            <div class="arch-step">
+              <div class="arch-step-badge" style="background:var(--primary-subtle);color:var(--primary)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+              </div>
+              <div class="arch-step-info">
+                <div class="arch-step-tier">Tier 2 • Application Logic</div>
+                <div class="arch-step-name">Node.js Express API</div>
+                <div class="arch-step-meta">Internal Port :3000 / Restful API</div>
+              </div>
+              <span class="count-badge" id="tier2-badge" style="color:var(--success)">Up</span>
+            </div>
+
+            <div class="arch-connector">↓</div>
+
+            <!-- Tier 3 -->
+            <div class="arch-step">
+              <div class="arch-step-badge" style="background:rgba(139,92,246,0.15);color:#8b5cf6">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              </div>
+              <div class="arch-step-info">
+                <div class="arch-step-tier">Tier 3 • Data Persistence</div>
+                <div class="arch-step-name">MySQL Database 8.4</div>
+                <div class="arch-step-meta">DB: appdb | Pool Limit: 5</div>
+              </div>
+              <span class="count-badge" id="tier3-badge" style="color:var(--success)">Healthy</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Replicas & Load Balancing Session Tracker -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Phân phối Tải Backend
+            </div>
+            <span class="count-badge" id="total-requests-badge">0 reqs</span>
+          </div>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:12px">
+            Danh sách container ID đã phản hồi các truy vấn trong phiên làm việc hiện tại:
+          </p>
+          <ul class="replica-list" id="seen-nodes-list">
+            <li class="replica-item" style="color:var(--text-muted);font-size:0.8rem">
+              Chưa ghi nhận replica nào...
+            </li>
+          </ul>
+        </div>
+
+        <!-- Self-Healing & Event Log -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              Nhật ký Sự kiện (Event Log)
+            </div>
+            <button class="btn btn-secondary" id="btn-clear-logs" style="padding:4px 8px;font-size:0.72rem">Xóa log</button>
+          </div>
+          <div class="event-log" id="system-event-log">
+            <div class="event-line">
+              <span class="event-time">--:--:--</span>
+              <span class="event-msg">Khởi tạo giao diện DevSecOps Cloud Dashboard...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demo / Grading Helper Accordion -->
+        <details>
+          <summary>💡 Lệnh Test Self-Healing & Scaling cho Giảng viên / Đánh giá</summary>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+            <div>• <b>Scale thêm backend:</b> <code>docker compose up -d --scale backend=3</code></div>
+            <div>• <b>Test Self-healing (Kill container):</b> <code>docker stop &lt;active-host&gt;</code></div>
+            <div>• <b>Xem logs backend:</b> <code>docker compose logs -f backend</code></div>
+          </div>
+        </details>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Item Workload Management -->
+      <div class="dashboard-main">
+
+        <!-- Form Add Item -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Thêm Workload / Item Mới
+            </div>
+            <span style="font-size:0.76rem;color:var(--text-faint)">POST /api/items</span>
+          </div>
+
+          <form id="add-item-form">
+            <div class="form-group">
+              <label class="input-label" for="item-name-input">Tên Resource / Workload Item</label>
+              <div class="input-row">
+                <input 
+                  type="text" 
+                  id="item-name-input" 
+                  class="input-field" 
+                  placeholder="Nhập tên dịch vụ (ví dụ: k8s-ingress-controller, redis-cache)..." 
+                  maxlength="255" 
+                  required 
+                  autocomplete="off"
+                >
+                <button type="submit" class="btn btn-primary" id="btn-submit-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span id="btn-submit-text">Thêm Item</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Template Chips -->
+            <div>
+              <span style="font-size:0.74rem;color:var(--text-faint)">Thêm nhanh mẫu DevSecOps:</span>
+              <div class="quick-chips">
+                <span class="chip" data-sample="k8s-ingress-gateway">+ Ingress Gateway</span>
+                <span class="chip" data-sample="trivy-cve-scanner">+ Trivy Scanner</span>
+                <span class="chip" data-sample="sonarqube-sast-pipeline">+ SonarQube Gate</span>
+                <span class="chip" data-sample="vault-secret-engine">+ HashiCorp Vault</span>
+                <span class="chip" data-sample="prometheus-grafana-stack">+ Prometheus Agent</span>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Items List & Live Search -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              Danh Sách Workload Items
+            </div>
+            <span class="count-badge" id="filtered-items-count">0 items</span>
+          </div>
+
+          <!-- Search & Filter Bar -->
+          <div class="filter-bar">
+            <div class="search-box">
+              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input 
+                type="search" 
+                id="search-input" 
+                class="search-input" 
+                placeholder="Tìm kiếm nhanh theo tên item..." 
+                autocomplete="off"
+              >
+              <button type="button" class="search-clear" id="btn-clear-search" title="Xóa tìm kiếm">✕</button>
+            </div>
+          </div>
+
+          <!-- Items Dynamic List -->
+          <ul class="item-list" id="items-list-container">
+            <!-- Items rendered via JavaScript -->
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
-</div>
 
-<script>
-const $ = id => document.getElementById(id);
-async function api(url, opts) {
-  const r = await fetch(url, opts);
-  if (!r.ok) throw new Error(r.status);
-  return r.json();
-}
+  <!-- Toast Notification Hub -->
+  <div class="toast-container" id="toast-hub"></div>
 
-const seen = new Map();
-let current = null;
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>Enterprise Cloud DevSecOps Platform • 3-Tier Production Architecture</div>
+      <div style="font-family:var(--font-mono)">Frontend: Nginx | Backend: Express | DB: MySQL 8.4</div>
+    </div>
+  </footer>
 
-function renderSeen() {
-  $('seen').replaceChildren(...[...seen].map(([h, n]) => {
-    const li = document.createElement('li');
-    li.textContent = h;
-    const b = document.createElement('b');
-    b.textContent = n;
-    li.append(b);
-    return li;
-  }));
-}
+  <!-- Main JavaScript App Logic -->
+  <script>
+    (function() {
+      // Elements
+      const $ = id => document.getElementById(id);
+      const activeHostEl = $('active-host');
+      const latencyValEl = $('latency-val');
+      const totalItemsValEl = $('total-items-val');
+      const replicaCountValEl = $('replica-count-val');
+      const systemStatusBadge = $('system-status-badge');
+      const systemStatusText = $('system-status-text');
+      const pulseDot = $('pulse-dot');
+      const hostSwitchNote = $('host-switch-note');
+      const seenNodesList = $('seen-nodes-list');
+      const totalRequestsBadge = $('total-requests-badge');
+      const sparklineBarsEl = $('sparkline-bars');
+      const systemEventLog = $('system-event-log');
+      const itemsListContainer = $('items-list-container');
+      const filteredItemsCount = $('filtered-items-count');
+      const searchInput = $('search-input');
+      const btnClearSearch = $('btn-clear-search');
+      const addItemForm = $('add-item-form');
+      const itemNameInput = $('item-name-input');
+      const btnSubmitItem = $('btn-submit-item');
+      const btnSubmitText = $('btn-submit-text');
+      const btnManualRefresh = $('btn-manual-refresh');
+      const refreshIcon = $('refresh-icon');
+      const pollIntervalSelect = $('poll-interval-select');
+      const btnThemeToggle = $('btn-theme-toggle');
+      const themeIconSun = $('theme-icon-sun');
+      const themeIconMoon = $('theme-icon-moon');
+      const copyHostBtn = $('copy-host-btn');
+      const btnClearLogs = $('btn-clear-logs');
+      const toastHub = $('toast-hub');
 
-async function poll() {
-  const t0 = performance.now();
-  try {
-    const { hostname } = await api('/api/info');
-    $('server').dataset.state = $('dot').dataset.state = 'up';
-    $('state').textContent = 'Đang hoạt động';
-    $('host').textContent = hostname;
-    $('ms').textContent = 'Phản hồi trong ' + Math.round(performance.now() - t0) + ' ms';
-    if (current && current !== hostname) {
-      $('note').textContent = 'Đã chuyển sang máy chủ khác.';
-      const h = $('host'); h.classList.remove('changed'); void h.offsetWidth; h.classList.add('changed');
-    }
-    current = hostname;
-    seen.set(hostname, (seen.get(hostname) || 0) + 1);
-    renderSeen();
-  } catch {
-    $('server').dataset.state = $('dot').dataset.state = 'down';
-    $('state').textContent = 'Mất kết nối, đang thử lại…';
-    $('ms').textContent = '';
-  }
-}
+      // State
+      let currentHost = null;
+      let totalRequests = 0;
+      const seenHosts = new Map(); // host -> count
+      const latencyHistory = [];
+      const MAX_LATENCY_POINTS = 14;
+      let pollTimerId = null;
+      let isBackendAlive = false;
 
-function message(cls, text) {
-  const li = document.createElement('li');
-  li.className = cls; li.textContent = text;
-  return li;
-}
+      // Theme toggle initialization
+      const savedTheme = localStorage.getItem('devsecops_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcons(savedTheme);
 
-async function loadItems() {
-  const q = $('search').value.trim();
-  try {
-    const rows = await api(q ? '/api/search?q=' + encodeURIComponent(q) : '/api/items');
-    if (!rows.length) {
-      $('list').replaceChildren(message('empty', q ? 'Không có item nào khớp với "' + q + '".' : 'Chưa có item nào. Thêm item đầu tiên ở phía trên.'));
-      return;
-    }
-    $('list').replaceChildren(...rows.map(r => {
-      const li = document.createElement('li');
-      const name = document.createElement('span'); name.textContent = r.name;
-      const id = document.createElement('span'); id.className = 'id'; id.textContent = '#' + r.id;
-      li.append(name, id);
-      return li;
-    }));
-  } catch {
-    $('list').replaceChildren(message('error', 'Không tải được danh sách. Kiểm tra container backend rồi thử lại.'));
-  }
-}
+      btnThemeToggle.addEventListener('click', () => {
+        const activeTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', activeTheme);
+        localStorage.setItem('devsecops_theme', activeTheme);
+        updateThemeIcons(activeTheme);
+        showToast('Đã đổi giao diện sang chế độ ' + (activeTheme === 'dark' ? 'Tối (Dark)' : 'Sáng (Light)'), 'info');
+      });
 
-$('add-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const name = $('name').value.trim();
-  if (!name) return;
-  try {
-    await api('/api/items', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) });
-    $('name').value = '';
-    $('search').value = '';
-    loadItems();
-  } catch {
-    $('list').replaceChildren(message('error', 'Không thêm được item. Kiểm tra container backend rồi thử lại.'));
-  }
-});
+      function updateThemeIcons(theme) {
+        if (theme === 'dark') {
+          themeIconSun.style.display = 'none';
+          themeIconMoon.style.display = 'block';
+        } else {
+          themeIconSun.style.display = 'block';
+          themeIconMoon.style.display = 'none';
+        }
+      }
 
-let timer;
-$('search').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(loadItems, 250); });
+      // Toast Notification System
+      function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        
+        let iconSvg = '';
+        if (type === 'success') {
+          iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+        } else if (type === 'error') {
+          iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+        } else {
+          iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+        }
 
-poll(); setInterval(poll, 2000);
-loadItems();
-</script>
+        toast.innerHTML = iconSvg + '<span>' + escapeHtml(message) + '</span>';
+        toastHub.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+          toast.style.transition = 'all 0.25s ease';
+          setTimeout(() => toast.remove(), 260);
+        }, 3200);
+      }
+
+      function addLog(message, level = 'info') {
+        const now = new Date();
+        const timeStr = [
+          String(now.getHours()).padStart(2, '0'),
+          String(now.getMinutes()).padStart(2, '0'),
+          String(now.getSeconds()).padStart(2, '0')
+        ].join(':');
+
+        const line = document.createElement('div');
+        line.className = 'event-line';
+        line.innerHTML = `<span class="event-time">[${timeStr}]</span><span class="event-msg ${level}">${escapeHtml(message)}</span>`;
+        systemEventLog.appendChild(line);
+        systemEventLog.scrollTop = systemEventLog.scrollHeight;
+      }
+
+      btnClearLogs.addEventListener('click', () => {
+        systemEventLog.innerHTML = '';
+        addLog('Đã dọn sạch nhật ký sự kiện.', 'info');
+      });
+
+      // Escape HTML helper
+      function escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      // Safe API wrapper
+      async function fetchApi(url, options = {}) {
+        const res = await fetch(url, options);
+        if (!res.ok) {
+          throw new Error('HTTP Status ' + res.status);
+        }
+        return res.json();
+      }
+
+      // Sparkline renderer
+      function updateSparkline(newMs) {
+        latencyHistory.push(newMs);
+        if (latencyHistory.length > MAX_LATENCY_POINTS) {
+          latencyHistory.shift();
+        }
+        const maxVal = Math.max(80, ...latencyHistory);
+        sparklineBarsEl.innerHTML = latencyHistory.map((val, idx) => {
+          const heightPct = Math.max(15, Math.min(100, Math.round((val / maxVal) * 100)));
+          const isLatest = idx === latencyHistory.length - 1;
+          const barColor = val > 150 ? 'var(--danger)' : val > 60 ? 'var(--warning)' : isLatest ? 'var(--success)' : 'var(--primary-subtle)';
+          return `<div class="sparkline-bar ${isLatest ? 'active' : ''}" style="height:${heightPct}%;background:${barColor}" title="${val} ms"></div>`;
+        }).join('');
+      }
+
+      // Render seen replicas
+      function renderSeenReplicas() {
+        if (seenHosts.size === 0) {
+          seenNodesList.innerHTML = `<li class="replica-item" style="color:var(--text-muted);font-size:0.8rem">Chưa ghi nhận replica nào...</li>`;
+          return;
+        }
+
+        const entries = Array.from(seenHosts.entries()).sort((a, b) => b[1] - a[1]);
+        seenNodesList.innerHTML = entries.map(([host, count]) => {
+          const isCur = host === currentHost;
+          const percentage = totalRequests > 0 ? Math.round((count / totalRequests) * 100) : 0;
+          return `
+            <li class="replica-item ${isCur ? 'is-current' : ''}">
+              <div class="replica-host">
+                <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${isCur ? 'var(--success)' : 'var(--text-faint)'}"></span>
+                <span>${escapeHtml(host)}</span>
+                ${isCur ? '<span class="count-badge" style="background:var(--success);color:#fff">ACTIVE</span>' : ''}
+              </div>
+              <div class="replica-stats">
+                <span class="count-badge">${count} reqs (${percentage}%)</span>
+              </div>
+            </li>
+          `;
+        }).join('');
+
+        replicaCountValEl.textContent = seenHosts.size;
+        totalRequestsBadge.textContent = totalRequests + ' reqs';
+      }
+
+      // Copy Host ID button
+      copyHostBtn.addEventListener('click', () => {
+        if (!currentHost || currentHost === '--') return;
+        navigator.clipboard.writeText(currentHost).then(() => {
+          showToast('Đã sao chép Hostname: ' + currentHost, 'success');
+        }).catch(() => {
+          showToast('Không thể sao chép!', 'error');
+        });
+      });
+
+      // Quick Chips handler
+      document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          itemNameInput.value = chip.dataset.sample;
+          itemNameInput.focus();
+        });
+      });
+
+      // Poll Info
+      async function pollInfo() {
+        const start = performance.now();
+        try {
+          const data = await fetchApi('/api/info');
+          const elapsed = Math.round(performance.now() - start);
+
+          totalRequests++;
+          isBackendAlive = true;
+          systemStatusBadge.dataset.state = 'up';
+          pulseDot.className = 'pulse-dot pulse';
+          systemStatusText.textContent = 'Hệ thống Trực tuyến (Online)';
+
+          const host = data.hostname || 'unknown';
+          activeHostEl.textContent = host;
+          latencyValEl.textContent = elapsed;
+          updateSparkline(elapsed);
+
+          // Handle Replica Switch (Self-Healing / Load Balancing)
+          if (currentHost && currentHost !== host) {
+            addLog(`⚡ Phát hiện chuyển đổi Replica: ${currentHost} ➔ ${host} (Self-Healing / LB active)`, 'warn');
+            hostSwitchNote.innerHTML = `<span style="color:var(--warning)">⚡ Vừa chuyển từ: ${escapeHtml(currentHost)}</span>`;
+            activeHostEl.classList.remove('host-pulse');
+            void activeHostEl.offsetWidth; // trigger reflow
+            activeHostEl.classList.add('host-pulse');
+            showToast('Chuyển đổi sang máy chủ: ' + host, 'info');
+          } else if (!currentHost) {
+            addLog(`✓ Đã kết nối với Backend Host: ${host}`, 'success');
+            hostSwitchNote.innerHTML = `<span>● Đang phục vụ ổn định</span>`;
+          }
+
+          currentHost = host;
+          seenHosts.set(host, (seenHosts.get(host) || 0) + 1);
+          renderSeenReplicas();
+
+          $('tier2-badge').textContent = 'Online';
+          $('tier2-badge').style.color = 'var(--success)';
+        } catch (err) {
+          isBackendAlive = false;
+          systemStatusBadge.dataset.state = 'down';
+          pulseDot.className = 'pulse-dot';
+          systemStatusText.textContent = 'Mất kết nối Backend!';
+          latencyValEl.textContent = '--';
+          hostSwitchNote.innerHTML = `<span style="color:var(--danger)">✕ Đang thử kết nối lại...</span>`;
+          $('tier2-badge').textContent = 'Down';
+          $('tier2-badge').style.color = 'var(--danger)';
+          addLog(`✕ Lỗi kết nối tới /api/info (${err.message})`, 'error');
+        }
+      }
+
+      // Load Items List
+      async function loadItems() {
+        const query = searchInput.value.trim();
+        const url = query ? `/api/search?q=${encodeURIComponent(query)}` : '/api/items';
+
+        try {
+          const items = await fetchApi(url);
+          filteredItemsCount.textContent = `${items.length} items`;
+          
+          if (!query) {
+            totalItemsValEl.textContent = items.length;
+          }
+
+          if (!items || items.length === 0) {
+            if (query) {
+              itemsListContainer.innerHTML = `
+                <div class="empty-state">
+                  <div class="empty-icon">🔍</div>
+                  <div class="empty-title">Không tìm thấy kết quả nào</div>
+                  <div class="empty-desc">Không có workload nào khớp với từ khóa "<b>${escapeHtml(query)}</b>"</div>
+                </div>
+              `;
+            } else {
+              itemsListContainer.innerHTML = `
+                <div class="empty-state">
+                  <div class="empty-icon">📦</div>
+                  <div class="empty-title">Chưa có Workload Item nào</div>
+                  <div class="empty-desc">Thêm item đầu tiên bằng form phía trên để bắt đầu!</div>
+                </div>
+              `;
+            }
+            return;
+          }
+
+          itemsListContainer.innerHTML = items.map(item => `
+            <li class="item-card">
+              <div class="item-content">
+                <span class="item-id">#${item.id}</span>
+                <span class="item-name">${escapeHtml(item.name)}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="item-badge">Workload</span>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('${escapeHtml(item.name)}');" title="Sao chép tên">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+            </li>
+          `).join('');
+
+          $('tier3-badge').textContent = 'Connected';
+          $('tier3-badge').style.color = 'var(--success)';
+        } catch (err) {
+          itemsListContainer.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon" style="color:var(--danger)">⚠️</div>
+              <div class="empty-title" style="color:var(--danger)">Không thể tải danh sách items</div>
+              <div class="empty-desc">Kiểm tra kết nối tới container Backend hoặc Database (${escapeHtml(err.message)})</div>
+            </div>
+          `;
+          $('tier3-badge').textContent = 'Error';
+          $('tier3-badge').style.color = 'var(--danger)';
+        }
+      }
+
+      // Add Item Submission
+      addItemForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = itemNameInput.value.trim();
+        if (!name) return;
+
+        btnSubmitItem.disabled = true;
+        btnSubmitText.textContent = 'Đang lưu...';
+
+        try {
+          await fetchApi('/api/items', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+          });
+
+          itemNameInput.value = '';
+          showToast(`Đã thêm thành công: "${name}"`, 'success');
+          addLog(`+ Đã thêm workload mới: "${name}"`, 'success');
+          await loadItems();
+        } catch (err) {
+          showToast('Lỗi khi thêm item: ' + err.message, 'error');
+          addLog(`✕ Lỗi khi thêm item: ${err.message}`, 'error');
+        } finally {
+          btnSubmitItem.disabled = false;
+          btnSubmitText.textContent = 'Thêm Item';
+        }
+      });
+
+      // Search debounce
+      let searchTimeout = null;
+      searchInput.addEventListener('input', () => {
+        const val = searchInput.value.trim();
+        btnClearSearch.style.display = val ? 'block' : 'none';
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(loadItems, 220);
+      });
+
+      btnClearSearch.addEventListener('click', () => {
+        searchInput.value = '';
+        btnClearSearch.style.display = 'none';
+        loadItems();
+      });
+
+      // Manual Refresh button
+      btnManualRefresh.addEventListener('click', async () => {
+        refreshIcon.style.animation = 'spin 0.6s linear';
+        setTimeout(() => refreshIcon.style.animation = '', 600);
+        await Promise.all([pollInfo(), loadItems()]);
+        showToast('Đã làm mới dữ liệu!', 'info');
+      });
+
+      // Polling timer setup
+      function setupPolling(intervalMs) {
+        if (pollTimerId) {
+          clearInterval(pollTimerId);
+          pollTimerId = null;
+        }
+        if (intervalMs > 0) {
+          pollTimerId = setInterval(pollInfo, intervalMs);
+        }
+      }
+
+      pollIntervalSelect.addEventListener('change', () => {
+        const interval = parseInt(pollIntervalSelect.value, 10);
+        setupPolling(interval);
+        if (interval > 0) {
+          showToast(`Đã đổi tần suất làm mới sang: ${interval / 1000}s`, 'info');
+        } else {
+          showToast('Đã tắt tự động làm mới', 'info');
+        }
+      });
+
+      // Spin animation for refresh icon
+      const styleTag = document.createElement('style');
+      styleTag.textContent = '@keyframes spin { 100% { transform: rotate(360deg); } }';
+      document.head.appendChild(styleTag);
+
+      // Initialize
+      pollInfo();
+      loadItems();
+      setupPolling(2000);
+    })();
+  </script>
 </body>
 </html>

@@ -19,4 +19,6 @@ services:
   frontend:
     build: ./frontend
     ports: ["8080:80"]
+    volumes:
+      - ./frontend/index.html:/usr/share/nginx/html/index.html:ro
     depends_on: [backend]
