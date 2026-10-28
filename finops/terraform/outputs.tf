@@ -152,3 +152,62 @@ output "s3_lifecycle_status" {
   value       = "S3 Lifecycle Configuration ACTIVE: Transitions uploads/* and documents/* to S3 GLACIER after ${var.s3_glacier_transition_days} days | Noncurrent versions to GLACIER after ${var.s3_glacier_transition_days} days and expire after ${var.s3_noncurrent_version_expiration_days} days"
 }
 
+# ==============================================================================
+# TUẦN 4: THÔNG SỐ BÀN GIAO CLOUDWATCH & CLOUDTRAIL (MEMBER 3)
+# ==============================================================================
+
+output "cloudwatch_dashboard_name" {
+  description = "Tên CloudWatch Observability Dashboard tập trung"
+  value       = aws_cloudwatch_dashboard.observability.dashboard_name
+}
+
+output "cloudwatch_dashboard_url" {
+  description = "Đường dẫn trực tiếp truy cập CloudWatch Dashboard trên AWS Console"
+  value       = "https://${var.aws_region}.console.aws.amazon.com/cloudwatch/home?region=${var.aws_region}#dashboards:name=${aws_cloudwatch_dashboard.observability.dashboard_name}"
+}
+
+output "sns_alerts_topic_arn" {
+  description = "SNS Topic ARN phát cảnh báo hệ thống và quá tải CPU"
+  value       = aws_sns_topic.alerts.arn
+}
+
+output "cloudwatch_rds_cpu_alarm_name" {
+  description = "Tên CloudWatch Alarm giám sát quá tải RDS MySQL CPU >= 70%"
+  value       = aws_cloudwatch_metric_alarm.rds_cpu_high.alarm_name
+}
+
+output "cloudwatch_rds_cpu_alarm_arn" {
+  description = "ARN của CloudWatch Alarm giám sát RDS CPU"
+  value       = aws_cloudwatch_metric_alarm.rds_cpu_high.arn
+}
+
+output "cloudwatch_compute_cpu_alarm_name" {
+  description = "Tên CloudWatch Alarm giám sát quá tải Compute / Container CPU >= 70%"
+  value       = aws_cloudwatch_metric_alarm.compute_cpu_high.alarm_name
+}
+
+output "cloudwatch_log_group_backend" {
+  description = "CloudWatch Log Group cho Container Backend bàn giao cho Member 2"
+  value       = aws_cloudwatch_log_group.app_backend.name
+}
+
+output "cloudtrail_trail_name" {
+  description = "Tên AWS CloudTrail Trail ghi vết kiểm toán"
+  value       = aws_cloudtrail.main.name
+}
+
+output "cloudtrail_trail_arn" {
+  description = "ARN của AWS CloudTrail Trail"
+  value       = aws_cloudtrail.main.arn
+}
+
+output "cloudtrail_s3_bucket_name" {
+  description = "Tên S3 Bucket lưu trữ vết kiểm toán CloudTrail Audit Logs"
+  value       = aws_s3_bucket.cloudtrail_audit.id
+}
+
+output "cloudtrail_s3_bucket_arn" {
+  description = "ARN của S3 Bucket lưu vết kiểm toán CloudTrail"
+  value       = aws_s3_bucket.cloudtrail_audit.arn
+}
+
