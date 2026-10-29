@@ -24,6 +24,7 @@ single_nat_gateway = true
 # ==========================================
 app_port = 3000 # Port backend NodeJS (Member 2)
 db_port  = 3306 # Port MySQL/Aurora (Member 3)
+efs_file_system_id = "fs-0b619655013598e7e" # EFS filesystem đã tạo cho Production VPC
 
 # ⚠️ BẮT BUỘC: Thay bằng IP thật trước khi deploy!
 # Tra IP tại: https://checkip.amazonaws.com
@@ -38,9 +39,10 @@ enable_route53               = false # Đặt true nếu nhóm đã mua domain r
 # domain_name                  = "devsecops-enterprise.com"
 
 # ==========================================
-# ALB & AWS WAFv2 (Tuần 4 - FINOPS SWITCH)
+# ALB (Tuần 2) và AWS WAFv2 (Tuần 4 - FINOPS SWITCH)
 # ==========================================
-enable_alb_and_waf             = false # Đặt true khi cần test/demo tuần 4, đặt false để tắt tiết kiệm $
+enable_alb                     = true # Đặt true khi triển khai ALB/ASG tuần 2
+enable_waf                     = false # Đặt true khi kiểm thử WAF tuần 4
 enable_alb_deletion_protection = false # FinOps: Đặt false để dễ dàng destroy dọn dẹp credit sinh viên
 waf_rate_limit                 = 100   # Giới hạn 100 request/5 phút cho mỗi IP
 
