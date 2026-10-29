@@ -211,3 +211,27 @@ output "cloudtrail_s3_bucket_arn" {
   value       = aws_s3_bucket.cloudtrail_audit.arn
 }
 
+# ==============================================================================
+# TUẦN 5: THÔNG SỐ BÀN GIAO REDSHIFT SERVERLESS (MEMBER 3 — EPHEMERAL DEMO)
+# ==============================================================================
+
+output "redshift_namespace_name" {
+  description = "Tên Redshift Serverless Namespace (chỉ có khi enable_redshift_demo = true)"
+  value       = var.enable_redshift_demo ? aws_redshiftserverless_namespace.analytics[0].namespace_name : "DISABLED"
+}
+
+output "redshift_workgroup_name" {
+  description = "Tên Redshift Serverless Workgroup (chỉ có khi enable_redshift_demo = true)"
+  value       = var.enable_redshift_demo ? aws_redshiftserverless_workgroup.analytics[0].workgroup_name : "DISABLED"
+}
+
+output "redshift_endpoint" {
+  description = "Endpoint kết nối Redshift Serverless (chỉ có khi enable_redshift_demo = true)"
+  value       = var.enable_redshift_demo ? "${aws_redshiftserverless_workgroup.analytics[0].endpoint[0].address}:${aws_redshiftserverless_workgroup.analytics[0].endpoint[0].port}" : "DISABLED"
+}
+
+output "redshift_demo_status" {
+  description = "Trạng thái tổng quan Redshift Serverless Demo"
+  value       = var.enable_redshift_demo ? "⚠️  ACTIVE — Chi phí ~$3/giờ (${var.redshift_base_capacity_rpu} RPU). XÓA NGAY sau demo!" : "✅ DISABLED — Không phát sinh chi phí."
+}
+

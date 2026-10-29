@@ -88,3 +88,18 @@ cloudtrail_s3_retention_days          = 90 # Tự động xóa audit log sau 90 
 # CloudTrail Multi-Region (false = tối ưu chi phí trong region ap-southeast-1)
 cloudtrail_is_multi_region = false
 
+# ==============================================================================
+# TUẦN 5: AMAZON REDSHIFT SERVERLESS (EPHEMERAL DEMO 1-2 GIỜ)
+# ==============================================================================
+# FinOps Safety Guardrail: Mặc định tắt (false) để tránh phát sinh chi phí ngầm.
+# Chỉ bật = true khi chạy demo phân tích (demo_redshift.ps1), sau đó tắt = false ngay.
+enable_redshift_demo = false
+
+# Mức RPU cơ sở tối thiểu (8 RPU) - Tối ưu chi phí cho môi trường demo (~$3/giờ)
+redshift_base_capacity_rpu = 8
+
+# Tên database phân tích và tài khoản quản trị Redshift
+redshift_db_name        = "analytics_db"
+redshift_admin_username = "redshiftadmin"
+redshift_admin_password = "DemoRedshift2026!Pass"
+

@@ -691,3 +691,116 @@ Khi nộp báo cáo tiến độ Tuần 4, Thành viên 3 chuẩn bị 4 bức �
 | **03** | `cloudtrail-trail-logging.png` | CloudTrail Console hiển thị Trail `enterprise-cloud-devsecops-audit-trail` có trạng thái `Logging = Yes`, gắn đúng S3 Bucket và CloudWatch Log Group | 🟢 Đạt chuẩn Audit Compliance |
 | **04** | `cloudwatch-alarm-email-received.png` | Hộp thư email nhận được thư cảnh báo tức thì từ AWS SNS với tiêu đề `ALARM: "enterprise-cloud-devsecops-rds-cpu-high-alert"` | 🟢 Đạt chuẩn Incident Notification |
 
+---
+
+# HƯỚNG DẪN TRIỂN KHAI PHÂN TÍCH DỮ LIỆU & FINOPS — TUẦN 5
+
+> **Phân mảng:** Thành viên 3 (Dữ liệu & FinOps — Phạm Thế Hùng)  
+> **Mục tiêu Tuần 5:** Khởi chạy Amazon Redshift Serverless demo 1–2 giờ, nạp dữ liệu mẫu e-commerce chạy 7 câu truy vấn phân tích (Business Intelligence), chụp ảnh minh chứng rồi xóa sạch hoàn toàn để bảo toàn ngân sách $200 USD.
+
+---
+
+## 23. TỔNG QUAN KIẾN TRÚC AMAZON REDSHIFT SERVERLESS TUẦN 5
+
+Amazon Redshift Serverless cho phép chạy kho dữ liệu phân tích cấp doanh nghiệp (Data Warehouse) mà không cần cấp phát cụm máy chủ phần cứng cố định.
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│             KIẾN TRÚC KHO DỮ LIỆU EPHEMERAL REDSHIFT SERVERLESS        │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  [Dữ liệu giao dịch]          [Dữ liệu mẫu E-commerce]                │
+│   RDS MySQL & DynamoDB              SQL Scripts                        │
+│          │                               │                             │
+│          └───────────────┬───────────────┘                             │
+│                          ▼                                             │
+│       ┌──────────────────────────────────────┐                         │
+│       │ Amazon Redshift Serverless Namespace │                         │
+│       │ • Database: analytics_db             │                         │
+│       │ • Star Schema: Facts & Dimensions    │                         │
+│       │ • Encryption: AWS KMS SSE            │                         │
+│       └──────────────────┬───────────────────┘                         │
+│                          │                                             │
+│                          ▼                                             │
+│       ┌──────────────────────────────────────┐                         │
+│       │ Redshift Serverless Workgroup (8 RPU)│                         │
+│       │ • Base Capacity: 8 RPU (Tối thiểu)   │                         │
+│       │ • Đơn giá: $0.375 / RPU-giờ (~$3/giờ)│                         │
+│       │ • Auto-pause khi không có truy vấn   │                         │
+│       └──────────────────┬───────────────────┘                         │
+│                          │                                             │
+│       ┌──────────────────┴───────────────────┐                         │
+│       ▼                                      ▼                         │
+│ [Query Editor v2 / CLI]             [DỌN DẸP HOÀN TOÀN]                │
+│  7 Business Analytics               Xóa sạch sau 1-2h demo             │
+│  Doanh thu, Top SKUs, RFM           Chi phí: ~$4.50 USD (Tiết kiệm 99%)│
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 24. KỊCH BẢN VẬN HÀNH TỰ ĐỘNG HÓA VÒNG ĐỜI (LIFECYCLE DEMO)
+
+Thành viên 3 đã cung cấp kịch bản tự động hóa 100% vòng đời Redshift Serverless bằng PowerShell và Bash:
+
+### Sử dụng PowerShell (Windows):
+```powershell
+cd finops/scripts
+
+# 1. Bật cờ enable_redshift_demo và tạo cụm Redshift Serverless (8 RPU)
+.\demo_redshift.ps1 -Action Deploy
+
+# 2. Xem thông tin Endpoint & kết nối
+.\demo_redshift.ps1 -Action Status
+
+# 3. Nạp Star Schema (Dim_Customers, Dim_Products, Dim_Date, Fact_Sales, Fact_Payments)
+.\demo_redshift.ps1 -Action LoadData
+
+# 4. Thực thi 7 câu truy vấn phân tích kinh doanh và xuất bảng kết quả
+.\demo_redshift.ps1 -Action RunAnalytics
+
+# 5. [BẮT BUỘC SAU KHI DEMO] Tiêu hủy cụm Redshift để bảo vệ credit $200!
+.\demo_redshift.ps1 -Action Destroy
+```
+
+### Sử dụng Bash (Linux / macOS / Git Bash):
+```bash
+cd finops/scripts
+chmod +x demo_redshift.sh
+
+# Triển khai cụm demo
+./demo_redshift.sh deploy ap-southeast-1
+
+# Nạp dữ liệu & Chạy truy vấn
+./demo_redshift.sh load-data ap-southeast-1
+./demo_redshift.sh run-analytics ap-southeast-1
+
+# Dọn dẹp hoàn toàn
+./demo_redshift.sh destroy ap-southeast-1
+```
+
+---
+
+## 25. BỘ 7 TRUY VẤN PHÂN TÍCH KINH DOANH (7 BUSINESS ANALYTICS QUERIES)
+
+Tệp SQL hoàn chỉnh nằm tại [`finops/scripts/configs/redshift_analytics_queries.sql`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/scripts/configs/redshift_analytics_queries.sql):
+
+1. **Query 1: Doanh thu & Lợi nhuận tổng quan theo Quý/Tháng**: Đánh giá tổng doanh thu, giá vốn và biên lợi nhuận ròng.
+2. **Query 2: Top 5 Sản phẩm bán chạy & Tỷ trọng đóng góp**: Tìm sản phẩm chủ lực mang lại biên lợi nhuận cao nhất.
+3. **Query 3: Phân khúc khách hàng RFM (VIP, Gold, Silver, Standard)**: Đo lường Customer Lifetime Value (CLV).
+4. **Query 4: Phân tích doanh số theo vùng địa lý**: Xếp hạng doanh thu theo thành phố và miền địa lý.
+5. **Query 5: Cơ cấu phương thức thanh toán**: Tỷ trọng VNPay, MoMo, Thẻ tín dụng, COD và tỷ lệ thành công.
+6. **Query 6: Quy mô đơn hàng trung bình (AOV - Average Order Value)**: Phân tích hành vi mua sắm cuối tuần vs ngày thường.
+7. **Query 7: Giờ vàng giao dịch (Peak Hours)**: Khám phá khung giờ phát sinh giao dịch cao nhất trong ngày.
+
+---
+
+## 26. BÁO CÁO FINOPS & MINH CHỨNG HOÀN THÀNH TUẦN 5
+
+- 📄 **Báo cáo tối ưu chi phí & dọn dẹp Redshift**: Xem tài liệu chi tiết tại [`finops/redshift-cost-optimization-report.md`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/redshift-cost-optimization-report.md).
+- 💰 **Chi phí thực tế tiêu hao:** `$4.50 USD` (1.5 giờ demo với 8 RPU).
+- 🛡️ **Tỷ lệ tiết kiệm FinOps:** `99.79%` so với cụm duy trì liên tục ($2,160 USD/tháng).
+- 📸 **Danh mục ảnh minh chứng nộp báo cáo Tuần 5:**
+  1. `redshift-query-editor-results.png`: Ảnh chụp màn hình kết quả chạy câu truy vấn BI trên AWS Redshift Query Editor v2.
+  2. `redshift-cluster-cleanup-confirmed.png`: Ảnh chụp AWS Redshift Console xác nhận danh sách Workgroups & Namespaces đều ở trạng thái rỗng (0 cụm đang chạy).
+

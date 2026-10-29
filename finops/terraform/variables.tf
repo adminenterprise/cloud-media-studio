@@ -209,3 +209,53 @@ variable "cloudtrail_is_multi_region" {
   default     = false
 }
 
+# ==============================================================================
+# TUẦN 5: BIẾN CẤU HÌNH REDSHIFT SERVERLESS (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+# ⚠️  CẢNH BÁO: Chỉ bật enable_redshift_demo = true khi thực hiện demo!
+# ⚠️  Chi phí ~$3/giờ. BẮT BUỘC đặt lại false và apply sau khi chụp ảnh xong!
+
+variable "enable_redshift_demo" {
+  description = "BẬT/TẮT Redshift Serverless cho demo Tuần 5 (default = false, chỉ bật khi demo 1-2 giờ rồi XÓA NGAY)"
+  type        = bool
+  default     = false
+}
+
+variable "redshift_db_name" {
+  description = "Tên database phân tích trên Redshift Serverless"
+  type        = string
+  default     = "analytics_db"
+}
+
+variable "redshift_admin_username" {
+  description = "Tài khoản admin Redshift Serverless"
+  type        = string
+  default     = "admin"
+  sensitive   = true
+}
+
+variable "redshift_admin_password" {
+  description = "Mật khẩu admin Redshift Serverless (Tối thiểu 8 ký tự, chữ hoa, thường, số)"
+  type        = string
+  default     = "DemoRedshift2026!Pass"
+  sensitive   = true
+}
+
+variable "redshift_base_capacity_rpu" {
+  description = "Dung lượng tính toán cơ sở (RPU — Redshift Processing Units). Tối thiểu: 8 RPU (~$3/giờ)"
+  type        = number
+  default     = 8
+}
+
+variable "redshift_subnet_ids" {
+  description = "Danh sách Subnet IDs cho Redshift Serverless Workgroup (tối thiểu 3 subnets khác AZ)"
+  type        = list(string)
+  default     = []
+}
+
+variable "redshift_publicly_accessible" {
+  description = "Cho phép truy cập công khai (true = bật tạm cho Query Editor v2 khi demo, false = sau demo)"
+  type        = bool
+  default     = true
+}
+
