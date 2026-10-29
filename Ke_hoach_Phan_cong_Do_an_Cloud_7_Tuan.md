@@ -40,7 +40,7 @@
 
 - [ ] **Thành viên 1 (Mạng & IaC)**: 5/7 hoàn thành (71.4%)
 - [ ] **Thành viên 2 (Tính toán & Container)**: 0/7 hoàn thành (0.0%)
-- [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 3/7 hoàn thành (42.9%)
+- [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 4/7 hoàn thành (57.1%)
 - [ ] **Thành viên 4 (Bảo mật & DevSecOps)**: 0/7 hoàn thành (0.0%)
 
 ---
@@ -96,7 +96,7 @@
 - [ ] **[Thành viên 2] Tính toán & Container**: Tích hợp ECS Fargate với ALB Target Group, thiết lập Health Check và hoàn thiện kết nối ứng dụng với Database.
   - *Kết quả bàn giao (`Deliverable`)*: Web app chạy mượt mà trên ECS Fargate thông qua tên miền ALB/CloudFront.
   - *Ghi chú*: Đảm bảo tính sẵn sàng cao (`High Availability`) đa AZ.
-- [ ] **[Thành viên 3] Dữ liệu & FinOps**: Cấu hình Amazon CloudWatch Metrics, Log Groups và Alarms cảnh báo quá tải CPU > 70%; kích hoạt AWS CloudTrail ghi vết API.
+- [x] **[Thành viên 3] Dữ liệu & FinOps**: Cấu hình Amazon CloudWatch Metrics, Log Groups và Alarms cảnh báo quá tải CPU > 70%; kích hoạt AWS CloudTrail ghi vết API.
   - *Kết quả bàn giao (`Deliverable`)*: CloudWatch Dashboard theo dõi hạ tầng, CloudTrail trail lưu log vào S3.
   - *Ghi chú*: Đảm bảo khả năng quan sát hệ thống (`Observability`).
 - [ ] **[Thành viên 4] Bảo mật & DevSecOps**: Cấu hình AWS Secrets Manager và KMS; ứng dụng tự động gọi API lấy mật khẩu DB mà không hardcode trong mã nguồn.

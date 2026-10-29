@@ -498,3 +498,196 @@ Khi nộp báo cáo tiến độ Tuần 3, Thành viên 3 chuẩn bị 4 bức �
 | **03** | `s3-lifecycle-glacier-rules.png` | Tab Management của S3 Bucket hiển thị 2 Lifecycle Rules chuyển `uploads/` sang `Glacier` sau 30 ngày | 🟢 Đạt chuẩn FinOps Storage |
 | **04** | `dynamodb-crud-cli-test.png` | Terminal chạy script `test_dynamodb.ps1` trả về kết quả `[OK]` ghi đọc dữ liệu độ trễ thấp và hiển thị đầy đủ quy tắc S3 | 🟢 Đạt chuẩn Automation |
 
+---
+
+# HƯỚNG DẪN TRIỂN KHAI TUẦN 4: CLOUDWATCH METRICS, ALARMS, DASHBOARDS & AUDIT TRAIL CLOUDTRAIL
+
+> **Phân mảng:** Thành viên 3 (Dữ liệu & FinOps — Phạm Thế Hùng)  
+> **Mục tiêu Tuần 4:**  
+> 1. Thiết lập hệ thống giám sát tập trung **Amazon CloudWatch**: Log Groups giới hạn lưu trữ 7 ngày (FinOps guardrail), Metric Alarms cảnh báo quá tải **CPU >= 70%** (cho RDS MySQL & Container) và hạn mức ngân sách qua SNS Email.  
+> 2. Xây dựng **CloudWatch Observability Dashboard** trực quan hóa toàn bộ hạ tầng 3 tầng (Database RDS, Compute ECS, Network ALB/WAF Defense và Chi phí FinOps) theo thời gian thực phục vụ Màn 3 bảo vệ đồ án.  
+> 3. Kích hoạt **AWS CloudTrail** ghi vết kiểm toán (Audit Trail) 100% các hành vi gọi API quản trị, lưu trữ vào S3 Bucket chuyên dụng kèm mã hóa SSE-S3 và vòng đời tự động chuyển sang **S3 Glacier** sau 30 ngày.
+
+---
+
+## 17. TỔNG QUAN DELIVERABLES TUẦN 4
+
+Thành viên 3 bàn giao bộ giải pháp kỹ thuật hoàn chỉnh cho Tuần 4 bao gồm:
+
+| Deliverable | Vị trí tệp | Mô tả kỹ thuật | Trạng thái |
+| :--- | :--- | :--- | :---: |
+| **CloudWatch IaC** | [`finops/terraform/cloudwatch.tf`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/terraform/cloudwatch.tf) | SNS Topic, 4 Log Groups (Retention 7 ngày), 5 Metric Alarms (CPU > 70%, Low Storage, Low RAM, Billing), Observability Dashboard đa tầng | ✅ |
+| **CloudTrail IaC** | [`finops/terraform/cloudtrail.tf`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/terraform/cloudtrail.tf) | Dedicated S3 Bucket, Block Public Access 100%, SSE-S3, S3 Glacier Lifecycle, IAM Role chuyển log sang CloudWatch Logs, CloudTrail Trail | ✅ |
+| **Variables & Outputs** | [`finops/terraform/variables.tf`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/terraform/variables.tf), [`outputs.tf`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/terraform/outputs.tf) | Cấu hình tham số ngưỡng cảnh báo, log retention và xuất Dashboard URL, Alarm ARNs, Trail Name bàn giao nhóm | ✅ |
+| **Test Scripts CLI** | [`finops/scripts/test_observability.ps1`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/scripts/test_observability.ps1), [`test_observability.sh`](file:///c:/Users/Pham%20The%20Hung/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/finops/scripts/test_observability.sh) | Script kiểm thử toàn diện trạng thái Dashboard, Alarms, Logs, CloudTrail và hỗ trợ **mô phỏng kích hoạt chuông báo động (Trigger Alarm)** để bắn email tức thì khi live demo | ✅ |
+
+---
+
+## 18. PHƯƠNG PHÁP 1: TRIỂN KHAI QUA TERRAFORM (ENTERPRISE STANDARD)
+
+### Bước 1: Kiểm tra cú pháp và kế hoạch triển khai
+```bash
+cd finops/terraform
+
+# Kiểm tra cú pháp HCL
+terraform validate
+
+# Xem trước kế hoạch (~15 tài nguyên mới được khởi tạo)
+terraform plan
+```
+
+### Bước 2: Triển khai lên AWS
+```bash
+terraform apply -auto-approve
+```
+
+### Bước 3: Xem kết quả bàn giao
+```bash
+# Xem Dashboard URL
+terraform output cloudwatch_dashboard_url
+
+# Xem thông số Alarms và CloudTrail
+terraform output cloudwatch_rds_cpu_alarm_name
+terraform output cloudtrail_trail_name
+terraform output cloudtrail_s3_bucket_name
+```
+
+---
+
+## 19. PHƯƠNG PHÁP 2: THỰC HIỆN TRÊN AWS MANAGEMENT CONSOLE (ĐỂ CHỤP ẢNH MINH CHỨNG)
+
+### PHẦN A: THIẾT LẬP CLOUDWATCH LOG GROUPS & RETENTION (FINOPS GUARDRAIL)
+1. Đăng nhập [AWS Management Console](https://console.aws.amazon.com/), tìm dịch vụ **CloudWatch**.
+2. Menu trái chọn **Logs** -> **Log groups**.
+3. Bấm **Create log group** để tạo lần lượt:
+   - `/ecs/enterprise-cloud-devsecops-backend-app`
+   - `/aws/rds/instance/enterprise-cloud-devsecops-mysql-primary/error`
+   - `/aws/rds/instance/enterprise-cloud-devsecops-mysql-primary/slowquery`
+   - `/aws/cloudtrail/enterprise-cloud-devsecops-audit-logs`
+4. **Cấu hình Retention (BẮT BUỘC ĐỂ TIẾT KIỆM CREDIT)**:
+   - Trong danh sách Log groups, tích chọn từng Log group vừa tạo.
+   - Chọn menu **Actions** -> **Edit retention setting**.
+   - Chọn `7 days` (1 week) thay vì `Never expire` -> Bấm **Save**.
+
+---
+
+### PHẦN B: CẤU HÌNH SNS TOPIC & METRIC ALARMS (CPU > 70%)
+1. **Tạo SNS Topic nhận cảnh báo**:
+   - Vào dịch vụ **Amazon SNS** -> **Topics** -> Bấm **Create topic**.
+   - Chọn kiểu **Standard**, đặt tên `enterprise-cloud-devsecops-alerts-topic` -> Bấm **Create topic**.
+   - Bấm **Create subscription** -> Protocol chọn `Email` -> Endpoint nhập email các thành viên nhóm -> Bấm **Create subscription**.
+   - *Lưu ý:* Mở email cá nhân bấm link **Confirm subscription**.
+2. **Tạo Alarm cảnh báo RDS CPU > 70%**:
+   - Quay lại dịch vụ **CloudWatch** -> Menu trái chọn **Alarms** -> **All alarms** -> Bấm **Create alarm**.
+   - Bấm **Select metric** -> Chọn `RDS` -> `Per-Database Metrics` -> Tích chọn `CPUUtilization` của DB instance `enterprise-cloud-devsecops-mysql-primary`.
+   - **Conditions**:
+     * *Threshold type*: `Static`
+     * *Whenever CPUUtilization is...*: `Greater than or equal to (>=)`
+     * *Than...*: `70`
+     * *Additional configuration*: Datapoints to alarm: `2 out of 2` (chu kỳ 5 phút).
+   - **Notification**:
+     * *Alarm state trigger*: Chọn `In alarm`.
+     * *Send a notification to...*: Chọn SNS topic `enterprise-cloud-devsecops-alerts-topic`.
+   - Đặt tên Alarm: `enterprise-cloud-devsecops-rds-cpu-high-alert` -> Bấm **Create alarm**.
+3. **Tạo Alarm cảnh báo Container/Compute CPU > 70%**:
+   - Tạo tương tự với metric `AWS/ECS` `CPUUtilization` hoặc `AWS/EC2` `CPUUtilization`, ngưỡng `>= 70%`, đặt tên `enterprise-cloud-devsecops-compute-cpu-high-alert`.
+
+---
+
+### PHẦN C: KHỞI TẠO CLOUDWATCH OBSERVABILITY DASHBOARD
+1. Trong dịch vụ **CloudWatch**, menu trái chọn **Dashboards** -> Bấm nút màu cam **Create dashboard**.
+2. Đặt tên: `enterprise-cloud-devsecops-observability-dashboard` -> Bấm **Create dashboard**.
+3. Thêm các widget quan sát cốt lõi:
+   - **Widget 1: RDS CPU (%)**: Chọn Line chart -> Metric `AWS/RDS` -> `CPUUtilization` -> Đặt ngưỡng ngang 70% màu đỏ.
+   - **Widget 2: RDS Connections**: Metric `DatabaseConnections`.
+   - **Widget 3: RDS Storage**: Metric `FreeStorageSpace`.
+   - **Widget 4: Compute CPU**: Metric `AWS/ECS` hoặc `EC2` -> `CPUUtilization`.
+   - **Widget 5: Network ALB & WAF Defense**: Metric `AWS/ApplicationELB` `RequestCount` và `AWS/WAFV2` `BlockedRequests` (trình diễn Màn 2).
+   - **Widget 6: FinOps Billing**: Metric `AWS/Billing` -> `EstimatedCharges` (khu vực us-east-1).
+   - **Widget 7: Alarms Status**: Thêm widget kiểu `Alarm status` chọn danh sách các Alarms vừa tạo.
+4. Bấm **Save dashboard**.
+
+---
+
+### PHẦN D: KÍCH HOẠT AWS CLOUDTRAIL GHI VẾT KIỂM TOÁN VÀO S3
+1. **Tạo S3 Bucket lưu vết**:
+   - Vào dịch vụ **Amazon S3** -> Bấm **Create bucket**.
+   - Tên bucket: `enterprise-cloud-devsecops-cloudtrail-audit-<account-id>-ap-southeast-1`.
+   - Giữ nguyên tích chọn **Block all public access** (bảo mật tuyệt đối).
+   - Encryption: Chọn `SSE-S3`.
+   - Tab **Management**: Tạo Lifecycle rule `archive-to-glacier` chuyển prefix `AWSLogs/` sang `Glacier` sau `30` ngày và expire sau `90` ngày.
+2. **Kích hoạt CloudTrail Trail**:
+   - Vào dịch vụ **CloudTrail** -> Menu trái chọn **Trails** -> Bấm **Create trail**.
+   - **Trail name**: `enterprise-cloud-devsecops-audit-trail`.
+   - **Storage location**: Chọn **Use existing S3 bucket** -> Chọn bucket vừa tạo ở trên.
+   - **Log file validation**: Tích chọn `Enabled` (đảm bảo tính toàn vẹn).
+   - **CloudWatch Logs**: Tích chọn `Enabled` -> Chọn Log Group `/aws/cloudtrail/enterprise-cloud-devsecops-audit-logs`.
+   - **Event type**: Chọn **Management events** (Read & Write events). Bỏ qua Data events (FinOps guardrail tránh tốn tiền đọc ghi S3).
+   - Bấm **Create trail**.
+
+---
+
+## 20. PHƯƠNG PHÁP 3: KIỂM THỬ TỰ ĐỘNG HÓA & MÔ PHỎNG CHUÔNG BÁO ĐỘNG (DEMO MÀN 3)
+
+Thành viên 3 đã đóng gói kịch bản kiểm thử và mô phỏng sự cố bằng 1 dòng lệnh:
+
+### Chạy bằng PowerShell (Windows):
+```powershell
+cd finops/scripts
+
+# 1. Kiểm tra trạng thái toàn diện (Dashboard, Logs, Alarms, CloudTrail)
+.\test_observability.ps1 -Action Status
+
+# 2. [LIVE DEMO MÀN 3] Mô phỏng sự cố CPU 85% quá tải để SNS bắn Email tự động tức thì!
+.\test_observability.ps1 -Action TriggerAlarm
+
+# 3. Trả lại trạng thái bình thường (OK) sau khi giảng viên chấm xong
+.\test_observability.ps1 -Action ResetAlarm
+
+# 4. Xem 5 sự kiện gọi API gần nhất được CloudTrail ghi vết
+.\test_observability.ps1 -Action TailLogs
+```
+
+### Chạy bằng Bash (Linux / macOS / Git Bash):
+```bash
+cd finops/scripts
+chmod +x test_observability.sh
+
+# Kiểm tra toàn diện
+./test_observability.sh ap-southeast-1 enterprise-cloud-devsecops all
+
+# Kích hoạt báo động email demo
+./test_observability.sh ap-southeast-1 enterprise-cloud-devsecops trigger
+
+# Trả lại trạng thái OK
+./test_observability.sh ap-southeast-1 enterprise-cloud-devsecops reset
+```
+
+---
+
+## 21. NGUYÊN LÝ TỐI ƯU CHI PHÍ FINOPS TUẦN 4
+
+### 1. Phân tích chi phí CloudWatch Logs: 7 Days Retention vs. Never Expire
+- **Vấn đề thực tế**: Mặc định AWS CloudWatch Log Groups được tạo với thuộc tính `Never expire`. Trong hệ thống doanh nghiệp hoặc môi trường đồ án sinh viên, các log ứng dụng và truy vấn CSDL sẽ phình lên hàng gigabyte sau vài tuần, gây phát sinh chi phí lưu trữ log ngầm ($0.03 / GB / tháng).
+- **Giải pháp FinOps của Member 3**: Cưỡng chế đặt `retention_in_days = 7` cho 100% Log Groups. Sau 7 ngày, log cũ được tự động thu hồi và tiêu hủy miễn phí, đảm bảo chi phí lưu trữ log luôn tiệm cận **$0.00**.
+
+### 2. AWS CloudTrail Free Tier Management Events vs. Paid Data Events
+- **Cơ chế AWS CloudTrail**: Bản sao đầu tiên của **Management Events** (các lệnh gọi API như tạo máy chủ, đổi IAM, sửa RDS) là **HOÀN TOÀN MIỄN PHÍ**.
+- **Giải pháp FinOps của Member 3**: Chỉ bật Management Events, **TUYỆT ĐỐI KHÔNG BẬT S3 Data Events** (vì S3 Data Events tính phí $0.10 cho mỗi 100,000 sự kiện đọc/ghi). Điều này giúp ghi lại 100% nhật ký quản trị mà không tốn thêm 1 cent nào.
+
+### 3. Tối ưu chi phí S3 Glacier cho Audit Logs dài hạn
+- Các tệp nén kiểm toán `.json.gz` đẩy từ CloudTrail sang S3 được cấu hình S3 Lifecycle tự động chuyển sang **S3 Glacier Flexible Retrieval** sau 30 ngày (tiết kiệm 84% đơn giá lưu trữ) và xóa sau 90 ngày.
+
+---
+
+## 22. DANH MỤC ẢNH MINH CHỨNG HOÀN THÀNH TUẦN 4 (DELIVERABLE CHECKLIST)
+
+Khi nộp báo cáo tiến độ Tuần 4, Thành viên 3 chuẩn bị 4 bức ảnh minh chứng sau:
+
+| STT | Tên ảnh minh chứng | Nội dung cần thể hiện trên ảnh | Tiêu chuẩn đánh giá |
+| :---: | :--- | :--- | :---: |
+| **01** | `cloudwatch-observability-dashboard.png` | CloudWatch Dashboard hiển thị đầy đủ các widget: RDS MySQL CPU/Connections/Storage, Compute CPU, WAF Blocked Requests và FinOps Estimated Charges | 🟢 Đạt chuẩn Enterprise Observability |
+| **02** | `cloudwatch-alarms-configured.png` | Danh sách CloudWatch Alarms: `rds-cpu-high-alert` (ngưỡng 70%), `compute-cpu-high-alert` (70%), `free-storage-low-alert` ở trạng thái `OK` hoặc `In alarm` | 🟢 Đạt chuẩn High Availability |
+| **03** | `cloudtrail-trail-logging.png` | CloudTrail Console hiển thị Trail `enterprise-cloud-devsecops-audit-trail` có trạng thái `Logging = Yes`, gắn đúng S3 Bucket và CloudWatch Log Group | 🟢 Đạt chuẩn Audit Compliance |
+| **04** | `cloudwatch-alarm-email-received.png` | Hộp thư email nhận được thư cảnh báo tức thì từ AWS SNS với tiêu đề `ALARM: "enterprise-cloud-devsecops-rds-cpu-high-alert"` | 🟢 Đạt chuẩn Incident Notification |
+
