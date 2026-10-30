@@ -1,0 +1,10 @@
+{
+  "userId": {"S": "usr_minhquan_001"},
+  "itemId": {"S": "item_cloud_server_course_01"},
+  "productName": {"S": "Enterprise Cloud Architecture Masterclass"},
+  "quantity": {"N": "1"},
+  "price": {"N": "99.99"},
+  "currency": {"S": "USD"},
+  "addedAt": {"N": "1729000000"},
+  "expiresAt": {"N": "1730209600"}
+}

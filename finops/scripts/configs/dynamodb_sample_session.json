@@ -1,0 +1,15 @@
+{
+  "sessionId": {"S": "sess_enterprise_demo_9876543210"},
+  "userId": {"S": "usr_minhquan_001"},
+  "createdAt": {"N": "1729000000"},
+  "expiresAt": {"N": "1729604800"},
+  "ipAddress": {"S": "192.168.1.100"},
+  "userAgent": {"S": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0.0.0"},
+  "sessionData": {
+    "M": {
+      "role": {"S": "student-admin"},
+      "lastLogin": {"S": "2026-10-15T22:00:00Z"},
+      "authProvider": {"S": "Cognito"}
+    }
+  }
+}

@@ -1,0 +1,299 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - '.github/workflows/ci.yml'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write # de upload ket qua Trivy (SARIF) len GitHub Security tab
+  id-token: write # OIDC -> dang nhap ECR khong can secret key (Zero Secret Keys)
+
+jobs:
+  # ============ BACKEND: build + smoke test + trivy scan ============
+  backend:
+    name: Build & Test Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Syntax check
+        working-directory: backend
+        run: node --check server.js
+
+      - name: Smoke test - start server & check endpoints
+        working-directory: backend
+        env:
+          PORT: '3000'
+        run: |
+          node server.js &
+          SERVER_PID=$!
+          
+          # Doi server khoi dong (toi da 30s)
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3000/health > /dev/null 2>&1; then
+              echo "Server is up after ${i}s"
+              break
+            fi
+            sleep 1
+          done
+          
+          echo "--- GET /health ---"
+          HEALTH=$(curl -sf http://localhost:3000/health)
+          echo "$HEALTH"
+          echo "$HEALTH" | grep -q '"status":"ok"' || { echo "Health check failed"; kill $SERVER_PID; exit 1; }
+          
+          echo "--- GET /api/info ---"
+          INFO=$(curl -sf http://localhost:3000/api/info)
+          echo "$INFO"
+          echo "$INFO" | grep -q '"hostname"' || { echo "/api/info failed"; kill $SERVER_PID; exit 1; }
+          
+          kill $SERVER_PID
+          echo "Backend smoke test PASSED"
+
+      - name: Build backend Docker image
+        run: docker build -t backend:ci ./backend
+
+      - name: Trivy scan backend image (generate SARIF report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: backend:ci
+          format: sarif
+          output: trivy-backend.sarif
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH,MEDIUM,LOW
+          vuln-type: os,library
+
+      - name: Upload backend scan report as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-backend-sarif
+          path: trivy-backend.sarif
+          if-no-files-found: ignore
+
+      - name: Upload backend scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        continue-on-error: true
+        with:
+          sarif_file: trivy-backend.sarif
+
+      - name: Trivy scan backend image (display table report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          image-ref: backend:ci
+          format: table
+          exit-code: '0'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+          vuln-type: os,library
+
+  # ============ FRONTEND: build + test nginx container + trivy scan ============
+  frontend:
+    name: Build & Test Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate nginx config
+        run: docker run --rm --add-host backend:127.0.0.1 -v $PWD/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine nginx -t
+
+      - name: Build frontend Docker image
+        run: docker build -t frontend:ci ./frontend
+
+      - name: Smoke test - run container & check index.html
+        run: |
+          docker run -d --name frontend-test --add-host backend:127.0.0.1 -p 8080:80 frontend:ci
+          
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8080 > /dev/null 2>&1; then
+              echo "Frontend is up after ${i}s"
+              break
+            fi
+            sleep 1
+          done
+          
+          echo "--- GET / (index.html) ---"
+          HTML=$(curl -sf http://localhost:8080)
+          echo "$HTML" | head -n 20
+          
+          if echo "$HTML" | grep -qi '<html'; then
+            echo "Frontend smoke test PASSED"
+          else
+            echo "index.html did not return expected HTML content"
+            docker logs frontend-test
+            docker rm -f frontend-test
+            exit 1
+          fi
+          
+          docker rm -f frontend-test
+
+      - name: Trivy scan frontend image (generate SARIF report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: frontend:ci
+          format: sarif
+          output: trivy-frontend.sarif
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH,MEDIUM,LOW
+          vuln-type: os,library
+
+      - name: Upload frontend scan report as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-frontend-sarif
+          path: trivy-frontend.sarif
+          if-no-files-found: ignore
+
+      - name: Upload frontend scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        continue-on-error: true
+        with:
+          sarif_file: trivy-frontend.sarif
+
+      - name: Trivy scan frontend image (display table report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          image-ref: frontend:ci
+          format: table
+          exit-code: '0'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+          vuln-type: os,library
+
+  # ============ PUSH ECR: tag production + push len ECR ============
+  # Nguyen tac production:
+  #   1. Chi push sau khi TAT CA security gate pass (trivy scan, smoke test)
+  #   2. Chi push tu branch main - khong bao gio push tu pull request
+  #   3. Tag bat bien (immutable) theo git SHA de truy vet chinh xac ve commit
+  #   4. Tag "latest" chi la con tro mutable - ECS/Fargate luon deploy bang tag SHA
+  #   5. Zero Secret Keys: dang nhap ECR bang OIDC role, khong luu AWS key trong repo
+  push-ecr:
+    name: Push images to ECR (production tags)
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials (OIDC - Zero Secret Keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::586643076560:role/github-action
+          aws-region: ap-southeast-1
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & push backend image (production tags)
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE: backend
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          FULL_SHA="${{ github.sha }}"
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          REPO="$REGISTRY/$IMAGE"
+
+          echo "Tagging $REPO with: sha-${SHORT_SHA}, ${FULL_SHA}, latest"
+
+          # Label OCI: image tu mo ta nguon goc (source, revision, version, created)
+          # -> traceable khi docker inspect / quet qua registry
+          docker build \
+            --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+            --label "org.opencontainers.image.revision=${FULL_SHA}" \
+            --label "org.opencontainers.image.version=sha-${SHORT_SHA}" \
+            --label "org.opencontainers.image.created=${BUILD_DATE}" \
+            -t "$REPO:sha-${SHORT_SHA}" \
+            -t "$REPO:${FULL_SHA}" \
+            -t "$REPO:latest" \
+            ./backend
+
+          # Push tung tag ro rang (khong dung --all-tags de tranh push nham tag cu)
+          docker push "$REPO:sha-${SHORT_SHA}"
+          docker push "$REPO:${FULL_SHA}"
+          docker push "$REPO:latest"
+
+      - name: Build & push frontend image (production tags)
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE: frontend
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          FULL_SHA="${{ github.sha }}"
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          REPO="$REGISTRY/$IMAGE"
+
+          echo "Tagging $REPO with: sha-${SHORT_SHA}, ${FULL_SHA}, latest"
+
+          docker build \
+            --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+            --label "org.opencontainers.image.revision=${FULL_SHA}" \
+            --label "org.opencontainers.image.version=sha-${SHORT_SHA}" \
+            --label "org.opencontainers.image.created=${BUILD_DATE}" \
+            -t "$REPO:sha-${SHORT_SHA}" \
+            -t "$REPO:${FULL_SHA}" \
+            -t "$REPO:latest" \
+            ./frontend
+
+          docker push "$REPO:sha-${SHORT_SHA}"
+          docker push "$REPO:${FULL_SHA}"
+          docker push "$REPO:latest"
+
+      - name: Verify pushed images exist in ECR
+        # Gate cuoi: neu image khong ton tai tren ECR thi job FAIL
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          FULL_SHA="${{ github.sha }}"
+
+          echo "--- ECR backend image tags ---"
+          aws ecr describe-images \
+            --repository-name backend \
+            --image-ids imageTag=sha-${SHORT_SHA} imageTag=${FULL_SHA} imageTag=latest \
+            --query 'imageDetails[].imageTags' --output text
+
+          echo "--- ECR frontend image tags ---"
+          aws ecr describe-images \
+            --repository-name frontend \
+            --image-ids imageTag=sha-${SHORT_SHA} imageTag=${FULL_SHA} imageTag=latest \
+            --query 'imageDetails[].imageTags' --output text
+
+          echo "ECR push VERIFIED OK"
+

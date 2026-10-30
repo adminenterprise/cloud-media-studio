@@ -1,0 +1,56 @@
+# ==========================================
+# CẤU HÌNH THAM SỐ MẪU CHO MÔI TRƯỜNG PRODUCTION
+# Sao chép tệp này thành `terraform.tfvars` khi chạy thử nghiệm
+# ==========================================
+
+aws_region   = "ap-southeast-1"
+project_name = "enterprise-cloud-devsecops"
+environment  = "production"
+
+vpc_cidr           = "10.0.0.0/16"
+availability_zones = ["ap-southeast-1a", "ap-southeast-1b"]
+
+public_subnet_cidrs      = ["10.0.1.0/24", "10.0.2.0/24"]
+private_app_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+private_db_subnet_cidrs  = ["10.0.20.0/24", "10.0.21.0/24"]
+
+# FinOps: Bật NAT khi test kết nối mạng cho EC2/ECS
+# Khi không test hoặc chỉ dựng hạ tầng cơ bản, có thể đặt false để tiết kiệm credit
+enable_nat_gateway = true
+single_nat_gateway = true
+
+# ==========================================
+# Security Groups (Tuần 2)
+# ==========================================
+app_port = 3000 # Port backend NodeJS (Member 2)
+db_port  = 3306 # Port MySQL/Aurora (Member 3)
+efs_file_system_id = "fs-0b619655013598e7e" # EFS filesystem đã tạo cho Production VPC
+
+# ⚠️ BẮT BUỘC: Thay bằng IP thật trước khi deploy!
+# Tra IP tại: https://checkip.amazonaws.com
+admin_ip = "0.0.0.0/0" # Ví dụ: "203.0.113.10/32"
+
+# ==========================================
+# CloudFront & Route 53 (Tuần 3)
+# ==========================================
+s3_static_assets_bucket_name = "enterprise-cloud-devsecops-static-assets-ap-southeast-1"
+# alb_dns_name                 = "khi-nao-member2-deploy-alb-thi-dien-vao-day.elb.amazonaws.com"
+enable_route53               = false # Đặt true nếu nhóm đã mua domain riêng
+# domain_name                  = "devsecops-enterprise.com"
+
+# ==========================================
+# ALB (Tuần 2) và AWS WAFv2 (Tuần 4 - FINOPS SWITCH)
+# ==========================================
+enable_alb                     = true # Đặt true khi triển khai ALB/ASG tuần 2
+enable_waf                     = false # Đặt true khi kiểm thử WAF tuần 4
+enable_alb_deletion_protection = false # FinOps: Đặt false để dễ dàng destroy dọn dẹp credit sinh viên
+waf_rate_limit                 = 100   # Giới hạn 100 request/5 phút cho mỗi IP
+
+# ==========================================
+# Multi-VPC & Peering (Tuần 5 - 100% MIỄN PHÍ)
+# ==========================================
+management_vpc_cidr     = "10.1.0.0/16"
+management_subnet_cidrs = ["10.1.1.0/24", "10.1.2.0/24"]
+
+
+

@@ -1,0 +1,71 @@
+{
+  "Budget": {
+    "BudgetName": "enterprise-cloud-student-budget-200usd",
+    "BudgetLimit": {
+      "Amount": "200.0",
+      "Unit": "USD"
+    },
+    "CostTypes": {
+      "IncludeTax": true,
+      "IncludeSubscription": true,
+      "UseBlended": false,
+      "IncludeRefund": false,
+      "IncludeCredit": false,
+      "IncludeUpfront": true,
+      "IncludeRecurring": true,
+      "IncludeOtherSubscription": true,
+      "IncludeSupport": true,
+      "IncludeDiscount": true,
+      "UseAmortized": false
+    },
+    "TimeUnit": "MONTHLY",
+    "BudgetType": "COST"
+  },
+  "NotificationsWithSubscribers": [
+    {
+      "Notification": {
+        "NotificationType": "ACTUAL",
+        "ComparisonOperator": "GREATER_THAN",
+        "Threshold": 10.0,
+        "ThresholdType": "PERCENTAGE",
+        "NotificationState": "ALARM"
+      },
+      "Subscribers": [
+        {
+          "SubscriptionType": "EMAIL",
+          "Address": "admin-cloud@example.com"
+        }
+      ]
+    },
+    {
+      "Notification": {
+        "NotificationType": "ACTUAL",
+        "ComparisonOperator": "GREATER_THAN",
+        "Threshold": 25.0,
+        "ThresholdType": "PERCENTAGE",
+        "NotificationState": "ALARM"
+      },
+      "Subscribers": [
+        {
+          "SubscriptionType": "EMAIL",
+          "Address": "admin-cloud@example.com"
+        }
+      ]
+    },
+    {
+      "Notification": {
+        "NotificationType": "FORECASTED",
+        "ComparisonOperator": "GREATER_THAN",
+        "Threshold": 80.0,
+        "ThresholdType": "PERCENTAGE",
+        "NotificationState": "ALARM"
+      },
+      "Subscribers": [
+        {
+          "SubscriptionType": "EMAIL",
+          "Address": "admin-cloud@example.com"
+        }
+      ]
+    }
+  ]
+}

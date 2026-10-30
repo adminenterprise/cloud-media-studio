@@ -1,0 +1,211 @@
+variable "aws_region" {
+  description = "AWS Region triển khai hạ tầng FinOps"
+  type        = string
+  default     = "ap-southeast-1"
+}
+
+variable "project_name" {
+  description = "Tên dự án doanh nghiệp"
+  type        = string
+  default     = "enterprise-cloud-devsecops"
+}
+
+variable "environment" {
+  description = "Môi trường triển khai"
+  type        = string
+  default     = "production"
+}
+
+variable "budget_limit_usd" {
+  description = "Tổng hạn mức gói credit sinh viên ($200 USD)"
+  type        = string
+  default     = "200.0"
+}
+
+variable "alert_threshold_1_percent" {
+  description = "Ngưỡng cảnh báo Cấp 1 (10% tương đương $20 USD)"
+  type        = number
+  default     = 10.0
+}
+
+variable "alert_threshold_2_percent" {
+  description = "Ngưỡng cảnh báo Cấp 2 (25% tương đương $50 USD)"
+  type        = number
+  default     = 25.0
+}
+
+variable "alert_threshold_forecast_percent" {
+  description = "Ngưỡng cảnh báo dự báo (80% tương đương $160 USD)"
+  type        = number
+  default     = 80.0
+}
+
+variable "notification_emails" {
+  description = "Danh sách email nhận thông báo cảnh báo từ AWS Budgets"
+  type        = list(string)
+  default     = ["minhquan10092006@gmail.com"]
+}
+
+variable "member_users" {
+  description = "Danh sách username IAM cho 4 thành viên theo phân mảng"
+  type = map(object({
+    username = string
+    role     = string
+  }))
+  default = {
+    member1 = {
+      username = "member1-network-iac"
+      role     = "Network and Infrastructure as Code Lead"
+    }
+    member2 = {
+      username = "member2-compute-container"
+      role     = "Compute and Container Specialist"
+    }
+    member3 = {
+      username = "member3-data-finops"
+      role     = "Database Storage and FinOps Specialist"
+    }
+    member4 = {
+      username = "member4-security-devsecops"
+      role     = "Security Compliance and DevSecOps Specialist"
+    }
+  }
+}
+
+# ==============================================================================
+# TUẦN 2: BIẾN CẤU HÌNH RDS MYSQL (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+
+variable "vpc_id" {
+  description = "VPC ID từ Member 1 (chạy: cd terraform/ && terraform output vpc_id)"
+  type        = string
+}
+
+variable "rds_db_subnet_group_name" {
+  description = "RDS DB Subnet Group Name từ Member 1 (terraform output rds_db_subnet_group_name)"
+  type        = string
+}
+
+variable "db_security_group_id" {
+  description = "Security Group ID cho RDS bàn giao từ Member 1 (terraform output db_security_group_id). Nếu để trống, sẽ tạo SG cục bộ."
+  type        = string
+  default     = ""
+}
+
+variable "private_app_subnet_cidrs" {
+  description = "CIDR blocks của Private App Subnets — dùng cho Security Group rule (port 3306) nếu tạo SG cục bộ"
+  type        = list(string)
+  default     = ["10.0.10.0/24", "10.0.11.0/24"]
+}
+
+variable "rds_engine_version" {
+  description = "Phiên bản MySQL Engine"
+  type        = string
+  default     = "8.0"
+}
+
+variable "rds_instance_class" {
+  description = "Instance class cho RDS (db.t3.micro = ~$0.018/hr — FinOps optimized)"
+  type        = string
+  default     = "db.t3.micro"
+}
+
+variable "rds_allocated_storage" {
+  description = "Dung lượng ổ đĩa ban đầu (GB)"
+  type        = number
+  default     = 20
+}
+
+variable "rds_max_allocated_storage" {
+  description = "Dung lượng ổ đĩa tối đa khi auto-scale (GB)"
+  type        = number
+  default     = 50
+}
+
+variable "rds_db_name" {
+  description = "Tên database mặc định khởi tạo khi tạo RDS instance (khớp với appdb trong backend/server.js của Member 2)"
+  type        = string
+  default     = "appdb"
+}
+
+variable "rds_master_username" {
+  description = "Tài khoản admin RDS MySQL"
+  type        = string
+  default     = "admin"
+  sensitive   = true
+}
+
+variable "rds_master_password" {
+  description = "Mật khẩu admin RDS MySQL (Tuần 4: Member 4 sẽ chuyển sang AWS Secrets Manager)"
+  type        = string
+  sensitive   = true
+}
+
+variable "rds_multi_az" {
+  description = "Bật Multi-AZ cho High Availability (false = tiết kiệm dev/test, true = bật khi demo bảo vệ)"
+  type        = bool
+  default     = false
+}
+
+# ==============================================================================
+# TUẦN 3: BIẾN CẤU HÌNH DYNAMODB & S3 GLACIER (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+
+variable "dynamodb_billing_mode" {
+  description = "Billing mode cho DynamoDB (PAY_PER_REQUEST = On-Demand FinOps tối ưu hoặc PROVISIONED)"
+  type        = string
+  default     = "PAY_PER_REQUEST"
+}
+
+variable "dynamodb_enable_pitr" {
+  description = "Bật Point-in-time Recovery cho DynamoDB (false để tiết kiệm chi phí, true khi demo bảo vệ đồ án)"
+  type        = bool
+  default     = false
+}
+
+variable "s3_glacier_transition_days" {
+  description = "Số ngày trước khi tự động chuyển tài liệu cũ sang S3 Glacier (tiêu chuẩn: 30 ngày)"
+  type        = number
+  default     = 30
+}
+
+variable "s3_noncurrent_version_expiration_days" {
+  description = "Số ngày trước khi xóa vĩnh viễn phiên bản cũ của tệp trên S3 (FinOps tránh phình lưu trữ)"
+  type        = number
+  default     = 90
+}
+
+# ==============================================================================
+# TUẦN 4: BIẾN CẤU HÌNH CLOUDWATCH & CLOUDTRAIL (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+
+variable "cpu_utilization_alarm_threshold" {
+  description = "Ngưỡng kích hoạt cảnh báo quá tải CPU (%) cho RDS và Container"
+  type        = number
+  default     = 70.0
+}
+
+variable "cloudwatch_log_retention_days" {
+  description = "Số ngày lưu trữ log trong CloudWatch Log Groups (FinOps guardrail = 7 ngày tránh phình chi phí)"
+  type        = number
+  default     = 7
+}
+
+variable "cloudtrail_s3_glacier_transition_days" {
+  description = "Số ngày trước khi tự động chuyển audit log sang S3 Glacier Flexible Retrieval"
+  type        = number
+  default     = 30
+}
+
+variable "cloudtrail_s3_retention_days" {
+  description = "Số ngày lưu trữ audit log trên S3 trước khi xóa tự động (FinOps tiết kiệm credit)"
+  type        = number
+  default     = 90
+}
+
+variable "cloudtrail_is_multi_region" {
+  description = "Bật ghi vết kiểm toán đa vùng (false = chỉ ghi vùng ap-southeast-1 để tối ưu chi phí)"
+  type        = bool
+  default     = false
+}
+
