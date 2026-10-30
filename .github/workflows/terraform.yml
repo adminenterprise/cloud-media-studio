@@ -19,6 +19,10 @@ permissions:
   id-token: write # Bắt buộc để xin OIDC JWT token từ GitHub
   contents: read  # Bắt buộc để checkout code repo
 
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   terraform-ci:
     name: "Terraform Plan & Security Checks"
