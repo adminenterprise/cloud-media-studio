@@ -4,15 +4,18 @@
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main.id
-  }
-
   tags = {
     Name = "${var.project_name}-public-rt"
     Tier = "Public"
   }
+}
+
+# Keep public routes as standalone aws_route resources. The peering route is
+# declared in vpc_peering.tf; do not mix it with inline route blocks above.
+resource "aws_route" "public_default" {
+  route_table_id         = aws_route_table.public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.main.id
 }
 
 resource "aws_route_table_association" "public" {
