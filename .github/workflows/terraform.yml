@@ -46,7 +46,7 @@ jobs:
         run: terraform fmt -check
 
       - name: Terraform Init (S3 Remote Backend)
-        run: terraform init
+        run: terraform init -reconfigure
 
       - name: Terraform Validate
         run: terraform validate
