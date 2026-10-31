@@ -77,6 +77,7 @@ variable "app_port" {
 }
 
 variable "efs_file_system_id" {
+  default     = "fs-0b619655013598e7e"
   description = "Existing Amazon EFS file system ID mounted by the Week 2 EC2 instances"
   type        = string
 }
