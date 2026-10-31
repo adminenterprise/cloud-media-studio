@@ -15,6 +15,10 @@ on:
       - ".github/workflows/terraform.yml"
   workflow_dispatch:
 
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   id-token: write # Bắt buộc để xin OIDC JWT token từ GitHub
   contents: read  # Bắt buộc để checkout code repo
@@ -46,10 +50,12 @@ jobs:
         run: terraform fmt -check
 
       - name: Terraform Init (S3 Remote Backend)
-        run: terraform init
+        run: |
+          cp terraform.tfvars.example terraform.tfvars
+          terraform init
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -no-color
+        run: terraform plan -no-color -lock=false

@@ -9,9 +9,11 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"]
-      interval: 5s
-      retries: 10
+      test: ["CMD-SHELL", "mysql -uapp -papppass -e 'SELECT 1 FROM items LIMIT 1;' appdb"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
   backend:
     build: ./backend
     environment: { DB_HOST: db, DB_USER: app, DB_PASSWORD: apppass, DB_NAME: appdb }

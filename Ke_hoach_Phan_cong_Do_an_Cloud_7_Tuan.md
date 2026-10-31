@@ -38,7 +38,7 @@
 
 ## 3. BẢNG TIẾN ĐỘ TỔNG QUAN (DASHBOARD)
 
-- [ ] **Thành viên 1 (Mạng & IaC)**: 5/7 hoàn thành (71.4%)
+- [ ] **Thành viên 1 (Mạng & IaC)**: 6/7 hoàn thành (85.7%)
 - [ ] **Thành viên 2 (Tính toán & Container)**: 0/7 hoàn thành (0.0%)
 - [ ] **Thành viên 3 (Dữ liệu & FinOps)**: 4/7 hoàn thành (57.1%)
 - [ ] **Thành viên 4 (Bảo mật & DevSecOps)**: 0/7 hoàn thành (0.0%)
@@ -118,7 +118,7 @@
   - *Ghi chú*: Kiến trúc hướng sự kiện ghi điểm cộng chuyên môn rất cao.
 
 ### Tuần 6: Tối Ưu Hóa & Diễn Tập Kịch Bản Demo Bảo Vệ
-- [ ] **[Thành viên 1] Mạng & IaC**: Chuẩn hóa và đóng gói toàn bộ mã nguồn Terraform, hoàn thiện kịch bản 1 lệnh `terraform apply` dựng lại toàn bộ hạ tầng.
+- [x] **[Thành viên 1] Mạng & IaC**: Chuẩn hóa và đóng gói toàn bộ mã nguồn Terraform, hoàn thiện kịch bản 1 lệnh `terraform apply` dựng lại toàn bộ hạ tầng.
   - *Kết quả bàn giao (`Deliverable`)*: Thư mục mã nguồn Terraform hoàn chỉnh kèm tài liệu hướng dẫn triển khai.
   - *Ghi chú*: Chứng minh khả năng tự động hóa hạ tầng hoàn toàn.
 - [ ] **[Thành viên 2] Tính toán & Container**: Diễn tập kịch bản demo Self-Healing: Cưỡng bức tắt máy chủ EC2/Container để kiểm tra ALB cân bằng tải và ASG tự sinh máy mới.
