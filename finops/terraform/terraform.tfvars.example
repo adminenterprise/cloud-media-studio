@@ -71,3 +71,20 @@ dynamodb_enable_pitr  = false # Bật true khi diễn tập demo bảo vệ đ�
 s3_glacier_transition_days            = 30 # Chuyển sang Glacier sau 30 ngày
 s3_noncurrent_version_expiration_days = 90 # Xóa phiên bản cũ sau 90 ngày
 
+# ==============================================================================
+# TUẦN 4: CẤU HÌNH CLOUDWATCH & CLOUDTRAIL (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+
+# Ngưỡng kích hoạt cảnh báo CPU (%) cho RDS & Container
+cpu_utilization_alarm_threshold = 70.0
+
+# FinOps Guardrail: Giữ log trong CloudWatch 7 ngày (tránh phình chi phí lưu trữ)
+cloudwatch_log_retention_days = 7
+
+# CloudTrail Audit S3 Lifecycle (Tiết kiệm > 84% chi phí lưu trữ vết kiểm toán)
+cloudtrail_s3_glacier_transition_days = 30 # Chuyển sang S3 Glacier sau 30 ngày
+cloudtrail_s3_retention_days          = 90 # Tự động xóa audit log sau 90 ngày
+
+# CloudTrail Multi-Region (false = tối ưu chi phí trong region ap-southeast-1)
+cloudtrail_is_multi_region = false
+

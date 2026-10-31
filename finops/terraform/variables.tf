@@ -175,3 +175,37 @@ variable "s3_noncurrent_version_expiration_days" {
   default     = 90
 }
 
+# ==============================================================================
+# TUẦN 4: BIẾN CẤU HÌNH CLOUDWATCH & CLOUDTRAIL (MEMBER 3 — DỮ LIỆU & FINOPS)
+# ==============================================================================
+
+variable "cpu_utilization_alarm_threshold" {
+  description = "Ngưỡng kích hoạt cảnh báo quá tải CPU (%) cho RDS và Container"
+  type        = number
+  default     = 70.0
+}
+
+variable "cloudwatch_log_retention_days" {
+  description = "Số ngày lưu trữ log trong CloudWatch Log Groups (FinOps guardrail = 7 ngày tránh phình chi phí)"
+  type        = number
+  default     = 7
+}
+
+variable "cloudtrail_s3_glacier_transition_days" {
+  description = "Số ngày trước khi tự động chuyển audit log sang S3 Glacier Flexible Retrieval"
+  type        = number
+  default     = 30
+}
+
+variable "cloudtrail_s3_retention_days" {
+  description = "Số ngày lưu trữ audit log trên S3 trước khi xóa tự động (FinOps tiết kiệm credit)"
+  type        = number
+  default     = 90
+}
+
+variable "cloudtrail_is_multi_region" {
+  description = "Bật ghi vết kiểm toán đa vùng (false = chỉ ghi vùng ap-southeast-1 để tối ưu chi phí)"
+  type        = bool
+  default     = false
+}
+

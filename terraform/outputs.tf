@@ -95,6 +95,16 @@ output "efs_security_group_id" {
   value       = aws_security_group.efs.id
 }
 
+output "launch_template_id" {
+  description = "Launch Template ID for the Member 2 Week 2 EC2 Auto Scaling Group"
+  value       = aws_launch_template.week2_app.id
+}
+
+output "autoscaling_group_name" {
+  description = "Auto Scaling Group name for the Member 2 Week 2 EC2 instances"
+  value       = try(aws_autoscaling_group.week2_app[0].name, "ASG chưa được bật (enable_alb = false)")
+}
+
 output "bastion_security_group_id" {
   description = "Security Group ID cho Bastion Host (Admin SSH access)"
   value       = aws_security_group.bastion.id
@@ -141,32 +151,42 @@ output "route53_name_servers" {
 # ------------------------------------------------------------------------------
 output "alb_id" {
   description = "Application Load Balancer ID"
-  value       = try(aws_lb.main[0].id, "ALB chưa được bật (enable_alb_and_waf = false)")
+  value       = try(aws_lb.main[0].id, "ALB chưa được bật (enable_alb = false)")
 }
 
 output "alb_arn" {
   description = "Application Load Balancer ARN (Dùng để gắn WAF hoặc cấu hình CloudWatch)"
-  value       = try(aws_lb.main[0].arn, "ALB chưa được bật (enable_alb_and_waf = false)")
+  value       = try(aws_lb.main[0].arn, "ALB chưa được bật (enable_alb = false)")
 }
 
 output "alb_dns_name" {
   description = "DNS công khai của ALB (Dùng để truy cập trực tiếp kiểm thử)"
-  value       = try(aws_lb.main[0].dns_name, "ALB chưa được bật (enable_alb_and_waf = false)")
+  value       = try(aws_lb.main[0].dns_name, "ALB chưa được bật (enable_alb = false)")
 }
 
 output "alb_zone_id" {
   description = "Route 53 Zone ID của ALB (Dùng cho Route 53 Alias record)"
-  value       = try(aws_lb.main[0].zone_id, "ALB chưa được bật (enable_alb_and_waf = false)")
+  value       = try(aws_lb.main[0].zone_id, "ALB chưa được bật (enable_alb = false)")
 }
 
 output "alb_target_group_arn" {
   description = "Target Group ARN (Bàn giao cho Member 2 cắm ECS Fargate / EC2 ASG)"
-  value       = try(aws_lb_target_group.app[0].arn, "Target Group chưa được bật (enable_alb_and_waf = false)")
+  value       = try(aws_lb_target_group.app[0].arn, "Fargate Target Group chưa được bật (enable_alb = false)")
 }
 
 output "alb_target_group_name" {
-  description = "Target Group Name"
-  value       = try(aws_lb_target_group.app[0].name, "Target Group chưa được bật (enable_alb_and_waf = false)")
+  description = "Target Group name cho ECS Fargate (target type ip)"
+  value       = try(aws_lb_target_group.app[0].name, "Fargate Target Group chưa được bật (enable_alb = false)")
+}
+
+output "alb_ec2_target_group_arn" {
+  description = "Target Group ARN cho EC2 Auto Scaling Group (target type instance)"
+  value       = try(aws_lb_target_group.app_ec2[0].arn, "EC2 Target Group chưa được bật (enable_alb = false)")
+}
+
+output "alb_ec2_target_group_name" {
+  description = "Target Group name cho EC2 Auto Scaling Group"
+  value       = try(aws_lb_target_group.app_ec2[0].name, "EC2 Target Group chưa được bật (enable_alb = false)")
 }
 
 # ------------------------------------------------------------------------------
@@ -174,17 +194,17 @@ output "alb_target_group_name" {
 # ------------------------------------------------------------------------------
 output "waf_web_acl_id" {
   description = "AWS WAFv2 Web ACL ID"
-  value       = try(aws_wafv2_web_acl.main[0].id, "WAF chưa được bật (enable_alb_and_waf = false)")
+  value       = try(aws_wafv2_web_acl.main[0].id, "WAF chưa được bật (enable_waf = false)")
 }
 
 output "waf_web_acl_arn" {
   description = "AWS WAFv2 Web ACL ARN"
-  value       = try(aws_wafv2_web_acl.main[0].arn, "WAF chưa được bật (enable_alb_and_waf = false)")
+  value       = try(aws_wafv2_web_acl.main[0].arn, "WAF chưa được bật (enable_waf = false)")
 }
 
 output "waf_web_acl_name" {
   description = "Tên Web ACL bảo vệ ALB"
-  value       = try(aws_wafv2_web_acl.main[0].name, "WAF chưa được bật (enable_alb_and_waf = false)")
+  value       = try(aws_wafv2_web_acl.main[0].name, "WAF chưa được bật (enable_waf = false)")
 }
 
 output "waf_web_acl_capacity" {

@@ -12,7 +12,7 @@
 # 1. AWS WAFV2 WEB ACL (REGIONAL SCOPE GẮN VÀO ALB)
 # ------------------------------------------------------------------------------
 resource "aws_wafv2_web_acl" "main" {
-  count       = var.enable_alb_and_waf ? 1 : 0
+  count       = local.enable_waf_effective ? 1 : 0
   name        = "${var.project_name}-waf-web-acl"
   description = "AWS WAFv2 Web ACL bao ve ALB truoc SQL Injection, XSS va Rate Limiting"
   scope       = "REGIONAL"
@@ -124,7 +124,7 @@ resource "aws_wafv2_web_acl" "main" {
 # 2. LIÊN KẾT WAF WEB ACL VỚI APPLICATION LOAD BALANCER
 # ------------------------------------------------------------------------------
 resource "aws_wafv2_web_acl_association" "alb" {
-  count        = var.enable_alb_and_waf ? 1 : 0
+  count        = local.enable_waf_effective ? 1 : 0
   resource_arn = aws_lb.main[0].arn
   web_acl_arn  = aws_wafv2_web_acl.main[0].arn
 }

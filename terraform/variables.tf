@@ -76,6 +76,11 @@ variable "app_port" {
   default     = 3000
 }
 
+variable "efs_file_system_id" {
+  description = "Existing Amazon EFS file system ID mounted by the Week 2 EC2 instances"
+  type        = string
+}
+
 variable "db_port" {
   description = "Database port for RDS MySQL/Aurora (MySQL default: 3306)"
   type        = number
@@ -119,8 +124,22 @@ variable "domain_name" {
 }
 
 # ==========================================
-# ALB & AWS WAFv2 Variables (Tuần 4)
+# ALB & AWS WAFv2 Variables
 # ==========================================
+variable "enable_alb" {
+  description = "Create the public Application Load Balancer and target groups (enable for Member 2, Week 2)"
+  type        = bool
+  default     = true
+}
+
+variable "enable_waf" {
+  description = "Create and associate AWS WAFv2 with the ALB (enable for security testing; incurs additional cost)"
+  type        = bool
+  default     = false
+}
+
+# Backward compatibility for existing terraform.tfvars files.
+# Setting this legacy switch to true enables both ALB and WAF.
 variable "enable_alb_and_waf" {
   description = "Bật/Tắt ALB và AWS WAFv2 (FinOps: false khi không test để tiết kiệm ~$0.0225/h và phí WAF từ $200 credit)"
   type        = bool
