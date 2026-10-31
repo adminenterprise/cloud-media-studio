@@ -15,6 +15,10 @@ on:
       - ".github/workflows/terraform.yml"
   workflow_dispatch:
 
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   id-token: write # Bắt buộc để xin OIDC JWT token từ GitHub
   contents: read  # Bắt buộc để checkout code repo
