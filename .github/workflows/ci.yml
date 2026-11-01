@@ -225,7 +225,7 @@ jobs:
       - name: Build & push backend image (production tags)
         env:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          IMAGE: backend
+          IMAGE: enterprise-cloud-devsecops-backend
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           FULL_SHA="${{ github.sha }}"
@@ -254,7 +254,7 @@ jobs:
       - name: Build & push frontend image (production tags)
         env:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          IMAGE: frontend
+          IMAGE: enterprise-cloud-devsecops-backend
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           FULL_SHA="${{ github.sha }}"
