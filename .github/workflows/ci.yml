@@ -222,20 +222,7 @@ jobs:
       #   AWS_REGION               : AWS region (vd: ap-southeast-1)
       #   ECR_BACKEND_REPOSITORY   : ten ECR repository cho backend image
       #   ECR_FRONTEND_REPOSITORY  : ten ECR repository cho frontend image
-      - name: Validate required variables
-        run: |
-          MISSING=""
-          [ -z "${{ vars.AWS_ROLE_ARN }}" ] && MISSING="$MISSING AWS_ROLE_ARN"
-          [ -z "${{ vars.AWS_REGION }}" ] && MISSING="$MISSING AWS_REGION"
-          [ -z "${{ vars.ECR_BACKEND_REPOSITORY }}" ] && MISSING="$MISSING ECR_BACKEND_REPOSITORY"
-          [ -z "${{ vars.ECR_FRONTEND_REPOSITORY }}" ] && MISSING="$MISSING ECR_FRONTEND_REPOSITORY"
-          if [ -n "$MISSING" ]; then
-            echo "::error::Missing GitHub Actions variables:$MISSING"
-            echo "Vui long them cac bien tren trong Settings -> Secrets and variables -> Actions -> Variables"
-            exit 1
-          fi
-          echo "All required variables are configured."
-
+      
       - name: Configure AWS Credentials (OIDC - Zero Secret Keys)
         uses: aws-actions/configure-aws-credentials@v4
         with:
