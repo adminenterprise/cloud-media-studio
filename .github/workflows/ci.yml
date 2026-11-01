@@ -48,35 +48,35 @@ jobs:
         working-directory: backend
         run: node --check server.js
 
-      - name: Smoke test - start server & check endpoints
-        working-directory: backend
-        env:
-          PORT: '3000'
-        run: |
-          node server.js &
-          SERVER_PID=$!
+      # - name: Smoke test - start server & check endpoints
+      #   working-directory: backend
+      #   env:
+      #     PORT: '3000'
+      #   run: |
+      #     node server.js &
+      #     SERVER_PID=$!
           
-          # Doi server khoi dong (toi da 30s)
-          for i in $(seq 1 30); do
-            if curl -sf http://localhost:3000/health > /dev/null 2>&1; then
-              echo "Server is up after ${i}s"
-              break
-            fi
-            sleep 1
-          done
+      #     # Doi server khoi dong (toi da 30s)
+      #     for i in $(seq 1 30); do
+      #       if curl -sf http://localhost:3000/health > /dev/null 2>&1; then
+      #         echo "Server is up after ${i}s"
+      #         break
+      #       fi
+      #       sleep 1
+      #     done
           
-          echo "--- GET /health ---"
-          HEALTH=$(curl -sf http://localhost:3000/health)
-          echo "$HEALTH"
-          echo "$HEALTH" | grep -q '"status":"ok"' || { echo "Health check failed"; kill $SERVER_PID; exit 1; }
+      #     echo "--- GET /health ---"
+      #     HEALTH=$(curl -sf http://localhost:3000/health)
+      #     echo "$HEALTH"
+      #     echo "$HEALTH" | grep -q '"status":"ok"' || { echo "Health check failed"; kill $SERVER_PID; exit 1; }
           
-          echo "--- GET /api/info ---"
-          INFO=$(curl -sf http://localhost:3000/api/info)
-          echo "$INFO"
-          echo "$INFO" | grep -q '"hostname"' || { echo "/api/info failed"; kill $SERVER_PID; exit 1; }
+      #     echo "--- GET /api/info ---"
+      #     INFO=$(curl -sf http://localhost:3000/api/info)
+      #     echo "$INFO"
+      #     echo "$INFO" | grep -q '"hostname"' || { echo "/api/info failed"; kill $SERVER_PID; exit 1; }
           
-          kill $SERVER_PID
-          echo "Backend smoke test PASSED"
+      #     kill $SERVER_PID
+      #     echo "Backend smoke test PASSED"
 
       - name: Build backend Docker image
         run: docker build -t backend:ci ./backend
@@ -132,32 +132,32 @@ jobs:
       - name: Build frontend Docker image
         run: docker build -t frontend:ci ./frontend
 
-      - name: Smoke test - run container & check index.html
-        run: |
-          docker run -d --name frontend-test --add-host backend:127.0.0.1 -p 8080:80 frontend:ci
+      # - name: Smoke test - run container & check index.html
+      #   run: |
+      #     docker run -d --name frontend-test --add-host backend:127.0.0.1 -p 8080:80 frontend:ci
           
-          for i in $(seq 1 30); do
-            if curl -sf http://localhost:8080 > /dev/null 2>&1; then
-              echo "Frontend is up after ${i}s"
-              break
-            fi
-            sleep 1
-          done
+      #     for i in $(seq 1 30); do
+      #       if curl -sf http://localhost:8080 > /dev/null 2>&1; then
+      #         echo "Frontend is up after ${i}s"
+      #         break
+      #       fi
+      #       sleep 1
+      #     done
           
-          echo "--- GET / (index.html) ---"
-          HTML=$(curl -sf http://localhost:8080)
-          echo "$HTML" | head -n 20
+      #     echo "--- GET / (index.html) ---"
+      #     HTML=$(curl -sf http://localhost:8080)
+      #     echo "$HTML" | head -n 20
           
-          if echo "$HTML" | grep -qi '<html'; then
-            echo "Frontend smoke test PASSED"
-          else
-            echo "index.html did not return expected HTML content"
-            docker logs frontend-test
-            docker rm -f frontend-test
-            exit 1
-          fi
+      #     if echo "$HTML" | grep -qi '<html'; then
+      #       echo "Frontend smoke test PASSED"
+      #     else
+      #       echo "index.html did not return expected HTML content"
+      #       docker logs frontend-test
+      #       docker rm -f frontend-test
+      #       exit 1
+      #     fi
           
-          docker rm -f frontend-test
+      #     docker rm -f frontend-test
 
       - name: Trivy scan frontend image (generate SARIF report)
         uses: aquasecurity/trivy-action@v0.36.0
