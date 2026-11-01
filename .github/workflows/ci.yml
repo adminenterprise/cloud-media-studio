@@ -238,6 +238,14 @@ jobs:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           IMAGE: ${{ vars.ECR_BACKEND_REPOSITORY }}
         run: |
+          # Guard: fail som voi thong bao ro rang neu thieu cau hinh
+          if [ -z "$REGISTRY" ] || [ -z "$IMAGE" ]; then
+            echo "::error::REGISTRY hoac IMAGE dang rong (REGISTRY='$REGISTRY', IMAGE='$IMAGE')."
+            echo "Hay them variable ECR_BACKEND_REPOSITORY trong:"
+            echo "Settings -> Secrets and variables -> Actions -> tab Variables -> New repository variable"
+            exit 1
+          fi
+
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           FULL_SHA="${{ github.sha }}"
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -265,8 +273,16 @@ jobs:
       - name: Build & push frontend image (production tags)
         env:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          IMAGE: enterprise-cloud-devsecops-backend
+          IMAGE: ${{ vars.ECR_FRONTEND_REPOSITORY }}
         run: |
+          # Guard: fail som voi thong bao ro rang neu thieu cau hinh
+          if [ -z "$REGISTRY" ] || [ -z "$IMAGE" ]; then
+            echo "::error::REGISTRY hoac IMAGE dang rong (REGISTRY='$REGISTRY', IMAGE='$IMAGE')."
+            echo "Hay them variable ECR_FRONTEND_REPOSITORY trong:"
+            echo "Settings -> Secrets and variables -> Actions -> tab Variables -> New repository variable"
+            exit 1
+          fi
+
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           FULL_SHA="${{ github.sha }}"
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -290,19 +306,22 @@ jobs:
 
       - name: Verify pushed images exist in ECR
         # Gate cuoi: neu image khong ton tai tren ECR thi job FAIL
+        env:
+          BACKEND_REPO: ${{ vars.ECR_BACKEND_REPOSITORY }}
+          FRONTEND_REPO: ${{ vars.ECR_FRONTEND_REPOSITORY }}
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           FULL_SHA="${{ github.sha }}"
 
           echo "--- ECR backend image tags ---"
           aws ecr describe-images \
-            --repository-name backend \
+            --repository-name "$BACKEND_REPO" \
             --image-ids imageTag=sha-${SHORT_SHA} imageTag=${FULL_SHA} imageTag=latest \
             --query 'imageDetails[].imageTags' --output text
 
           echo "--- ECR frontend image tags ---"
           aws ecr describe-images \
-            --repository-name frontend \
+            --repository-name "$FRONTEND_REPO" \
             --image-ids imageTag=sha-${SHORT_SHA} imageTag=${FULL_SHA} imageTag=latest \
             --query 'imageDetails[].imageTags' --output text
 
