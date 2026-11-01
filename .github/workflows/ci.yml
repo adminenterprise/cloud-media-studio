@@ -1,5 +1,10 @@
 name: CI
 
+env:
+
+  ECR_BACKEND_REPOSITORY: enterprise-cloud-devsecops-backend
+  ECR_FRONTEND_REPOSITORY: enterprise-cloud-devsecops-frontend
+
 on:
   push:
     branches: [main]
@@ -212,6 +217,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Cac gia tri cau hinh lay tu GitHub Actions Variables
+      # (Settings -> Secrets and variables -> Actions -> Variables):
+      #   AWS_ROLE_ARN             : ARN IAM role cho OIDC (vd: arn:aws:iam::<account-id>:role/github-action)
+      #   AWS_REGION               : AWS region (vd: ap-southeast-1)
+      #   ECR_BACKEND_REPOSITORY   : ten ECR repository cho backend image
+      #   ECR_FRONTEND_REPOSITORY  : ten ECR repository cho frontend image
+      - name: Validate required variables
+        run: |
+          MISSING=""
+          [ -z "${{ vars.AWS_ROLE_ARN }}" ] && MISSING="$MISSING AWS_ROLE_ARN"
+          [ -z "${{ vars.AWS_REGION }}" ] && MISSING="$MISSING AWS_REGION"
+          [ -z "${{ vars.ECR_BACKEND_REPOSITORY }}" ] && MISSING="$MISSING ECR_BACKEND_REPOSITORY"
+          [ -z "${{ vars.ECR_FRONTEND_REPOSITORY }}" ] && MISSING="$MISSING ECR_FRONTEND_REPOSITORY"
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing GitHub Actions variables:$MISSING"
+            echo "Vui long them cac bien tren trong Settings -> Secrets and variables -> Actions -> Variables"
+            exit 1
+          fi
+          echo "All required variables are configured."
+
       - name: Configure AWS Credentials (OIDC - Zero Secret Keys)
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -225,7 +250,7 @@ jobs:
       - name: Build & push backend image (production tags)
         env:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          IMAGE: enterprise-cloud-devsecops-backend
+          IMAGE: ${{ vars.ECR_BACKEND_REPOSITORY }}
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           FULL_SHA="${{ github.sha }}"
