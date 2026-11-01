@@ -1,7 +1,6 @@
 name: CI
 
 env:
-
   ECR_BACKEND_REPOSITORY: enterprise-cloud-devsecops-backend
   ECR_FRONTEND_REPOSITORY: enterprise-cloud-devsecops-frontend
 
