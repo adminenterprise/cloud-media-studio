@@ -58,7 +58,7 @@ variable "private_db_subnet_cidrs" {
 variable "enable_nat_gateway" {
   description = "Toggle NAT Gateway creation (set false when not testing compute to save ~$0.045/hr from $200 credit)"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "single_nat_gateway" {
@@ -130,7 +130,7 @@ variable "domain_name" {
 variable "enable_alb" {
   description = "Create the public Application Load Balancer and target groups (enable for Member 2, Week 2)"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "enable_waf" {

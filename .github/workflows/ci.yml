@@ -74,9 +74,14 @@ jobs:
           INFO=$(curl -sf http://localhost:3000/api/info)
           echo "$INFO"
           echo "$INFO" | grep -q '"hostname"' || { echo "/api/info failed"; kill $SERVER_PID; exit 1; }
+
+          echo "--- GET /api/media ---"
+          MEDIA=$(curl -sf http://localhost:3000/api/media)
+          echo "$MEDIA" | head -n 10
+          echo "$MEDIA" | grep -qi 'Brand Identity' || { echo "/api/media failed"; kill $SERVER_PID; exit 1; }
           
           kill $SERVER_PID
-          echo "Backend smoke test PASSED"
+          echo "Backend smoke test PASSED (Cloud Media Studio Core APIs Verified)"
 
       - name: Build backend Docker image
         run: docker build -t backend:ci ./backend

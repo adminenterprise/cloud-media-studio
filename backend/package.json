@@ -1,3 +1,14 @@
-{ "name": "backend", "version": "1.0.0", "main": "server.js",
-  "scripts": { "start": "node server.js" },
-  "dependencies": { "express": "^5.0.0", "mysql2": "^3.0.0" } }
+{
+  "name": "cloud-media-studio-backend",
+  "version": "1.0.0",
+  "description": "Enterprise Cloud Media Studio API - AWS ECS Fargate Microservice",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --check server.js"
+  },
+  "dependencies": {
+    "express": "^5.0.0",
+    "mysql2": "^3.0.0"
+  }
+}
