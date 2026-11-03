@@ -78,3 +78,4 @@ console.log('🎉 DEPLOY STATIC DIST THÀNH CÔNG!');
 console.log(`🌐 CloudFront CDN URL: https://${CLOUDFRONT_DOMAIN}`);
 console.log(`💻 Localhost Server:   http://localhost:3000`);
 console.log('================================================================\n');
+
