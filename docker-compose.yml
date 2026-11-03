@@ -1,6 +1,7 @@
 services:
   db:
     image: mysql:8.4
+    container_name: cloud-media-db
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: appdb
@@ -9,18 +10,28 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "mysql -uapp -papppass -e 'SELECT 1 FROM items LIMIT 1;' appdb"]
+      test: ["CMD-SHELL", "mysql -uapp -papppass -e 'SELECT 1 FROM media_items LIMIT 1;' appdb"]
       interval: 3s
       timeout: 5s
       retries: 20
       start_period: 10s
   backend:
     build: ./backend
-    environment: { DB_HOST: db, DB_USER: app, DB_PASSWORD: apppass, DB_NAME: appdb }
-    depends_on: { db: { condition: service_healthy } }
+    container_name: cloud-media-backend
+    environment: 
+      DB_HOST: db
+      DB_USER: app
+      DB_PASSWORD: apppass
+      DB_NAME: appdb
+      PORT: 3000
+    depends_on:
+      db:
+        condition: service_healthy
   frontend:
     build: ./frontend
+    container_name: cloud-media-frontend
     ports: ["8080:80"]
     volumes:
       - ./frontend/index.html:/usr/share/nginx/html/index.html:ro
-    depends_on: [backend]
+    depends_on:
+      - backend

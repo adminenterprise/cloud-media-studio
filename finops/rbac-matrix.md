@@ -1,6 +1,6 @@
 # BẢNG MA TRẬN PHÂN QUYỀN IAM LEAST PRIVILEGE (RBAC MATRIX)
 
-> **Dự án**: ENTERPRISE CLOUD & DEVSECOPS PLATFORM  
+> **Dự án**: CLOUD MEDIA STUDIO (Enterprise Media Hub & DevSecOps Platform)  
 > **Tác giả phụ trách**: Thành viên 3 (Dữ liệu & FinOps - Phạm Thế Hùng)  
 > **Nguyên tắc cốt lõi**: `Principle of Least Privilege (PoLP)` — Mỗi thành viên chỉ sở hữu đúng tập quyền tối thiểu phục vụ cho chuyên môn được giao, ngăn chặn việc can thiệp trái phép, xung đột tài nguyên và kiểm soát chi phí tối đa ($200 Credit).
 

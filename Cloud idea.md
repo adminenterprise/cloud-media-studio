@@ -1,39 +1,28 @@
-# TỔNG QUAN DỰ ÁN: ENTERPRISE CLOUD & DEVSECOPS PLATFORM
+# 🎬 TỔNG QUAN DỰ ÁN: CLOUD MEDIA STUDIO
+### Hệ Thống Biên Tập, Chuyển Đổi & Phân Phối Truyền Thông Đa Phương Tiện Doanh Nghiệp Trên AWS Tích Hợp DevSecOps
 
-_(Nền tảng Ứng dụng Doanh nghiệp Đa tầng trên AWS tích hợp Tự động hóa & An ninh mạng)_
+---
 
-### 1. Ý tưởng cốt lõi và Mục tiêu dự án
+### 1. Ý tưởng cốt lõi và Sản phẩm (Core Product)
 
-- **Mô hình kiến trúc:** Xây dựng cổng thông tin và nền tảng dịch vụ doanh nghiệp đa tầng (`3-Tier Architecture`), kết hợp giữa `Monolith Web Application (ứng dụng web nguyên khối)` và `Microservices (kiến trúc vi dịch vụ)` chạy trên môi trường đa vùng khả dụng (`Multi-AZ - Multi-Availability Zone`).
-    
-- **Mục tiêu học thuật:** Khai thác thực tế 100% các nhóm dịch vụ trong đề cương học phần trên tài khoản AWS thật (tận dụng gói học sinh $200). Chuyển đổi phần `OpenStack (nền tảng đám mây riêng mã nguồn mở)` thành chuyên đề **Phân tích Kiến trúc Mở rộng Đám mây lai trên Lý thuyết (`Proposed Hybrid Cloud Architecture`)** trong báo cáo để tối ưu tài nguyên phần cứng máy tính cá nhân.
-    
-- **Mục tiêu điểm số:** Giành trọn vẹn điểm đồ án chính khóa và tối đa hóa điểm cộng (`Bonus Points`) nhờ tích hợp sâu các tiêu chuẩn doanh nghiệp:
-    
-    - `Infrastructure as Code - IaC (hạ tầng dưới dạng mã nguồn)` bằng Terraform.
-        
-    - `CI/CD Pipeline (đường ống tích hợp và triển khai liên tục)` tự động quét lỗ hổng an ninh (`DevSecOps`).
-        
-    - `Application Layer Defense (phòng thủ tầng ứng dụng)` với AWS WAF.
-        
-    - `Event-Driven Architecture (kiến trúc hướng sự kiện)` bất đồng bộ với Amazon SQS và Amazon SNS.
-        
-    - `High Availability & Self-Healing (độ sẵn sàng cao và khả năng tự phục hồi)`.
-        
+- **Mô hình kiến trúc:** Xây dựng nền tảng **SaaS Media Hub** doanh nghiệp (tương tự Cloudinary hoặc Canva thu nhỏ), kết hợp giữa kiến trúc ứng dụng web đa tầng (`3-Tier Architecture Multi-AZ`) và đường ống xử lý không máy chủ (`Serverless Pipeline`) phục vụ Content Creator và Marketing.
+- **Tính năng sản phẩm cốt lõi:**
+  1. **Tải lên tài nguyên (Upload):** Người dùng tải ảnh chất lượng cao (4K UHD) hoặc video ngắn lên hệ thống.
+  2. **Xử lý tự động (AI/Serverless Pipeline):** Sự kiện `s3:ObjectCreated` kích hoạt AWS Lambda tự động nén sang WebP, sinh 3 kích thước Thumbnail (Mobile 320w, Tablet 768w, Desktop 1200w).
+  3. **Quản lý & Tìm kiếm kho Media:** Tra cứu, lọc theo tags phân loại, dung lượng, định dạng, tác giả.
+  4. **Lưu trữ vòng đời thông minh (FinOps Lifecycle Archiving):** Ảnh/video sau 30 ngày tự động chuyển vào kho lưu trữ lạnh `S3 Glacier` giúp giảm hơn 84% chi phí lưu trữ.
+
+---
 
 ### 2. Thiết kế Kiến trúc Hệ thống (System Architecture)
 
-Toàn bộ hệ thống được triển khai trên nền tảng AWS và phân tách độc lập qua 2 đám mây riêng ảo (`Multi-VPC Architecture`) kết nối thông suốt qua `VPC Peering`:
-
-Plaintext
-
 ```
-[ Người dùng / Khách hàng ]
-           │
-           ▼
+[ NGƯỜI DÙNG / CREATOR ]
+          │
+          ▼
 [ Amazon Route 53 (DNS) + Amazon CloudFront (CDN) + AWS WAF (Tường lửa Web) ]
-           │
-           ▼
+          │
+          ▼
 ┌────────────────────── PRODUCTION VPC (10.0.0.0/16) - Multi-AZ ──────────────────────┐
 │                                                                                     │
 │  [ Public Subnets - Tầng Biên (Edge Tier) ]                                         │
@@ -42,17 +31,18 @@ Plaintext
 │  └── NAT Gateway (Cổng dịch địa chỉ mạng cho phép máy chủ nội bộ tải bản vá)         │
 │                                                                                     │
 │  [ Private Subnets - Tầng Tính toán (Compute Tier) ]                                │
-│  ├── EC2 Auto Scaling Group (Cụm máy chủ web tự co giãn theo tải CPU)               │
-│  ├── Amazon ECS + AWS Fargate (Microservices container chạy ngầm không máy chủ)     │
-│  └── Amazon EFS (Hệ thống tệp mạng chia sẻ dùng chung giữa các container/máy chủ)   │
+│  ├── Amazon ECS + AWS Fargate (API Service xử lý nghiệp vụ Media Studio)            │
+│  ├── AWS Lambda (Hàm Serverless tự động bắt sự kiện S3 nén ảnh WebP & Thumbnails)   │
+│  └── Amazon EFS (Hệ thống tệp mạng chia sẻ giữa các container/máy chủ)              │
 │                                                                                     │
 │  [ Private Subnets - Tầng Dữ liệu (Database Tier - Cách ly hoàn toàn) ]              │
-│  ├── Amazon Aurora Serverless / RDS MySQL Multi-AZ (Cơ sở dữ liệu giao dịch chính)  │
-│  └── Amazon DynamoDB (NoSQL lưu trữ phiên làm việc User Session và Giỏ hàng tạm)    │
+│  ├── Amazon RDS MySQL Multi-AZ (Lưu Metadata: tên file, kích thước, tags, author)   │
+│  └── Amazon DynamoDB (NoSQL lưu trữ lượt tải, lượt xem và hàng đợi xử lý media)     │
 │                                                                                     │
-│  [ Tầng Lưu trữ Đối tượng (Object Storage Tier) ]                                   │
-│  ├── Amazon S3 (Lưu trữ ảnh đại diện, giao diện tĩnh, tài liệu tải lên)             │
-│  └── S3 Glacier (Lưu trữ chứng từ, hóa đơn kế toán cũ theo chính sách vòng đời)     │
+│  [ Tầng Lưu trữ Đối tượng S3 & FinOps Lifecycle ]                                   │
+│  ├── S3 Raw Bucket: Chứa ảnh/video gốc người dùng tải lên                           │
+│  ├── S3 Processed Bucket: Chứa ảnh đã nén WebP, 3 bản Thumbnail                     │
+│  └── S3 Glacier: Tự động chuyển media cũ sau 30 ngày (Tiết kiệm 84% chi phí)        │
 │                                                                                     │
 └──────────────────────────────────────────┬──────────────────────────────────────────┘
                                            │
@@ -63,147 +53,40 @@ Plaintext
 │                                                                                     │
 │  • AWS Secrets Manager: Quản lý tập trung mật khẩu DB, không hardcode trong mã code │
 │  • AWS KMS: Dịch vụ quản lý khóa mã hóa dữ liệu tại chỗ (Encryption at Rest)        │
-│  • Amazon Cognito: Cung cấp xác thực đăng ký/đăng nhập và cấp phát JWT Token        │
-│  • Amazon SQS & SNS: Hàng đợi và thông báo sự kiện giao dịch/thanh toán bất đồng bộ │
+│  • Bastion Host: Quản trị nội bộ bảo mật qua AWS SSM Session Manager                │
 │  • GitHub Actions Runner + Trivy: Tự động kiểm thử mã nguồn và quét lỗ hổng bảo mật │
 │                                                                                     │
 └─────────────────────────────────────────────────────────────────────────────────────┘
-                                           │
-            [ KẾT NỐI MỞ RỘNG TRÊN BÁO CÁO LÝ THUYẾT (THEORETICAL DESIGN) ]
-                                           │ (AWS Site-to-Site VPN / IPsec)
-                                           ▼
-┌────────────────────────── OpenStack Private Cloud (On-Premises) ────────────────────┐
-│  • Neutron: Mạng ảo định tuyến sang AWS VPC qua VPN tunnel                          │
-│  • Nova & Cinder: Máy chủ ảo nội bộ xử lý đối soát chứng từ tài chính               │
-│  • Horizon Dashboard: Bảng điều khiển quản trị hạ tầng đám mây riêng                │
-└─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 3. Bản đồ Ánh xạ 100% Danh mục Dịch vụ Học phần trên AWS
+---
 
-Dạ, thưa tổng tài, bảng cấu trúc đảm bảo bao phủ đầy đủ tất cả các dịch vụ trong syllabus (đề cương môn học) mà không bỏ sót bất kỳ hạng mục nào:
+### 3. "Điểm Sáng Ăn Điểm" — 5 Chốt Chặn DevSecOps CI/CD
 
-|**Phân nhóm dịch vụ**|**Dịch vụ trong đề cương**|**Vai trò cụ thể trong Dự án**|**Trạng thái triển khai**|
-|---|---|---|---|
-|**1. Tính toán (`Compute`)**|`EC2`, `Auto Scaling`, `ECS`, `Fargate`, `ECR`, `Lambda`, `Elastic Beanstalk`, `Batch`, `Lightsail`|• `ECS + Fargate + ECR`: Chạy container microservice nghiệp vụ bằng Docker.<br><br>  <br><br>• `EC2 + Auto Scaling`: Chạy web chính, tự co giãn và tự phục hồi khi máy chủ sập.<br><br>  <br><br>• `Lambda`: Tự động nén ảnh đại diện khi người dùng tải lên S3.<br><br>  <br><br>• `Beanstalk & Lightsail`: Dựng môi trường staging/blog tin tức phụ trợ.<br><br>  <br><br>• `AWS Batch`: Chạy tiến trình kết xuất báo cáo dữ liệu định kỳ.|🟢 Deploy thật trên AWS (Bật/tắt linh hoạt)|
-|**2. Lưu trữ (`Storage`)**|`S3`, `S3 Glacier`, `EBS`, `EFS`|• `S3`: Lưu trữ tài nguyên tĩnh (ảnh, CSS, Javascript).<br><br>  <br><br>• `S3 Glacier`: Cấu hình `Lifecycle Policy` tự động chuyển hóa đơn cũ sau 30 ngày.<br><br>  <br><br>• `EBS`: Ổ đĩa hệ điều hành tốc độ cao cho EC2.<br><br>  <br><br>• `EFS`: Thư mục chia sẻ tệp chung giữa các container ECS.|🟢 Deploy thật trên AWS|
-|**3. Cơ sở dữ liệu (`Database`)**|`RDS`, `Aurora`, `DynamoDB`, `Redshift`|• `RDS MySQL / Aurora Serverless`: Lưu tài khoản, danh mục sản phẩm, đơn hàng.<br><br>  <br><br>• `DynamoDB`: Lưu giỏ hàng tạm thời và `User Session (phiên người dùng)`.<br><br>  <br><br>• `Redshift`: Tạo 1 cụm Serverless truy vấn phân tích dữ liệu (bật 1 giờ demo rồi xóa).|🟢 Deploy thật trên AWS (Tối ưu giờ chạy)|
-|**4. Mạng & Phân phối (`Networking`)**|`VPC`, `ELB (ALB)`, `Route 53`, `CloudFront`, `VPC Peering`, `Transit Gateway`, `Direct Connect`, `Outposts`|• `VPC Multi-AZ + ALB`: Phân tách Public/Private Subnet và cân bằng tải.<br><br>  <br><br>• `CloudFront + Route 53`: Tối ưu hóa bộ nhớ đệm `Caching` và phân giải DNS.<br><br>  <br><br>• `VPC Peering`: Kết nối bảo mật nội bộ giữa Production VPC và Management VPC.<br><br>  <br><br>• `Direct Connect & Outposts`: Đưa vào chương phân tích đối chiếu giải pháp lớn trong báo cáo.|🟢 Deploy thật (VPC, ALB, CloudFront, Peering) + 🔵 Architecture lý thuyết|
-|**5. Bảo mật & Danh tính (`Security`)**|`IAM`, `Cognito`, `AWS WAF`, `Secrets Manager`, `KMS`, `Shield`, `Artifact`|• `IAM`: Phân quyền người dùng theo `Principle of Least Privilege`.<br><br>  <br><br>• `Cognito`: Quản lý xác thực đăng ký/đăng nhập và cấp phát mã JWT.<br><br>  <br><br>• `AWS WAF`: Tường lửa chặn đứng SQL Injection, XSS và Rate Limiting.<br><br>  <br><br>• `Secrets Manager + KMS`: Quản lý và mã hóa mật khẩu DB, loại bỏ hardcode.<br><br>  <br><br>• `Shield & Artifact`: Bật bảo vệ chống DDoS cơ bản và xuất chứng chỉ tuân thủ SOC2.|🟢 Deploy thật trên AWS|
-|**6. Quản trị & Chi phí (`Governance & Cost`)**|`CloudWatch`, `CloudTrail`, `Config`, `Well-Architected Tool`, `AWS Budgets`, `Cost Explorer`|• `CloudWatch`: Giám sát chỉ số CPU/RAM, thiết lập chuông cảnh báo quá tải.<br><br>  <br><br>• `CloudTrail`: Ghi vết toàn bộ hành vi gọi API quản trị hạ tầng.<br><br>  <br><br>• `AWS Budgets`: Thiết lập ngưỡng cảnh báo email tự động khi vượt $20.<br><br>  <br><br>• `Well-Architected Tool`: Đánh giá dự án theo 6 trụ cột tối ưu của AWS.|🟢 Deploy thật trên AWS|
-|**7. Đám mây lai (`Hybrid Cloud`)**|`OpenStack (Nova, Neutron, Cinder, Horizon, Keystone)`|Phân tích giải pháp kết nối `Site-to-Site VPN` giữa AWS VPC và Neutron OpenStack; lập bảng đối chiếu tương đương giữa các dịch vụ AWS và OpenStack.|🔵 Architecture & Report (Phân tích lý thuyết sâu trong báo cáo đồ án)|
+Đường ống CI/CD GitHub Actions (`.github/workflows/ci.yml`):
 
-### 4. Năm tính năng "Vũ khí bí mật" lấy trọn điểm cộng (Bonus Points)
+1. **Chốt 1: Syntax & Health Check Liveness:**
+   - Kiểm tra cú pháp: `node --check server.js`
+   - Chạy thử backend độc lập, tự động gọi `/health`, `/api/info`, `/api/media` đảm bảo code không crash.
+2. **Chốt 2: Aqua Security Trivy Container Scanner:**
+   - Tự động quét Docker Image của Backend và Frontend trước khi đóng gói.
+   - Ngưỡng: Nếu dính lỗ hổng **CRITICAL/HIGH** chưa vá, đường ống sẽ cảnh báo và chặn lại.
+3. **Chốt 3: Zero Secret Keys via AWS OIDC:**
+   - Tuyệt đối không lưu static `AWS_ACCESS_KEY_ID` hay `AWS_SECRET_ACCESS_KEY` trong GitHub Secrets.
+   - GitHub Actions kết nối với AWS IAM thông qua OpenID Connect (OIDC) xin cấp mã JWT ngắn hạn, AWS cấp quyền `AssumeRole` tạm thời.
+4. **Chốt 4: Gắn thẻ Bất biến (Immutable Tagging Strategy):**
+   - Mỗi ảnh Docker đẩy lên ECR được gắn thẻ theo mã băm commit: `backend:sha-5e038b6`.
+   - Chống bị ghi đè nhầm phiên bản, truy vết 100% dòng code trên web đang chạy từ commit nào.
+5. **Chốt 5: Tự động hóa Hạ tầng (Terraform CI):**
+   - File `.github/workflows/terraform.yml` tự động chạy `fmt`, `validate` và `plan -lock=false` mỗi khi có thay đổi hạ tầng.
 
-1. **Hạ tầng dưới dạng mã nguồn (`IaC with Terraform`)**:
-    
-    - Toàn bộ tài nguyên mạng (VPC, Subnet, Route Table, Internet Gateway, NAT Gateway), máy chủ và cơ sở dữ liệu được mã hóa thành các kịch bản `.tf`.
-        
-    - Nhóm chứng minh khả năng tự động hóa hạ tầng hoàn toàn: chỉ cần gõ đúng 1 lệnh `terraform apply` là toàn bộ hệ thống được khởi tạo chuẩn xác trong 3–5 phút.
-        
-2. **Quy trình tích hợp bảo mật tự động (`DevSecOps & CI/CD Pipeline`)**:
-    
-    - Sử dụng `GitHub Actions`. Mỗi khi thành viên đẩy mã nguồn mới lên nhánh chính (`main`), đường ống tự động kích hoạt:
-        
-        - Chạy kiểm thử mã nguồn (`Unit Tests`).
-            
-        - Tự động quét lỗ hổng bảo mật của ảnh container bằng công cụ `Trivy Scanner`.
-            
-        - Đẩy ảnh container sạch lên `Amazon ECR` và kích hoạt triển khai lên máy chủ.
-            
-3. **Phòng thủ tầng ứng dụng bằng `AWS WAF (Web Application Firewall)`**:
-    
-    - Gắn WAF trực tiếp trước bộ cân bằng tải ALB.
-        
-    - Thiết lập bộ luật tùy biến: Chặn tấn công `SQL Injection (chèn mã SQL độc)`, Chặn `XSS (tấn công kịch bản chéo)` và Kích hoạt `Rate Limiting (giới hạn tối đa 100 requests / 5 phút trên mỗi IP để chống spam/DDoS)`.
-        
-4. **Bảo mật thông tin đăng nhập với `AWS Secrets Manager & KMS`**:
-    
-    - Tuyệt đối không lưu trữ cứng thông tin tài khoản hay mật khẩu cơ sở dữ liệu trong mã nguồn (`No Hardcoded Credentials`).
-        
-    - Ứng dụng khi khởi động sẽ tự động gọi API an toàn đến Secrets Manager để lấy thông tin đăng nhập, dữ liệu được mã hóa bằng khóa bảo mật riêng từ `AWS KMS`.
-        
-5. **Kiến trúc hướng sự kiện bất đồng bộ (`Event-Driven Architecture`)**:
-    
-    - Sử dụng kết hợp `Amazon SQS (hàng đợi thông báo)` và `Amazon SNS (dịch vụ phân phối thông báo)`.
-        
-    - Khi người dùng thực hiện giao dịch hoặc nộp tác vụ nặng, hệ thống đẩy sự kiện vào hàng đợi SQS để xử lý nền và kích hoạt SNS gửi email xác nhận tức thì, giúp tách rời các thành phần và tối ưu hóa tốc độ phản hồi của trang web.
-        
+---
 
-### 5. Dự toán Ngân sách Chi tiết từ Gói Tài trợ $200
+### 4. Bảng Phân Công 4 Thành Viên Cho Buổi Báo Cáo Hội Đồng
 
-Dạ, thưa tổng tài, để duy trì hệ thống chạy phục vụ kiểm thử, chụp ảnh minh chứng và bảo vệ đồ án trong suốt quá trình làm việc, chi phí ước tính được kiểm soát chặt chẽ như sau:
-
-- **NAT Gateway (1 bộ duy nhất):** ~$15 – $20 (khoảng $0.045/giờ, tắt khi không dùng).
-    
-- **Application Load Balancer (ALB):** ~$12 – $15.
-    
-- **Amazon Aurora Serverless v2 / RDS MySQL (db.t3.micro):** ~$10 – $15.
-    
-- **Amazon EC2 (t3.micro) + ECS Fargate:** ~$8 – $12.
-    
-- **AWS WAF + Secrets Manager + KMS:** ~$5.
-    
-- **Redshift Serverless (chỉ bật chạy demo truy vấn 1–2 giờ rồi xóa cụm):** ~$1.
-    
-- **Tài nguyên miễn phí (Free Tier):** S3 (dưới 5GB), DynamoDB (dưới 25GB), Lambda (1 triệu requests/tháng), CloudWatch cơ bản.
-    
-- **👉 Tổng chi phí dự kiến:** Khoảng **$50 – $65 USD**. Tài khoản vẫn còn dư dôi an toàn từ **$135 – $150 USD**.
-    
-
-### 6. Kịch bản Trình diễn Thực tế (Demo Script) Trước Hội đồng Chấm thi
-
-Khi bước vào phòng bảo vệ, nhóm tổng tài sẽ trình diễn 3 màn demo thực chiến trực tiếp trên màn hình chiếu:
-
-- **Màn 1: Trình diễn Khả năng Tự phục hồi (`Self-Healing`)**
-    
-    - Mở trang web ứng dụng đang hoạt động bình thường trên trình duyệt.
-        
-    - Mở song song AWS Console, chủ động bấm **Terminate (Xóa cưỡng bức)** 1 máy chủ EC2 hoặc tắt một Container Task đang chạy.
-        
-    - Nhấn F5 trang web để chứng minh dịch vụ không hề bị gián đoạn (Zero-Downtime) nhờ ALB tự động chuyển hướng sang máy chủ phụ. Chỉ 1 phút sau, mở giao diện Auto Scaling Group để giảng viên tận mắt chứng kiến hệ thống tự sinh ra một máy chủ mới thay thế.
-        
-- **Màn 2: Trình diễn Phòng thủ Tấn công Thực tế với AWS WAF**
-    
-    - Mở Terminal, thực thi lệnh `curl` gửi yêu cầu đính kèm payload tấn công SQL Injection: `' OR 1=1 --`.
-        
-    - Màn hình Terminal lập tức trả về mã phản hồi `403 Forbidden` (bị WAF chặn đứng).
-        
-    - Chuyển sang giao diện AWS CloudWatch / WAF Console, chỉ cho hội đồng thấy biểu đồ lưu lượng mạng vừa ghi nhận và triệt hạ một cuộc tấn công trái phép theo thời gian thực.
-        
-- **Màn 3: Trình diễn Tự động hóa & Năng lực Quản trị Chi phí (`IaC & FinOps`)**
-    
-    - Mở giao diện `GitHub Actions` chứng minh đường ống CI/CD tự động chạy kiểm thử và quét sạch mã độc của Docker Image bằng `Trivy Scanner` trước khi deploy.
-        
-    - Trình chiếu thư mục mã nguồn `Terraform` đã chuẩn hóa toàn bộ hạ tầng.
-        
-    - Mở bảng điều khiển `AWS Cost Explorer` và `AWS Budgets` để chứng minh nhóm có tư duy quản trị tài chính đám mây chuyên nghiệp, kiểm soát hệ thống chạy mượt mà mà chỉ tiêu tốn một phần nhỏ ngân sách.
-        
-
-### 7. Phân công Trách nhiệm 4 Thành viên (Khối lượng Độc lập & Đồng đều)
-
-Dạ, thưa tổng tài, 4 phân mảng được phân bổ rành mạch để mỗi thành viên chịu trách nhiệm trọn gói một nhánh công việc mà không bị phụ thuộc vào nhau:
-
-1. **Thành viên 1 — Tổng tài (Mạng, Hạ tầng IaC & Trưởng nhóm):**
-    
-    - _Nhiệm vụ:_ Viết toàn bộ mã nguồn Terraform, thiết lập kiến trúc VPC Multi-AZ, cấu hình Security Group, Route 53, CloudFront và kết nối Multi-VPC Peering.
-        
-    - _Trách nhiệm demo:_ Trình diễn mã nguồn Terraform và sơ đồ mạng kết nối đa tầng.
-        
-2. **Thành viên 2 (Tính toán & Containerization):**
-    
-    - _Nhiệm vụ:_ Đóng gói ứng dụng web 3 tầng vào Docker, triển khai cụm ECS Fargate, cấu hình EC2 Auto Scaling Group sau ALB, gắn ổ đĩa chia sẻ EFS và chạy thử nghiệm Lambda/Beanstalk.
-        
-    - _Trách nhiệm demo:_ Trực tiếp thực hiện màn demo **Self-Healing** (tắt máy chủ trước mặt hội đồng).
-        
-3. **Thành viên 3 (Dữ liệu, Giám sát & Quản trị Chi phí FinOps):**
-    
-    - _Nhiệm vụ:_ Khởi tạo RDS MySQL/Aurora Serverless, bảng DynamoDB, cấu hình S3 Lifecycle chuyển sang S3 Glacier, thiết lập CloudWatch Dashboard/Alarms và quản lý hạn mức AWS Budgets.
-        
-    - _Trách nhiệm demo:_ Trực tiếp thực hiện màn demo **FinOps & Monitoring** (phân tích biểu đồ chi phí và cảnh báo quá tải).
-        
-4. **Thành viên 4 (Bảo mật, DevSecOps & Kiến trúc Hướng sự kiện):**
-    
-    - _Nhiệm vụ:_ Thiết lập bộ luật AWS WAF, cấu hình AWS Secrets Manager + KMS, tích hợp xác thực Amazon Cognito, dựng GitHub Actions Pipeline quét Trivy và tích hợp SQS/SNS.
-        
-    - _Trách nhiệm demo:_ Trực tiếp thực hiện màn demo **WAF Defense** (bắn lệnh curl tấn công SQLi).
+| Thành viên | Phân mảng | Trách nhiệm cụ thể trong Cloud Media Studio | Kịch bản Demo thực chứng trước Hội đồng |
+| :--- | :--- | :--- | :--- |
+| **Member 1 (Nhóm trưởng)** | **Mạng & IaC** | • Thiết kế Dual-VPC Peering, chia 6 Subnets Multi-AZ.<br>• Cấu hình ALB và WAFv2 bảo vệ cổng Media. | **Trình diễn Mạng & High Availability:** Mở giao diện Web, nhấn Refresh để thấy Hostname thay đổi giữa các container ECS Fargate Multi-AZ (Load Balancing & Self-Healing). |
+| **Member 2** | **Tính toán & Container** | • Viết code Web Media Studio (Upload file, danh sách ảnh/video).<br>• Đóng gói Docker, cấu hình ECS Fargate.<br>• Viết hàm AWS Lambda tự động nén ảnh khi có sự kiện S3. | **Trình diễn Serverless Lambda:** Tải ảnh lên web, chỉ cho Thầy thấy Lambda lập tức sinh 3 kích thước Thumbnail (Mobile, Tablet, Desktop) và chuyển sang WebP giảm 84% dung lượng. |
+| **Member 3** | **Dữ liệu & FinOps** | • Tạo RDS MySQL lưu bảng Metadata (tên file, kích thước, tag).<br>• Cấu hình S3 Lifecycle đẩy media cũ sau 30 ngày sang S3 Glacier.<br>• Cài đặt AWS Budgets ($200) và Dashboard CloudWatch theo dõi chi phí. | **Trình diễn FinOps S3 Glacier:** Mở AWS Budgets và Dashboard chứng minh chi phí lưu trữ được tối ưu nhờ S3 Glacier ($0.004/GB vs $0.025/GB, tiết kiệm $9.82 / $200). |
+| **Member 4** | **Bảo mật & DevSecOps** | • Xây dựng đường ống CI/CD GitHub Actions tích hợp Trivy Scanner và xác thực OIDC.<br>• Cấu hình AWS WAF chặn đứng SQLi vào ô tìm kiếm ảnh và Rate Limit chống spam upload.<br>• Cấu hình AWS Secrets Manager lưu mật khẩu DB. | **Trình diễn WAF Defense:** Gửi lệnh `curl` chứa chuỗi SQLi `' OR 1=1 --` vào thanh tìm kiếm ảnh, chỉ cho Thầy thấy AWS WAF chặn đứng ngay lập tức với mã **HTTP 403 Forbidden**. |

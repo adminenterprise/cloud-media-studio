@@ -56,17 +56,14 @@ desktop.ini
 *.swp
 *.swo
 
-# VSCode (chỉ giữ lại config dùng chung nếu có)
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# VSCode
+.vscode/
 
 # ==========================================
 # 5. Logs & Temporary Files
 # ==========================================
 *.log
+*.zip
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
