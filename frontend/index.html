@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cloud Media Studio — Enterprise Cloud Media Management Platform</title>
+  <title>Cloud Media Studios — Enterprise Cloud Media Management Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -2427,7 +2427,7 @@
                 <div style="font-size:0.76rem;color:#047857;margin-top:4px">
                   Original: 4.8 MB ➔ WebP Processed: <strong>1.4 MB (71% savings)</strong>.<br>
                   CDN: <a href="#" style="color:#047857;text-decoration:underline"
-                    onclick="copyModalCdnLink(); return false;">https://d123456.cloudfront.net/media/autumn-banner.webp</a>
+                    onclick="copyModalCdnLink(); return false;">https://d10b9bys5mn60c.cloudfront.net/uploads/autumn-banner.webp</a>
                 </div>
               </div>
             </div>
@@ -3016,11 +3016,11 @@
           </tr>
           <tr>
             <td>S3 Bucket URI</td>
-            <td id="spec-s3-uri">s3://cloud-media-studio-raw-586643076560/...</td>
+            <td id="spec-s3-uri">s3://cloud-media-studio-assets-586643076560/uploads/...</td>
           </tr>
           <tr>
             <td>CloudFront CDN URL</td>
-            <td id="spec-cdn-url" style="color:#2563eb">https://d123456.cloudfront.net/media/...</td>
+            <td id="spec-cdn-url" style="color:#2563eb">https://d10b9bys5mn60c.cloudfront.net/uploads/...</td>
           </tr>
           <tr>
             <td>AWS KMS Encryption</td>
@@ -3314,6 +3314,7 @@
       showToast('Analytics stream drawing live (Left to Right)...');
     }
 
+    let selectedUploadFile = null;
     // Interactive Serverless Upload Simulation & Real AWS S3 Trigger
     async function runInteractiveUploadPipeline(triggerReal = false) {
       const title = document.getElementById('form-upload-title').value.trim() || 'Autumn Campaign Asset';
@@ -3332,13 +3333,31 @@
       document.getElementById('pipeline-success-card').style.display = 'none';
 
       let realResult = null;
+      let uploadFilename = (selectedUploadFile ? selectedUploadFile.name : ('asset-' + Date.now() + '.png')).replace(/[^a-zA-Z0-9._-]/g, '');
+      let uploadContentType = selectedUploadFile ? (selectedUploadFile.type || 'image/png') : 'image/png';
+
       if (triggerReal) {
-        showToast('🚀 Đang gửi file lên AWS S3 (ap-southeast-1) để kích hoạt Lambda thật...');
+        showToast('🚀 Đang tải file lên AWS S3 (ap-southeast-1) & kích hoạt Lambda...');
         try {
+          let fileBase64 = null;
+          if (selectedUploadFile) {
+            fileBase64 = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (e) => resolve(e.target.result);
+              reader.onerror = () => resolve(null);
+              reader.readAsDataURL(selectedUploadFile);
+            });
+          }
+
           const res = await fetch('/api/trigger-lambda', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: 'web-trigger-' + Date.now() + '.jpg', title })
+            body: JSON.stringify({
+              filename: uploadFilename,
+              title: title,
+              base64: fileBase64,
+              contentType: uploadContentType
+            })
           });
           realResult = await res.json();
           console.log('[AWS Real Trigger Result]:', realResult);
@@ -3373,19 +3392,27 @@
           const card = document.getElementById('pipeline-success-card');
           card.style.display = 'block';
 
+          const realCdnUrl = (realResult && realResult.cloudFrontUrl)
+            ? realResult.cloudFrontUrl
+            : 'https://d10b9bys5mn60c.cloudfront.net/uploads/' + uploadFilename;
+          const realS3Uri = (realResult && realResult.s3Uri)
+            ? realResult.s3Uri
+            : 's3://cloud-media-studio-assets-586643076560/uploads/' + uploadFilename;
+
           if (realResult && realResult.ok) {
             card.innerHTML = `
               <div style="font-weight:700;font-size:0.86rem;color:#059669;display:flex;align-items:center;gap:6px">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>⚡ ĐÃ KÍCH HOẠT THÀNH CÔNG LAMBDA TRÊN AWS SINGAPORE!</span>
+                <span>⚡ ĐÃ TẢI LÊN S3 & KÍCH HOẠT LAMBDA THẬT TRÊN AWS!</span>
               </div>
-              <div style="font-size:0.76rem;color:#047857;margin-top:6px;line-height:1.5">
-                • <strong>S3 Object:</strong> <code>${realResult.s3Uri}</code><br>
-                • <strong>Hàm Lambda:</strong> <code>${realResult.lambdaFunction}</code> (ap-southeast-1)<br>
-                • <strong>CloudWatch:</strong> Đã ghi nhận Invocation mới trên AWS Lambda! Kiểm tra CloudWatch Logs ngay.
+              <div style="font-size:0.76rem;color:#047857;margin-top:6px;line-height:1.6">
+                • <strong>S3 Object:</strong> <code>${realS3Uri}</code><br>
+                • <strong>CloudFront CDN URL:</strong> <a href="${realCdnUrl}" target="_blank" rel="noopener noreferrer" style="color:#047857;font-weight:700;text-decoration:underline">${realCdnUrl}</a><br>
+                • <strong>Hàm Lambda:</strong> <code>${realResult.lambdaFunction || 'cloud-media-studio-image-processor'}</code> (ap-southeast-1)<br>
+                • <strong>CloudWatch:</strong> Đã ghi nhận Invocation mới trên AWS Lambda!
               </div>
             `;
-            showToast('⚡ Thành công! Đã kích hoạt Lambda thật trên AWS Cloud!');
+            showToast('⚡ Thành công! Đã tải file thật lên S3 và kích hoạt Lambda!');
           } else {
             card.innerHTML = `
               <div style="font-weight:700;font-size:0.86rem;color:#059669;display:flex;align-items:center;gap:6px">
@@ -3394,22 +3421,23 @@
               </div>
               <div style="font-size:0.76rem;color:#047857;margin-top:4px">
                 Original: 4.8 MB ➔ WebP Processed: <strong>1.4 MB (71% savings)</strong>.<br>
-                CDN: <a href="#" style="color:#047857;text-decoration:underline" onclick="copyModalCdnLink(); return false;">https://d123456.cloudfront.net/media/autumn-banner.webp</a>
+                CDN: <a href="${realCdnUrl}" target="_blank" rel="noopener noreferrer" style="color:#047857;text-decoration:underline" onclick="copyModalCdnLink(); return false;">${realCdnUrl}</a>
               </div>
             `;
             showToast(`Asset "${title}" successfully transcoded & published to CloudFront!`);
           }
 
-          // Add to mediaFiles
+          // Add to mediaFiles with real CloudFront URL
           mediaFiles.unshift({
             id: Date.now(),
-            title: title + '.webp',
-            format: 'WebP',
-            size: '1.4 MB',
+            title: uploadFilename,
+            format: (uploadFilename.split('.').pop() || 'PNG').toUpperCase(),
+            size: (realResult && realResult.fileSize) ? (realResult.fileSize > 1048576 ? (realResult.fileSize / 1048576).toFixed(1) + ' MB' : (realResult.fileSize / 1024).toFixed(0) + ' KB') : '1.4 MB',
             dimensions: '3840 x 2160',
             storage_class: 'S3_STANDARD',
             time: 'Just now',
-            thumb: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80'
+            thumb: realCdnUrl,
+            s3_url: realS3Uri
           });
           renderLibraryGrid();
         }
@@ -3418,6 +3446,7 @@
     }
 
     function handleFileSelected(input) {
+      if (input.files && input.files[0]) { selectedUploadFile = input.files[0]; }
       if (input.files && input.files[0]) {
         const file = input.files[0];
         document.getElementById('upload-box-text').textContent = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
@@ -3670,8 +3699,10 @@
         </span>
       `;
       document.getElementById('spec-dimensions').textContent = `${file.dimensions} • ${file.size}`;
-      document.getElementById('spec-s3-uri').textContent = `s3://cloud-media-studio-raw-586643076560/${file.title}`;
-      document.getElementById('spec-cdn-url').textContent = `https://d123456.cloudfront.net/media/${file.title.replace(/\.[^/.]+$/, "")}.webp`;
+      const s3Uri = file.s3_url || ('s3://cloud-media-studio-assets-586643076560/uploads/' + file.title);
+      const cdnUrl = (file.thumb && file.thumb.includes('cloudfront.net')) ? file.thumb : ('https://d10b9bys5mn60c.cloudfront.net/uploads/' + encodeURIComponent(file.title));
+      document.getElementById('spec-s3-uri').textContent = s3Uri;
+      document.getElementById('spec-cdn-url').innerHTML = `<a href="${cdnUrl}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:underline;word-break:break-all">${cdnUrl}</a>`;
 
       document.getElementById('file-modal').classList.add('open');
     }
@@ -3682,7 +3713,7 @@
 
     function copyModalCdnLink() {
       if (!currentModalFile) return;
-      const url = `https://d123456.cloudfront.net/media/${currentModalFile.title.replace(/\.[^/.]+$/, "")}.webp`;
+      const url = (currentModalFile.thumb && currentModalFile.thumb.includes('cloudfront.net')) ? currentModalFile.thumb : ('https://d10b9bys5mn60c.cloudfront.net/uploads/' + encodeURIComponent(currentModalFile.title));
       navigator.clipboard?.writeText(url);
       showToast('CloudFront CDN URL copied to clipboard!');
     }

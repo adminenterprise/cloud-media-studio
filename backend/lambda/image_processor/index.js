@@ -18,7 +18,7 @@ exports.handler = async (event, context) => {
 
     for (const record of records) {
         // Trích xuất thông tin bucket và key từ sự kiện S3
-        const srcBucket = record.s3?.bucket?.name || 'cloud-media-studio-raw';
+        const srcBucket = record.s3?.bucket?.name || 'cloud-media-studio-assets-586643076560';
         const srcKey = decodeURIComponent((record.s3?.object?.key || 'sample-photo.jpg').replace(/\+/g, ' '));
         const fileSize = record.s3?.object?.size || 10485760; // 10 MB default mock
 
