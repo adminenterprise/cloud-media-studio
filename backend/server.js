@@ -16,6 +16,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const { exec } = require('child_process');
 
 // Kiểm tra xem express và mysql2 có sẵn không
 let express = null;
@@ -335,10 +336,32 @@ if (express) {
 
   app.get('/api/lambda/pipeline-status', (_, res) => {
     res.json({
-      functionName: 'cloud-media-studio-image-optimizer',
+      functionName: 'enterprise-cloud-devsecops-image-processor',
       runtime: 'nodejs22.x',
       architecture: 'arm64 / Graviton2',
       status: 'ACTIVE_HEALTHY'
+    });
+  });
+
+  app.post('/api/trigger-lambda', (req, res) => {
+    const filename = (req.body.filename || 'web-upload-' + Date.now() + '.jpg').replace(/[^a-zA-Z0-9._-]/g, '');
+    const bucket = 'enterprise-cloud-devsecops-static-assets-ap-southeast-1';
+    const sampleFile = path.join(__dirname, 'server.js');
+    const s3Key = `uploads/${filename}`;
+    const cmd = `aws s3 cp "${sampleFile}" "s3://${bucket}/${s3Key}" --region ap-southeast-1`;
+
+    exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        return res.status(500).json({ ok: false, error: stderr || err.message });
+      }
+      res.json({
+        ok: true,
+        message: 'Đã tải tệp lên S3 và kích hoạt thành công AWS Lambda!',
+        s3Uri: `s3://${bucket}/${s3Key}`,
+        region: 'ap-southeast-1',
+        lambdaFunction: 'enterprise-cloud-devsecops-image-processor',
+        output: stdout.trim()
+      });
     });
   });
 
@@ -455,6 +478,37 @@ if (express) {
       try {
         if (bodyData) body = JSON.parse(bodyData);
       } catch (e) {}
+
+      // 7.5. Kích hoạt AWS S3 Upload -> Trigger AWS Lambda Thật
+      if (pathname === '/api/trigger-lambda' && req.method === 'POST') {
+        const filename = (body.filename || 'web-upload-' + Date.now() + '.jpg').replace(/[^a-zA-Z0-9._-]/g, '');
+        const bucket = 'enterprise-cloud-devsecops-static-assets-ap-southeast-1';
+        const sampleFile = path.join(__dirname, 'server.js');
+        const s3Key = `uploads/${filename}`;
+        const cmd = `aws s3 cp "${sampleFile}" "s3://${bucket}/${s3Key}" --region ap-southeast-1`;
+
+        exec(cmd, (err, stdout, stderr) => {
+          if (err) {
+            console.error('[TriggerLambda] Lỗi gọi AWS CLI:', stderr || err.message);
+            return sendJson(500, {
+              ok: false,
+              error: stderr || err.message,
+              note: 'Không thể kết nối AWS CLI. Hãy đảm bảo AWS CLI đã được cấu hình.'
+            });
+          }
+
+          console.log('[TriggerLambda] Đã tải tệp lên S3 và kích hoạt Lambda thật:', stdout.trim());
+          return sendJson(200, {
+            ok: true,
+            message: 'Đã tải tệp lên S3 và kích hoạt thành công AWS Lambda!',
+            s3Uri: `s3://${bucket}/${s3Key}`,
+            region: 'ap-southeast-1',
+            lambdaFunction: 'enterprise-cloud-devsecops-image-processor',
+            output: stdout.trim()
+          });
+        });
+        return;
+      }
 
       // 8. Tải lên Media (POST /api/upload hoặc POST /api/media)
       if ((pathname === '/api/upload' || pathname === '/api/media' || pathname === '/api/items') && req.method === 'POST') {

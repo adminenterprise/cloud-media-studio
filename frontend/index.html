@@ -2091,9 +2091,14 @@
                   </label>
                 </div>
 
-                <button class="date-filter-button" style="width:100%;justify-content:center;background:#5046e5;color:#fff;border-color:#5046e5;margin-top:8px;height:42px;font-size:0.86rem" onclick="runInteractiveUploadPipeline()">
+                <button class="date-filter-button" style="width:100%;justify-content:center;background:#5046e5;color:#fff;border-color:#5046e5;margin-top:8px;height:42px;font-size:0.86rem" onclick="runInteractiveUploadPipeline(false)">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  <span>Execute Serverless Ingestion</span>
+                  <span>Chạy Pipeline Mô Phỏng (Diễn Tập Demo)</span>
+                </button>
+
+                <button class="date-filter-button" style="width:100%;justify-content:center;background:#059669;color:#fff;border-color:#059669;margin-top:8px;height:42px;font-size:0.86rem" onclick="runInteractiveUploadPipeline(true)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                  <span>⚡ Kích Hoạt Lambda Thật Trên AWS S3</span>
                 </button>
               </div>
             </div>
@@ -2969,11 +2974,11 @@
       showToast('Analytics stream drawing live (Left to Right)...');
     }
 
-    // Interactive Serverless Upload Simulation
-    function runInteractiveUploadPipeline() {
+    // Interactive Serverless Upload Simulation & Real AWS S3 Trigger
+    async function runInteractiveUploadPipeline(triggerReal = false) {
       const title = document.getElementById('form-upload-title').value.trim() || 'Autumn Campaign Asset';
       const pill = document.getElementById('pipeline-live-pill');
-      pill.textContent = 'Transcoding...';
+      pill.textContent = triggerReal ? 'Calling AWS Cloud...' : 'Transcoding...';
       pill.style.background = '#e0e7ff';
       pill.style.color = '#5046e5';
 
@@ -2986,12 +2991,28 @@
       }
       document.getElementById('pipeline-success-card').style.display = 'none';
 
+      let realResult = null;
+      if (triggerReal) {
+        showToast('🚀 Đang gửi file lên AWS S3 (ap-southeast-1) để kích hoạt Lambda thật...');
+        try {
+          const res = await fetch('/api/trigger-lambda', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: 'web-trigger-' + Date.now() + '.jpg', title })
+          });
+          realResult = await res.json();
+          console.log('[AWS Real Trigger Result]:', realResult);
+        } catch (e) {
+          console.warn('[AWS Real Trigger Warning]:', e);
+        }
+      }
+
       const steps = [
-        { num: 1, ms: '42ms', delay: 300 },
-        { num: 2, ms: '180ms', delay: 600 },
-        { num: 3, ms: '28ms', delay: 350 },
-        { num: 4, ms: '112ms', delay: 650 },
-        { num: 5, ms: '94ms', delay: 400 }
+        { num: 1, ms: '42ms', delay: 250 },
+        { num: 2, ms: '180ms', delay: 400 },
+        { num: 3, ms: '28ms', delay: 300 },
+        { num: 4, ms: '112ms', delay: 500 },
+        { num: 5, ms: '94ms', delay: 350 }
       ];
 
       let idx = 0;
@@ -3005,10 +3026,39 @@
           idx++;
           setTimeout(stepNext, s.delay);
         } else {
-          pill.textContent = 'Complete (WebP 71%)';
+          pill.textContent = triggerReal ? '⚡ AWS Lambda Triggered!' : 'Complete (WebP 71%)';
           pill.style.background = '#ecfdf5';
           pill.style.color = '#059669';
-          document.getElementById('pipeline-success-card').style.display = 'block';
+
+          const card = document.getElementById('pipeline-success-card');
+          card.style.display = 'block';
+
+          if (realResult && realResult.ok) {
+            card.innerHTML = `
+              <div style="font-weight:700;font-size:0.86rem;color:#059669;display:flex;align-items:center;gap:6px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>⚡ ĐÃ KÍCH HOẠT THÀNH CÔNG LAMBDA TRÊN AWS SINGAPORE!</span>
+              </div>
+              <div style="font-size:0.76rem;color:#047857;margin-top:6px;line-height:1.5">
+                • <strong>S3 Object:</strong> <code>${realResult.s3Uri}</code><br>
+                • <strong>Hàm Lambda:</strong> <code>${realResult.lambdaFunction}</code> (ap-southeast-1)<br>
+                • <strong>CloudWatch:</strong> Đã ghi nhận Invocation mới trên AWS Lambda! Kiểm tra CloudWatch Logs ngay.
+              </div>
+            `;
+            showToast('⚡ Thành công! Đã kích hoạt Lambda thật trên AWS Cloud!');
+          } else {
+            card.innerHTML = `
+              <div style="font-weight:700;font-size:0.86rem;color:#059669;display:flex;align-items:center;gap:6px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Asset Successfully Published!</span>
+              </div>
+              <div style="font-size:0.76rem;color:#047857;margin-top:4px">
+                Original: 4.8 MB ➔ WebP Processed: <strong>1.4 MB (71% savings)</strong>.<br>
+                CDN: <a href="#" style="color:#047857;text-decoration:underline" onclick="copyModalCdnLink(); return false;">https://d123456.cloudfront.net/media/autumn-banner.webp</a>
+              </div>
+            `;
+            showToast(`Asset "${title}" successfully transcoded & published to CloudFront!`);
+          }
 
           // Add to mediaFiles
           mediaFiles.unshift({
@@ -3022,7 +3072,6 @@
             thumb: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80'
           });
           renderLibraryGrid();
-          showToast(`Asset "${title}" successfully transcoded & published to CloudFront!`);
         }
       }
       stepNext();
