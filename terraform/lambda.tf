@@ -89,8 +89,9 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_attach" {
 resource "aws_lambda_function" "image_processor" {
   function_name = "${var.project_name}-image-processor"
   description   = "Cloud Media Studio Serverless WebP compression & thumbnail generator"
-  filename      = "${path.module}/lambda_payload.zip"
-  role          = aws_iam_role.lambda_image_processor.arn
+  filename         = "${path.module}/lambda_payload.zip"
+  source_code_hash = filebase64sha256("${path.module}/lambda_payload.zip")
+  role             = aws_iam_role.lambda_image_processor.arn
   handler       = "index.handler"
   runtime       = "nodejs22.x"
   architectures = ["arm64"] # AWS Graviton2: Nhanh hon va tiet kiem 20% chi phi
