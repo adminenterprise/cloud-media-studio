@@ -28,3 +28,4 @@ Write-Host "📦 ECR URI: $IMAGE_URI`:latest" -ForegroundColor Green
 Write-Host "⚙️  ECS Cluster: cloud-media-studio-cluster" -ForegroundColor Green
 Write-Host "📋 Task Definition: cloud-media-studio-backend" -ForegroundColor Green
 Write-Host "================================================================`n" -ForegroundColor Green
+

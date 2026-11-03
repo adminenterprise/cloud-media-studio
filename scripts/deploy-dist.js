@@ -54,7 +54,7 @@ try {
   execSync(uploadIndexCmd, { stdio: 'inherit' });
 
   // Sync toàn bộ dist/
-  const syncDistCmd = `aws s3 sync "${DIST_DIR}" "s3://${S3_BUCKET}/" --exclude "index.html" --cache-control "public,max-age=31536000,immutable"`;
+  const syncDistCmd = `aws s3 sync "${DIST_DIR}" "s3://${S3_BUCKET}/" --exclude "index.html" --exclude "uploads/*" --cache-control "public,max-age=31536000,immutable"`;
   execSync(syncDistCmd, { stdio: 'inherit' });
   console.log('     ✅ Đồng bộ S3 thành công!');
 } catch (err) {
