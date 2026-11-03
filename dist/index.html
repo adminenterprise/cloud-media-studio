@@ -2271,7 +2271,10 @@
           <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:20px">
             <!-- Left: Dropzone & Form -->
             <div class="white-card">
-              <div class="card-heading-title" style="margin-bottom:14px">Asset Ingestion</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                <div class="card-heading-title">Asset Ingestion</div>
+                <span class="status-completed-badge" id="upload-env-badge" style="font-size:0.7rem;padding:3px 8px;background:#ecfdf5;color:#059669">Detecting...</span>
+              </div>
 
               <div
                 style="border:2px dashed #cbd5e1;border-radius:12px;padding:36px 20px;text-align:center;background:var(--input-bg);cursor:pointer;transition:border-color 0.2s"
@@ -3338,6 +3341,22 @@
     }
 
     let mediaFiles = getStoredMediaFiles();
+
+    // Cập nhật badge môi trường (Localhost Backend vs CDN Static)
+    setTimeout(() => {
+      const badge = document.getElementById('upload-env-badge');
+      if (badge) {
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          badge.textContent = '🟢 Local Backend Connected (S3 Upload Thật)';
+          badge.style.background = '#ecfdf5';
+          badge.style.color = '#059669';
+        } else {
+          badge.textContent = '🌐 CloudFront CDN Static (Chế độ Xem & Demo)';
+          badge.style.background = '#eff6ff';
+          badge.style.color = '#2563eb';
+        }
+      }
+    }, 200);
     let currentModalFile = null;
 
     function showToast(msg) {
@@ -3518,20 +3537,32 @@
               </div>
             `;
             showToast('⚡ Thành công! Đã tải file thật lên S3 và kích hoạt Lambda!');
+          } else if (triggerReal && !isLocalhost) {
+            // Trường hợp người dùng đang ở trên link CloudFront CDN mà bấm Kích Hoạt Lambda Thật
+            card.innerHTML = `
+              <div style="font-weight:700;font-size:0.86rem;color:#d97706;display:flex;align-items:center;gap:6px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span>CHÚ Ý: ĐANG DUYỆT TRÊN CLOUDFRONT CDN TĨNH</span>
+              </div>
+              <div style="font-size:0.76rem;color:#92400e;margin-top:6px;line-height:1.6">
+                • <strong>Lý do:</strong> CloudFront CDN chỉ phân phối nội dung tĩnh (HTML/CSS/JS), không có server Node.js để chạy lệnh upload S3.<br>
+                • <strong>Cách upload file thật lên S3:</strong> Vui lòng mở trang tại <a href="http://localhost:3000" target="_blank" style="color:#b45309;font-weight:700;text-decoration:underline">http://localhost:3000</a> (Backend Node.js đang chạy sẵn trên máy bạn).<br>
+                • File này tạm thời được lưu trong bộ nhớ trình duyệt để bạn xem thử giao diện.
+              </div>
+            `;
+            showToast('⚠️ Để file tải lên S3 thật, vui lòng mở trang tại http://localhost:3000!');
           } else {
             card.innerHTML = `
               <div style="font-weight:700;font-size:0.86rem;color:#059669;display:flex;align-items:center;gap:6px">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>⚡ ASSET ĐÃ SẴN SÀNG & ĐƯỢC LƯU TRỮ VĨNH VIỄN!</span>
+                <span>Asset Successfully Published! (Mô Phỏng Demo)</span>
               </div>
-              <div style="font-size:0.76rem;color:#047857;margin-top:6px;line-height:1.6">
-                • <strong>S3 Destination:</strong> <code>${realS3Uri}</code><br>
-                • <strong>CloudFront CDN URL:</strong> <a href="${realCdnUrl}" target="_blank" rel="noopener noreferrer" style="color:#047857;font-weight:700;text-decoration:underline">${realCdnUrl}</a><br>
-                • <strong>Trạng thái:</strong> Đã lưu vào Media Library (F5 hoặc tải lại trang không bị mất!)<br>
-                • <strong>Chế độ:</strong> ${isLocalhost ? 'Local Development Server' : 'Amazon CloudFront CDN (Global Edge)'}
+              <div style="font-size:0.76rem;color:#047857;margin-top:4px">
+                Original: 4.8 MB ➔ WebP Processed: <strong>1.4 MB (71% savings)</strong>.<br>
+                CDN URL: <a href="${realCdnUrl}" target="_blank" rel="noopener noreferrer" style="color:#047857;text-decoration:underline" onclick="copyModalCdnLink(); return false;">${realCdnUrl}</a>
               </div>
             `;
-            showToast(`Asset "${title}" đã được tối ưu & lưu trữ vĩnh viễn!`);
+            showToast(`Asset "${title}" đã hoàn tất quy trình mô phỏng!`);
           }
 
           // Thêm file vào mediaFiles và LƯU VĨNH VIỄN VÀO LOCALSTORAGE
