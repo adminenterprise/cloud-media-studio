@@ -198,7 +198,7 @@ if (express) {
     }
   });
 
-  app.get('/health', async (_, res) => {
+  app.get(['/health', '/api/health'], async (_, res) => {
     let dbStatus = 'disconnected';
     if (pool) {
       try {
@@ -405,7 +405,7 @@ if (express) {
     }
 
     // 2. Health check
-    if (pathname === '/health') {
+    if (pathname === '/health' || pathname === '/api/health') {
       return sendJson(200, {
         status: 'ok',
         service: 'cloud-media-studio-api',
