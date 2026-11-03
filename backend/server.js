@@ -35,7 +35,7 @@ try {
 // ------------------------------------------------------------------------------
 // DỮ LIỆU MEDIA MẪU (DÙNG CHO CẢ IN-MEMORY VÀ LOCAL DEMO)
 // ------------------------------------------------------------------------------
-let mediaItems = [
+const defaultMediaItems = [
   {
     id: 1,
     title: 'Brand Identity Logo 2026',
@@ -115,6 +115,29 @@ let mediaItems = [
     created_at: new Date('2024-09-30T11:20:00Z').toISOString()
   }
 ];
+
+const DB_FILE = path.join(__dirname, 'media-data.json');
+function loadMediaItems() {
+  try {
+    if (fs.existsSync(DB_FILE)) {
+      const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (e) {
+    console.warn('[DB] Dùng dữ liệu media mặc định.');
+  }
+  return [...defaultMediaItems];
+}
+
+function saveMediaItems() {
+  try {
+    fs.writeFileSync(DB_FILE, JSON.stringify(mediaItems, null, 2), 'utf8');
+  } catch (e) {
+    console.warn('[DB] Lỗi lưu media-data.json:', e.message);
+  }
+}
+
+let mediaItems = loadMediaItems();
 
 // Helper tính toán FinOps
 function calculateFinOpsStats() {
@@ -205,6 +228,7 @@ function handleRealImageUpload(body, callback) {
       created_at: new Date().toISOString()
     };
     mediaItems.unshift(newItem);
+    saveMediaItems();
 
     console.log(`[UploadReal] Đã tải ảnh thật (${buffer.length} bytes) lên ${s3Uri} và kích hoạt Lambda!`);
 
@@ -608,6 +632,7 @@ if (express) {
           created_at: new Date().toISOString()
         };
         mediaItems.unshift(newItem);
+        saveMediaItems();
 
         return sendJson(201, {
           ok: true,
@@ -631,6 +656,7 @@ if (express) {
         if (item) {
           item.storage_class = 'Glacier';
           item.status = 'ARCHIVED';
+          saveMediaItems();
         }
         return sendJson(200, {
           ok: true,
@@ -644,6 +670,7 @@ if (express) {
       if (deleteMatch && req.method === 'DELETE') {
         const id = parseInt(deleteMatch[1], 10);
         mediaItems = mediaItems.filter(m => m.id !== id);
+        saveMediaItems();
         return sendJson(200, { ok: true, message: `Đã xóa tài nguyên #${id}` });
       }
 
