@@ -1,0 +1,20 @@
+{
+  "name": "cloud-media-studio",
+  "version": "1.0.0",
+  "description": "Enterprise Cloud Media Management Platform",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.js",
+    "deploy": "node scripts/deploy-dist.js"
+  },
+  "keywords": [
+    "aws",
+    "cloudfront",
+    "s3",
+    "lambda",
+    "media-studio"
+  ],
+  "author": "Cloud Media Studio Team",
+  "license": "ISC"
+}
+

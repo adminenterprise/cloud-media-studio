@@ -4,7 +4,7 @@
 # ==========================================
 
 aws_region   = "ap-southeast-1"
-project_name = "enterprise-cloud-devsecops"
+project_name = "cloud-media-studio"
 environment  = "production"
 
 vpc_cidr           = "10.0.0.0/16"
@@ -33,7 +33,7 @@ admin_ip = "0.0.0.0/0" # Ví dụ: "203.0.113.10/32"
 # ==========================================
 # CloudFront & Route 53 (Tuần 3)
 # ==========================================
-s3_static_assets_bucket_name = "enterprise-cloud-devsecops-static-assets-ap-southeast-1"
+s3_static_assets_bucket_name = "cloud-media-studio-assets-586643076560"
 # alb_dns_name                 = "khi-nao-member2-deploy-alb-thi-dien-vao-day.elb.amazonaws.com"
 enable_route53               = false # Đặt true nếu nhóm đã mua domain riêng
 # domain_name                  = "devsecops-enterprise.com"

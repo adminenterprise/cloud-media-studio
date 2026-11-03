@@ -29,7 +29,7 @@ resource "aws_cloudfront_origin_access_control" "s3_oac" {
 resource "aws_cloudfront_distribution" "main" {
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "CloudFront CDN cho Enterprise Cloud & DevSecOps Platform"
+  comment             = "CloudFront CDN cho Cloud Media Studio"
   default_root_object = "index.html"
 
   # FinOps: PriceClass_100 chỉ dùng các PoP tại Bắc Mỹ, Châu Âu, Singapore, Hong Kong
@@ -118,6 +118,23 @@ resource "aws_cloudfront_distribution" "main" {
         }
       }
     }
+  }
+
+  # ----------------------------------------------------------------------------
+  # SPA ROUTING: CUSTOM ERROR RESPONSES (403 & 404 -> /index.html)
+  # ----------------------------------------------------------------------------
+  custom_error_response {
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 10
+  }
+
+  custom_error_response {
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 10
   }
 
   # ----------------------------------------------------------------------------

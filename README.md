@@ -1,8 +1,8 @@
 # 🎬 CLOUD MEDIA STUDIO
 ### Hệ Thống Biên Tập, Chuyển Đổi & Phân Phối Truyền Thông Đa Phương Tiện Doanh Nghiệp Trên AWS Tích Hợp DevSecOps
 
-[![DevSecOps CI/CD](https://github.com/mquandao/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/actions/workflows/ci.yml/badge.svg)](https://github.com/mquandao/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/actions/workflows/ci.yml)
-[![Terraform IaC](https://github.com/mquandao/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/actions/workflows/terraform.yml/badge.svg)](https://github.com/mquandao/ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/actions/workflows/terraform.yml)
+[![DevSecOps CI/CD](https://github.com/mquandao/cloud-media-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/mquandao/cloud-media-studio/actions/workflows/ci.yml)
+[![Terraform IaC](https://github.com/mquandao/cloud-media-studio/actions/workflows/terraform.yml/badge.svg)](https://github.com/mquandao/cloud-media-studio/actions/workflows/terraform.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![AWS Region](https://img.shields.io/badge/AWS%20Region-ap--southeast--1-orange.svg)](https://aws.amazon.com/)
 
@@ -184,7 +184,7 @@ curl -i "http://localhost:8080/api/search?q=%27%20OR%201=1%20--"
 ## 7. CẤU TRÚC THƯ MỤC DỰ ÁN
 
 ```
-ENTERPRISE-CLOUD-DEVSECOPS-PLATFORM/
+cloud-media-studio/
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml                 # 5 Chốt chặn DevSecOps (Trivy, OIDC, Immutable Tagging)

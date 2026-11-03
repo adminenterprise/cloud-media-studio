@@ -116,7 +116,7 @@ resource "aws_lambda_function" "image_processor" {
 }
 
 # ------------------------------------------------------------------------------
-# 3. CHO PHÉP S3 KÍCH HOẠT LAMBDA FUNCTION
+# 3. CHO PHÉP S3 KÍCH HOẠT LAMBDA FUNCTION & S3 EVENT NOTIFICATION
 # ------------------------------------------------------------------------------
 resource "aws_lambda_permission" "allow_s3_invoke" {
   statement_id  = "AllowExecutionFromS3"
@@ -124,6 +124,17 @@ resource "aws_lambda_permission" "allow_s3_invoke" {
   function_name = aws_lambda_function.image_processor.function_name
   principal     = "s3.amazonaws.com"
   source_arn    = "arn:aws:s3:::${var.s3_static_assets_bucket_name}"
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = var.s3_static_assets_bucket_name
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.image_processor.arn
+    events              = ["s3:ObjectCreated:*"]
+  }
+
+  depends_on = [aws_lambda_permission.allow_s3_invoke]
 }
 
 # ------------------------------------------------------------------------------

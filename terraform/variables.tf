@@ -10,7 +10,7 @@ variable "aws_region" {
 variable "project_name" {
   description = "Project name identifier used in resource tags and prefixes"
   type        = string
-  default     = "enterprise-cloud-devsecops"
+  default     = "cloud-media-studio"
 }
 
 variable "environment" {
@@ -100,7 +100,7 @@ variable "admin_ip" {
 variable "s3_static_assets_bucket_name" {
   description = "Tên S3 Bucket lưu trữ tài nguyên tĩnh từ Member 3"
   type        = string
-  default     = "enterprise-cloud-devsecops-static-assets-ap-southeast-1"
+  default     = "cloud-media-studio-assets-586643076560"
 }
 
 variable "alb_dns_name" {

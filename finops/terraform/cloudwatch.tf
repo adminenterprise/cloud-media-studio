@@ -14,7 +14,7 @@
 # ------------------------------------------------------------------------------
 resource "aws_sns_topic" "alerts" {
   name              = "${var.project_name}-alerts-topic"
-  display_name      = "Enterprise Cloud DevSecOps System Alerts"
+  display_name      = "Cloud Media Studio System Alerts"
   kms_master_key_id = "alias/aws/sns" # Mã hóa SSE at-rest bảo vệ dữ liệu thông báo
 
   tags = {
@@ -250,7 +250,7 @@ resource "aws_cloudwatch_dashboard" "observability" {
         width  = 24
         height = 2
         properties = {
-          markdown = "# 🏢 ENTERPRISE CLOUD & DEVSECOPS PLATFORM — OBSERVABILITY DASHBOARD\n**Môi trường:** Production (`Multi-AZ`) | **Khu vực:** `${var.aws_region}` | **Chuyên trách:** Thành viên 3 (Dữ liệu & FinOps) | **Ngân sách:** $200 Credit"
+          markdown = "# 🏢 CLOUD MEDIA STUDIO — OBSERVABILITY DASHBOARD\n**Môi trường:** Production (`Multi-AZ`) | **Khu vực:** `${var.aws_region}` | **Chuyên trách:** Thành viên 3 (Dữ liệu & FinOps) | **Ngân sách:** $200 Credit"
         }
       },
 

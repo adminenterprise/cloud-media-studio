@@ -3,7 +3,7 @@
 # ==============================================================================
 
 aws_region   = "ap-southeast-1"
-project_name = "enterprise-cloud-devsecops"
+project_name = "cloud-media-studio"
 environment  = "production"
 
 # Ngân sách và các ngưỡng cảnh báo ($ USD)
@@ -45,7 +45,7 @@ member_users = {
 # --- Thông số nhận bàn giao từ Member 1 ---
 # Lấy giá trị bằng lệnh: cd terraform/ && terraform output
 vpc_id                   = "vpc-xxxxxxxxx"                              # Điền VPC ID thực từ Member 1 (terraform output vpc_id)
-rds_db_subnet_group_name = "enterprise-cloud-devsecops-db-subnet-group" # Từ Member 1 (terraform output rds_db_subnet_group_name)
+rds_db_subnet_group_name = "cloud-media-studio-db-subnet-group" # Từ Member 1 (terraform output rds_db_subnet_group_name)
 db_security_group_id     = ""                                           # Từ Member 1 (terraform output db_security_group_id) — Để trống sẽ tự tạo SG
 private_app_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
 
