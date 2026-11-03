@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "project_name" {
   description = "Tên dự án doanh nghiệp"
   type        = string
-  default     = "enterprise-cloud-devsecops"
+  default     = "cloud-media-studio"
 }
 
 variable "environment" {

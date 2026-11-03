@@ -2697,7 +2697,7 @@
           </tr>
           <tr>
             <td>S3 Bucket URI</td>
-            <td id="spec-s3-uri">s3://enterprise-cloud-media-raw-ap-southeast-1/...</td>
+            <td id="spec-s3-uri">s3://cloud-media-studio-raw-586643076560/...</td>
           </tr>
           <tr>
             <td>CloudFront CDN URL</td>
@@ -3330,7 +3330,7 @@
         </span>
       `;
       document.getElementById('spec-dimensions').textContent = `${file.dimensions} • ${file.size}`;
-      document.getElementById('spec-s3-uri').textContent = `s3://enterprise-cloud-media-raw-ap-southeast-1/${file.title}`;
+      document.getElementById('spec-s3-uri').textContent = `s3://cloud-media-studio-raw-586643076560/${file.title}`;
       document.getElementById('spec-cdn-url').textContent = `https://d123456.cloudfront.net/media/${file.title.replace(/\.[^/.]+$/, "")}.webp`;
 
       document.getElementById('file-modal').classList.add('open');

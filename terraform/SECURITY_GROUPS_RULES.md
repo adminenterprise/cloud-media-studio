@@ -1,6 +1,6 @@
 # 📋 SECURITY GROUPS — QUY TẮC MỞ CỔNG (FIREWALL RULES DOCUMENTATION)
 
-> **Dự án**: Enterprise Cloud & DevSecOps Platform  
+> **Dự án**: Cloud Media Studio Platform  
 > **Tuần 2**: Tầng Lưu Trữ, Dữ Liệu & Máy Chủ Tính Toán  
 > **Nguyên tắc**: Principle of Least Privilege + SG-to-SG Reference  
 > **Cập nhật**: 12/10/2026
@@ -45,7 +45,7 @@
 
 ## 2. BẢNG TỔNG HỢP QUY TẮC (RULES MATRIX)
 
-### 2.1 ALB Security Group (`enterprise-cloud-devsecops-alb-sg`)
+### 2.1 ALB Security Group (`cloud-media-studio-alb-sg`)
 
 | Hướng | Giao thức | Port | Nguồn/Đích | Lý do |
 |:---|:---|:---|:---|:---|
@@ -53,7 +53,7 @@
 | **INGRESS** | TCP | 443 | `0.0.0.0/0` | Cho phép HTTPS từ Internet |
 | **EGRESS** | TCP | 3000 | App Server SG | Chuyển tiếp traffic đến backend |
 
-### 2.2 App Server Security Group (`enterprise-cloud-devsecops-app-sg`)
+### 2.2 App Server Security Group (`cloud-media-studio-app-sg`)
 
 | Hướng | Giao thức | Port | Nguồn/Đích | Lý do |
 |:---|:---|:---|:---|:---|
@@ -65,7 +65,7 @@
 | **EGRESS** | UDP | 53 | `0.0.0.0/0` | DNS resolution |
 | **EGRESS** | TCP | 53 | `0.0.0.0/0` | DNS resolution (TCP fallback) |
 
-### 2.3 Database Security Group (`enterprise-cloud-devsecops-db-sg`)
+### 2.3 Database Security Group (`cloud-media-studio-db-sg`)
 
 | Hướng | Giao thức | Port | Nguồn/Đích | Lý do |
 |:---|:---|:---|:---|:---|
@@ -74,14 +74,14 @@
 
 > ⚠️ **Lưu ý bảo mật**: Database SG không có egress rule. Đây là thiết kế có chủ đích theo chuẩn Enterprise DevSecOps — tầng dữ liệu không bao giờ cần gọi ra Internet.
 
-### 2.4 EFS Security Group (`enterprise-cloud-devsecops-efs-sg`)
+### 2.4 EFS Security Group (`cloud-media-studio-efs-sg`)
 
 | Hướng | Giao thức | Port | Nguồn/Đích | Lý do |
 |:---|:---|:---|:---|:---|
 | **INGRESS** | TCP | 2049 | App Server SG | Cho phép NFS mount từ App Server |
 | **EGRESS** | — | — | — | **KHÔNG CÓ** — Chỉ phục vụ storage |
 
-### 2.5 Bastion Host Security Group (`enterprise-cloud-devsecops-bastion-sg`)
+### 2.5 Bastion Host Security Group (`cloud-media-studio-bastion-sg`)
 
 | Hướng | Giao thức | Port | Nguồn/Đích | Lý do |
 |:---|:---|:---|:---|:---|

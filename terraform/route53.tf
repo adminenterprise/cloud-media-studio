@@ -12,7 +12,7 @@ resource "aws_route53_zone" "primary" {
   count = var.enable_route53 && var.domain_name != "" ? 1 : 0
 
   name    = var.domain_name
-  comment = "Hosted Zone cho Enterprise Cloud & DevSecOps Platform"
+  comment = "Hosted Zone cho Cloud Media Studio"
 
   tags = {
     Name       = "${var.project_name}-dns-zone"

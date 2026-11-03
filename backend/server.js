@@ -153,7 +153,8 @@ function calculateFinOpsStats() {
 }
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const FRONTEND_INDEX = path.join(__dirname, '..', 'frontend', 'index.html');
+const DIST_INDEX = path.join(__dirname, '..', 'dist', 'index.html');
+const FRONTEND_INDEX = fs.existsSync(DIST_INDEX) ? DIST_INDEX : path.join(__dirname, '..', 'frontend', 'index.html');
 
 // ==============================================================================
 // TRƯỜNG HỢP 1: NẾU CÓ EXPRESS (TRONG DOCKER / CI ĐÃ CÀI ĐẶT THƯ VIỆN)
@@ -345,7 +346,7 @@ if (express) {
 
   app.post('/api/trigger-lambda', (req, res) => {
     const filename = (req.body.filename || 'web-upload-' + Date.now() + '.jpg').replace(/[^a-zA-Z0-9._-]/g, '');
-    const bucket = 'enterprise-cloud-devsecops-static-assets-ap-southeast-1';
+    const bucket = 'cloud-media-studio-assets-586643076560';
     const sampleFile = path.join(__dirname, 'server.js');
     const s3Key = `uploads/${filename}`;
     const cmd = `aws s3 cp "${sampleFile}" "s3://${bucket}/${s3Key}" --region ap-southeast-1`;
@@ -482,7 +483,7 @@ if (express) {
       // 7.5. Kích hoạt AWS S3 Upload -> Trigger AWS Lambda Thật
       if (pathname === '/api/trigger-lambda' && req.method === 'POST') {
         const filename = (body.filename || 'web-upload-' + Date.now() + '.jpg').replace(/[^a-zA-Z0-9._-]/g, '');
-        const bucket = 'enterprise-cloud-devsecops-static-assets-ap-southeast-1';
+        const bucket = 'cloud-media-studio-assets-586643076560';
         const sampleFile = path.join(__dirname, 'server.js');
         const s3Key = `uploads/${filename}`;
         const cmd = `aws s3 cp "${sampleFile}" "s3://${bucket}/${s3Key}" --region ap-southeast-1`;
