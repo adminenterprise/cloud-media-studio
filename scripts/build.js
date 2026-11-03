@@ -31,3 +31,4 @@ const stats = fs.statSync(path.join(DIST_DIR, 'index.html'));
 
 console.log(`✅ [Build] Đã tạo thành công dist/index.html (${(stats.size / 1024).toFixed(1)} KB)`);
 console.log('🎉 [Build] Gói artifact dist/ đã sẵn sàng để deploy lên S3 & CloudFront!');
+

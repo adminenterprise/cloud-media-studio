@@ -1,12 +1,15 @@
 <!doctype html>
 <html lang="en" data-theme="light">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cloud Media Studio — Enterprise Cloud Media Management Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <style>
     /* ==========================================================================
        DESIGN SYSTEM: EXACT MATCH TO SCREENSHOT + DARK/LIGHT MODE + COGNITO AUTH
@@ -79,7 +82,11 @@
       --cyan-light: rgba(6, 182, 212, 0.15);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: var(--font-sans);
@@ -94,10 +101,23 @@
     }
 
     /* Scrollbars */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.45); }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.45);
+    }
 
     /* ==========================================================================
        LOGIN VIEW (AWS COGNITO SSO AUTHENTICATION)
@@ -110,7 +130,7 @@
       justify-content: center;
       padding: 24px;
       position: relative;
-      background: 
+      background:
         radial-gradient(circle at 50% 15%, rgba(80, 70, 229, 0.12) 0%, transparent 55%),
         radial-gradient(circle at 85% 85%, rgba(37, 99, 235, 0.08) 0%, transparent 45%),
         var(--body-bg);
@@ -134,8 +154,15 @@
     }
 
     @keyframes zoomIn {
-      from { transform: scale(0.96); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      from {
+        transform: scale(0.96);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .login-brand-head {
@@ -198,7 +225,9 @@
       color: var(--text-main);
     }
 
-    .input-with-icon { position: relative; }
+    .input-with-icon {
+      position: relative;
+    }
 
     .input-field-control {
       width: 100%;
@@ -272,7 +301,9 @@
       transition: all 0.15s ease;
     }
 
-    .btn-sso-secondary:hover { background: var(--input-bg); }
+    .btn-sso-secondary:hover {
+      background: var(--input-bg);
+    }
 
     .login-divider-line {
       display: flex;
@@ -285,14 +316,20 @@
       letter-spacing: 0.05em;
     }
 
-    .login-divider-line::before, .login-divider-line::after {
+    .login-divider-line::before,
+    .login-divider-line::after {
       content: '';
       flex: 1;
       border-bottom: 1px solid var(--input-border);
     }
 
-    .login-divider-line:not(:empty)::before { margin-right: 12px; }
-    .login-divider-line:not(:empty)::after { margin-left: 12px; }
+    .login-divider-line:not(:empty)::before {
+      margin-right: 12px;
+    }
+
+    .login-divider-line:not(:empty)::after {
+      margin-left: 12px;
+    }
 
     .demo-accounts-box {
       margin-top: 20px;
@@ -342,7 +379,9 @@
       display: flex;
       flex-direction: column;
       position: fixed;
-      top: 0; bottom: 0; left: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
       z-index: 50;
       padding: 20px 16px;
       color: #fff;
@@ -477,7 +516,9 @@
       transition: background 0.15s ease;
     }
 
-    .user-footer-row:hover { background: rgba(255, 255, 255, 0.05); }
+    .user-footer-row:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
 
     .user-info-group {
       display: flex;
@@ -493,7 +534,9 @@
       border: 1.5px solid rgba(255, 255, 255, 0.2);
     }
 
-    .user-text-meta { line-height: 1.25; }
+    .user-text-meta {
+      line-height: 1.25;
+    }
 
     .user-full-name {
       font-size: 0.8rem;
@@ -519,7 +562,9 @@
       transition: color 0.15s ease;
     }
 
-    .logout-btn-link:hover { color: #f43f5e; }
+    .logout-btn-link:hover {
+      color: #f43f5e;
+    }
 
     /* Main wrapper */
     .main-wrapper {
@@ -645,11 +690,20 @@
       animation: fadeInDown 0.18s ease;
     }
 
-    .dropdown-popover.open { display: block; }
+    .dropdown-popover.open {
+      display: block;
+    }
 
     @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .dropdown-header-bar {
@@ -675,7 +729,9 @@
       cursor: pointer;
     }
 
-    .clear-link-btn:hover { text-decoration: underline; }
+    .clear-link-btn:hover {
+      text-decoration: underline;
+    }
 
     .dropdown-list-body {
       max-height: 320px;
@@ -692,7 +748,9 @@
       transition: background 0.15s ease;
     }
 
-    .notif-row-item:hover { background: var(--input-bg); }
+    .notif-row-item:hover {
+      background: var(--input-bg);
+    }
 
     .notif-icon-bubble {
       width: 28px;
@@ -742,8 +800,13 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     .modal-dialog-box {
@@ -782,7 +845,9 @@
       line-height: 1;
     }
 
-    .modal-close-x:hover { color: var(--text-main); }
+    .modal-close-x:hover {
+      color: var(--text-main);
+    }
 
     .modal-body-content {
       padding: 20px;
@@ -864,10 +929,12 @@
       font-weight: 600;
       color: var(--text-main);
       cursor: pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
 
-    .date-filter-button:hover { background: var(--input-bg); }
+    .date-filter-button:hover {
+      background: var(--input-bg);
+    }
 
     .white-card {
       background: var(--card-bg);
@@ -887,7 +954,9 @@
     }
 
     @media (max-width: 1200px) {
-      .kpi-row-grid { grid-template-columns: repeat(2, 1fr); }
+      .kpi-row-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .kpi-single-card {
@@ -917,10 +986,25 @@
       flex-shrink: 0;
     }
 
-    .kpi-icon-square.purple { background: var(--indigo-light); color: #7c3aed; }
-    .kpi-icon-square.blue { background: var(--blue-light); color: #0284c7; }
-    .kpi-icon-square.green { background: var(--green-light); color: #16a34a; }
-    .kpi-icon-square.amber { background: var(--amber-light); color: #d97706; }
+    .kpi-icon-square.purple {
+      background: var(--indigo-light);
+      color: #7c3aed;
+    }
+
+    .kpi-icon-square.blue {
+      background: var(--blue-light);
+      color: #0284c7;
+    }
+
+    .kpi-icon-square.green {
+      background: var(--green-light);
+      color: #16a34a;
+    }
+
+    .kpi-icon-square.amber {
+      background: var(--amber-light);
+      color: #d97706;
+    }
 
     .kpi-data-meta {
       flex: 1;
@@ -960,7 +1044,9 @@
     }
 
     @media (max-width: 1280px) {
-      .row2-grid { grid-template-columns: 1fr; }
+      .row2-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .card-header-row {
@@ -1123,7 +1209,9 @@
       transition: all 0.15s ease;
     }
 
-    .opt-view-details-btn:hover { background: var(--input-bg); }
+    .opt-view-details-btn:hover {
+      background: var(--input-bg);
+    }
 
     /* ROW 3 */
     .row3-grid {
@@ -1133,7 +1221,9 @@
     }
 
     @media (max-width: 1280px) {
-      .row3-grid { grid-template-columns: 1fr; }
+      .row3-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .view-all-link {
@@ -1147,7 +1237,9 @@
       cursor: pointer;
     }
 
-    .view-all-link:hover { text-decoration: underline; }
+    .view-all-link:hover {
+      text-decoration: underline;
+    }
 
     .recent-upload-items {
       display: flex;
@@ -1165,7 +1257,9 @@
       transition: background 0.15s ease;
     }
 
-    .upload-item-row:hover { background: var(--input-bg); }
+    .upload-item-row:hover {
+      background: var(--input-bg);
+    }
 
     .upload-item-left {
       display: flex;
@@ -1232,7 +1326,9 @@
       margin-left: 8px;
     }
 
-    .three-dots-btn:hover { color: var(--text-main); }
+    .three-dots-btn:hover {
+      color: var(--text-main);
+    }
 
     /* Stepper */
     .stepper-timeline {
@@ -1260,7 +1356,9 @@
       background: var(--input-border);
     }
 
-    .timeline-step-row.done:not(:last-child)::before { background: #10b981; }
+    .timeline-step-row.done:not(:last-child)::before {
+      background: #10b981;
+    }
 
     .step-marker-icon {
       width: 16px;
@@ -1338,6 +1436,7 @@
       0% {
         stroke-dashoffset: 1400;
       }
+
       100% {
         stroke-dashoffset: 0;
       }
@@ -1371,6 +1470,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- ========================================================================
@@ -1379,9 +1479,17 @@
   <div id="app-login-screen">
     <div class="login-theme-corner">
       <div class="header-icon-pill" title="Toggle Theme" onclick="toggleTheme()">
-        <svg id="login-theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="4"/>
-          <path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+        <svg id="login-theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
         </svg>
       </div>
     </div>
@@ -1389,8 +1497,9 @@
     <div class="login-card-container">
       <div class="login-brand-head">
         <div class="login-cloud-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
           </svg>
         </div>
         <h1 class="login-brand-title">Cloud Media Studio</h1>
@@ -1404,42 +1513,41 @@
       <form id="cognito-signin-form" onsubmit="handleCognitoSignIn(event)">
         <div class="form-group-field">
           <label class="form-field-label">Corporate Email / IAM Identity</label>
-          <input 
-            type="email" 
-            id="login-email-input" 
-            class="input-field-control" 
-            required 
-            placeholder="admin@cms.com" 
-            value="admin@cms.com"
-          >
+          <input type="email" id="login-email-input" class="input-field-control" required placeholder="admin@cms.com"
+            value="admin@cms.com">
         </div>
 
         <div class="form-group-field">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
             <label class="form-field-label">Password</label>
-            <a href="#" style="font-size:0.72rem;color:var(--blue);text-decoration:none" onclick="showToast('Password reset link routed via AWS SES'); return false;">Forgot?</a>
+            <a href="#" style="font-size:0.72rem;color:var(--blue);text-decoration:none"
+              onclick="showToast('Password reset link routed via AWS SES'); return false;">Forgot?</a>
           </div>
           <div class="input-with-icon">
-            <input 
-              type="password" 
-              id="login-pwd-input" 
-              class="input-field-control" 
-              required 
-              value="Admin@SecureAWS2026!"
-            >
+            <input type="password" id="login-pwd-input" class="input-field-control" required
+              value="Admin@SecureAWS2026!">
             <button type="button" class="toggle-pwd-btn" onclick="togglePasswordVisibility()">
-              <svg id="eye-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eye-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
             </button>
           </div>
         </div>
 
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:0.75rem;color:var(--text-muted)">
+        <div
+          style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:0.75rem;color:var(--text-muted)">
           <input type="checkbox" id="remember-me-checkbox" checked style="accent-color:#5046e5">
           <label for="remember-me-checkbox">Remember AWS session on this device</label>
         </div>
 
         <button type="submit" class="btn-cognito-submit" id="btn-submit-login">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </svg>
           <span id="login-button-text">Sign In with AWS Cognito</span>
         </button>
       </form>
@@ -1454,9 +1562,11 @@
       <div class="demo-accounts-box">
         <div class="demo-accounts-title">Quick Demo Profiles (Click to Auto-fill):</div>
         <div>
-          <button type="button" class="demo-pill-btn" onclick="quickFillAccount('admin')">👑 Admin (Nguyen Van A)</button>
-          <button type="button" class="demo-pill-btn" onclick="quickFillAccount('creator')">🎨 Creator (Sarah Chen)</button>
-          <button type="button" class="demo-pill-btn" onclick="quickFillAccount('secops')">🛡️ SecOps (Alex Morgan)</button>
+          <button type="button" class="demo-pill-btn" onclick="quickFillAccount('admin')">👑 Admin (Nguyen Van
+            A)</button>
+          <button type="button" class="demo-pill-btn" onclick="quickFillAccount('creator')">🎨 Creator (Sarah
+            Chen)</button>
+          <button type="button" class="demo-pill-btn" onclick="quickFillAccount('secops')">🛡️ SecOps (Tuat)</button>
         </div>
       </div>
     </div>
@@ -1466,13 +1576,14 @@
        SCREEN 2: AUTHENTICATED APP LAYOUT (SIDEBAR + MAIN CONTENT)
        ======================================================================== -->
   <div id="app-authenticated-view">
-    
+
     <!-- Sidebar -->
     <aside class="app-sidebar">
       <a href="#" class="brand-header" onclick="navigateTo('overview'); return false;">
         <div class="brand-cloud-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
           </svg>
         </div>
         <div class="brand-titles">
@@ -1485,58 +1596,60 @@
       <nav class="sidebar-menu">
         <a class="menu-item active" data-tab="overview" onclick="navigateTo('overview'); return false;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            <polyline points="9 22 9 12 15 12 15 22"/>
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
           </svg>
           <span>Overview</span>
         </a>
 
         <a class="menu-item" data-tab="media-library" onclick="navigateTo('media-library'); return false;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
-            <circle cx="9" cy="9" r="2"/>
-            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+            <circle cx="9" cy="9" r="2" />
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
           </svg>
           <span>Media Library</span>
         </a>
 
         <a class="menu-item" data-tab="upload-media" onclick="navigateTo('upload-media'); return false;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
-            <path d="M12 12v9"/>
-            <path d="m16 16-4-4-4 4"/>
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+            <path d="M12 12v9" />
+            <path d="m16 16-4-4-4 4" />
           </svg>
           <span>Upload Media</span>
         </a>
 
         <a class="menu-item" data-tab="collections" onclick="navigateTo('collections'); return false;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>
+            <path
+              d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
           </svg>
           <span>Collections</span>
         </a>
 
         <a class="menu-item" data-tab="analytics" onclick="navigateTo('analytics'); return false;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 3v18h18"/>
-            <path d="m19 9-5 5-4-4-3 3"/>
+            <path d="M3 3v18h18" />
+            <path d="m19 9-5 5-4-4-3 3" />
           </svg>
           <span>Analytics</span>
         </a>
 
         <a class="menu-item" data-tab="storage-management" onclick="navigateTo('storage-management'); return false;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <ellipse cx="12" cy="5" rx="9" ry="3"/>
-            <path d="M3 5V19A9 3 0 0 0 21 19V5"/>
-            <path d="M3 12A9 3 0 0 0 21 12"/>
+            <ellipse cx="12" cy="5" rx="9" ry="3" />
+            <path d="M3 5V19A9 3 0 0 0 21 19V5" />
+            <path d="M3 12A9 3 0 0 0 21 12" />
           </svg>
           <span>Storage Management</span>
         </a>
 
         <a class="menu-item" data-tab="settings" onclick="navigateTo('settings'); return false;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-            <circle cx="12" cy="12" r="3"/>
+            <path
+              d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+            <circle cx="12" cy="12" r="3" />
           </svg>
           <span>Settings</span>
         </a>
@@ -1550,56 +1663,62 @@
           <div class="aws-subtext">Secure • Scalable • Reliable</div>
         </div>
         <svg class="aws-cube-illustration" viewBox="0 0 64 64" fill="none">
-          <polygon points="32 6 56 20 32 34 8 20" fill="#7c3aed" opacity="0.9"/>
-          <polygon points="8 20 32 34 32 60 8 46" fill="#6d28d9"/>
-          <polygon points="56 20 32 34 32 60 56 46" fill="#8b5cf6" opacity="0.8"/>
-          <path d="M32 6 L56 20 L32 34 L8 20 Z" stroke="#a78bfa" stroke-width="1.5"/>
-          <path d="M32 34 L32 60" stroke="#a78bfa" stroke-width="1.5"/>
+          <polygon points="32 6 56 20 32 34 8 20" fill="#7c3aed" opacity="0.9" />
+          <polygon points="8 20 32 34 32 60 8 46" fill="#6d28d9" />
+          <polygon points="56 20 32 34 32 60 56 46" fill="#8b5cf6" opacity="0.8" />
+          <path d="M32 6 L56 20 L32 34 L8 20 Z" stroke="#a78bfa" stroke-width="1.5" />
+          <path d="M32 34 L32 60" stroke="#a78bfa" stroke-width="1.5" />
         </svg>
       </div>
 
       <!-- User Profile & Logout -->
       <div class="user-footer-row" onclick="openProfileModal()">
         <div class="user-info-group">
-          <img class="user-avatar-img" id="sidebar-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar">
+          <img class="user-avatar-img" id="sidebar-user-avatar"
+            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+            alt="Avatar">
           <div class="user-text-meta">
             <div class="user-full-name" id="sidebar-user-name">Nguyen Van A</div>
             <div class="user-email-addr" id="sidebar-user-email">admin@cms.com</div>
           </div>
         </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
       </div>
 
       <a href="#" class="logout-btn-link" onclick="openLogoutModal(); return false;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
         <span>Logout</span>
       </a>
     </aside>
 
     <!-- Main Wrapper -->
     <div class="main-wrapper">
-      
+
       <!-- Top Header -->
       <header class="top-navbar">
         <div class="search-box-wrap">
-          <svg class="search-box-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.3-4.3"/>
+          <svg class="search-box-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
           </svg>
-          <input 
-            type="text" 
-            class="search-box-input" 
-            placeholder="Search media files...  (⌘ + K)"
-            id="top-search-input"
-          >
+          <input type="text" class="search-box-input" placeholder="Search media files...  (⌘ + K)"
+            id="top-search-input">
         </div>
 
         <div class="header-user-actions">
           <!-- Notification Bell -->
-          <div class="header-icon-pill" id="btn-toggle-notif" title="Notifications" onclick="toggleNotifications(event)">
+          <div class="header-icon-pill" id="btn-toggle-notif" title="Notifications"
+            onclick="toggleNotifications(event)">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
-              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
             </svg>
             <span class="notification-dot-badge" id="notif-badge-count">3</span>
 
@@ -1612,7 +1731,10 @@
               <div class="dropdown-list-body" id="notif-items-list">
                 <div class="notif-row-item" onclick="showToast('WebP derivative ready on CloudFront')">
                   <div class="notif-icon-bubble" style="background:#e0e7ff;color:#4f46e5">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
                   </div>
                   <div>
                     <div class="notif-text-title">Lambda WebP Transcoding</div>
@@ -1623,7 +1745,11 @@
 
                 <div class="notif-row-item" onclick="showToast('12 objects moved to Glacier IR')">
                   <div class="notif-icon-bubble" style="background:#ecfdf5;color:#10b981">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <path d="M12 2v20" />
+                      <path d="m17 5-5-3-5 3" />
+                    </svg>
                   </div>
                   <div>
                     <div class="notif-text-title">FinOps Lifecycle Transition</div>
@@ -1634,7 +1760,10 @@
 
                 <div class="notif-row-item" onclick="showToast('AWS WAF active protection')">
                   <div class="notif-icon-bubble" style="background:#fee2e2;color:#ef4444">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+                    </svg>
                   </div>
                   <div>
                     <div class="notif-text-title">AWS WAFv2 Security Shield</div>
@@ -1648,14 +1777,24 @@
 
           <!-- Theme Toggle -->
           <div class="header-icon-pill" id="theme-toggle-btn" title="Toggle Dark/Light Theme" onclick="toggleTheme()">
-            <svg id="theme-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="4"/>
-              <path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+            <svg id="theme-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2" />
+              <path d="M12 20v2" />
+              <path d="m4.93 4.93 1.41 1.41" />
+              <path d="m17.66 17.66 1.41 1.41" />
+              <path d="M2 12h2" />
+              <path d="M20 12h2" />
+              <path d="m6.34 17.66-1.41 1.41" />
+              <path d="m19.07 4.93-1.41 1.41" />
             </svg>
           </div>
 
           <!-- User Avatar -->
-          <img class="header-avatar-circle" id="header-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Profile" onclick="openProfileModal()">
+          <img class="header-avatar-circle" id="header-avatar-img"
+            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+            alt="Profile" onclick="openProfileModal()">
         </div>
       </header>
 
@@ -1666,7 +1805,7 @@
              VIEW 1: OVERVIEW (DASHBOARD) - PRESERVED 100% UNCHANGED
              ==================================================================== -->
         <div id="view-overview" class="view-panel">
-          
+
           <div class="page-title-banner">
             <div>
               <h1 class="banner-heading">Dashboard</h1>
@@ -1674,7 +1813,12 @@
             </div>
             <button class="date-filter-button" onclick="showToast('Date range: Last 30 days')">
               <span>Last 30 days</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
             </button>
           </div>
 
@@ -1683,8 +1827,10 @@
             <div class="kpi-single-card">
               <div class="kpi-icon-square purple">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
-                  <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
                 </svg>
               </div>
               <div class="kpi-data-meta">
@@ -1697,8 +1843,10 @@
             <div class="kpi-single-card">
               <div class="kpi-icon-square blue">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect width="20" height="8" x="2" y="3" rx="2"/><rect width="20" height="8" x="2" y="13" rx="2"/>
-                  <line x1="6" y1="7" x2="6.01" y2="7"/><line x1="6" y1="17" x2="6.01" y2="17"/>
+                  <rect width="20" height="8" x="2" y="3" rx="2" />
+                  <rect width="20" height="8" x="2" y="13" rx="2" />
+                  <line x1="6" y1="7" x2="6.01" y2="7" />
+                  <line x1="6" y1="17" x2="6.01" y2="17" />
                 </svg>
               </div>
               <div class="kpi-data-meta">
@@ -1711,7 +1859,9 @@
             <div class="kpi-single-card">
               <div class="kpi-icon-square green">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/>
+                  <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+                  <path d="M12 12v9" />
+                  <path d="m16 16-4-4-4 4" />
                 </svg>
               </div>
               <div class="kpi-data-meta">
@@ -1724,7 +1874,9 @@
             <div class="kpi-single-card">
               <div class="kpi-icon-square amber">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="21 8 21 21 3 21 3 8"/><rect width="22" height="5" x="1" y="3" rx="1"/><line x1="10" y1="12" x2="14" y2="12"/>
+                  <polyline points="21 8 21 21 3 21 3 8" />
+                  <rect width="22" height="5" x="1" y="3" rx="1" />
+                  <line x1="10" y1="12" x2="14" y2="12" />
                 </svg>
               </div>
               <div class="kpi-data-meta">
@@ -1737,35 +1889,50 @@
 
           <!-- ROW 2: 3 CARDS -->
           <div class="row2-grid">
-            
+
             <div class="white-card">
               <div class="card-header-row">
                 <div class="card-heading-title">Storage Usage</div>
                 <div class="chart-legend-dots">
-                  <div class="legend-item-dot"><span class="dot-circle" style="background:#6366f1"></span><span>S3 Standard</span></div>
-                  <div class="legend-item-dot"><span class="dot-circle" style="background:#2563eb"></span><span>Processed</span></div>
-                  <div class="legend-item-dot"><span class="dot-circle" style="background:#10b981"></span><span>Archive</span></div>
+                  <div class="legend-item-dot"><span class="dot-circle" style="background:#6366f1"></span><span>S3
+                      Standard</span></div>
+                  <div class="legend-item-dot"><span class="dot-circle"
+                      style="background:#2563eb"></span><span>Processed</span></div>
+                  <div class="legend-item-dot"><span class="dot-circle"
+                      style="background:#10b981"></span><span>Archive</span></div>
                 </div>
               </div>
 
               <svg class="storage-line-chart-svg" viewBox="0 0 520 160">
                 <text x="0" y="18" fill="var(--text-dim)" font-size="10" font-family="inherit">150 GB</text>
-                <line x1="45" y1="14" x2="520" y2="14" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1"/>
+                <line x1="45" y1="14" x2="520" y2="14" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
                 <text x="0" y="65" fill="var(--text-dim)" font-size="10" font-family="inherit">100 GB</text>
-                <line x1="45" y1="61" x2="520" y2="61" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1"/>
+                <line x1="45" y1="61" x2="520" y2="61" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
                 <text x="0" y="112" fill="var(--text-dim)" font-size="10" font-family="inherit">50 GB</text>
-                <line x1="45" y1="108" x2="520" y2="108" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1"/>
+                <line x1="45" y1="108" x2="520" y2="108" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
                 <text x="0" y="152" fill="var(--text-dim)" font-size="10" font-family="inherit">0 GB</text>
-                <line x1="45" y1="148" x2="520" y2="148" stroke="rgba(148, 163, 184, 0.3)" stroke-width="1"/>
+                <line x1="45" y1="148" x2="520" y2="148" stroke="rgba(148, 163, 184, 0.3)" stroke-width="1" />
 
-                <path d="M 60,90 C 130,90 140,55 200,60 C 260,65 290,45 350,42 C 410,39 440,32 500,28" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round"/>
-                <circle cx="60" cy="90" r="3" fill="#6366f1"/><circle cx="200" cy="60" r="3" fill="#6366f1"/><circle cx="350" cy="42" r="3" fill="#6366f1"/><circle cx="500" cy="28" r="3" fill="#6366f1"/>
+                <path d="M 60,90 C 130,90 140,55 200,60 C 260,65 290,45 350,42 C 410,39 440,32 500,28" fill="none"
+                  stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="60" cy="90" r="3" fill="#6366f1" />
+                <circle cx="200" cy="60" r="3" fill="#6366f1" />
+                <circle cx="350" cy="42" r="3" fill="#6366f1" />
+                <circle cx="500" cy="28" r="3" fill="#6366f1" />
 
-                <path d="M 60,110 C 130,110 140,90 200,88 C 260,86 290,75 350,70 C 410,65 440,78 500,75" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
-                <circle cx="60" cy="110" r="3" fill="#2563eb"/><circle cx="200" cy="88" r="3" fill="#2563eb"/><circle cx="350" cy="70" r="3" fill="#2563eb"/><circle cx="500" cy="75" r="3" fill="#2563eb"/>
+                <path d="M 60,110 C 130,110 140,90 200,88 C 260,86 290,75 350,70 C 410,65 440,78 500,75" fill="none"
+                  stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="60" cy="110" r="3" fill="#2563eb" />
+                <circle cx="200" cy="88" r="3" fill="#2563eb" />
+                <circle cx="350" cy="70" r="3" fill="#2563eb" />
+                <circle cx="500" cy="75" r="3" fill="#2563eb" />
 
-                <path d="M 60,136 C 130,136 140,128 200,126 C 260,124 290,120 350,116 C 410,112 440,122 500,120" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
-                <circle cx="60" cy="136" r="3" fill="#10b981"/><circle cx="200" cy="126" r="3" fill="#10b981"/><circle cx="350" cy="116" r="3" fill="#10b981"/><circle cx="500" cy="120" r="3" fill="#10b981"/>
+                <path d="M 60,136 C 130,136 140,128 200,126 C 260,124 290,120 350,116 C 410,112 440,122 500,120"
+                  fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="60" cy="136" r="3" fill="#10b981" />
+                <circle cx="200" cy="126" r="3" fill="#10b981" />
+                <circle cx="350" cy="116" r="3" fill="#10b981" />
+                <circle cx="500" cy="120" r="3" fill="#10b981" />
 
                 <text x="50" y="160" fill="var(--text-dim)" font-size="10">Week 1</text>
                 <text x="185" y="160" fill="var(--text-dim)" font-size="10">Week 2</text>
@@ -1781,9 +1948,12 @@
               <div class="donut-chart-flex">
                 <div class="donut-svg-wrap">
                   <svg viewBox="0 0 100 100" style="width:100%;height:100%;transform:rotate(-90deg)">
-                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#2563eb" stroke-width="12" stroke-dasharray="148 238" stroke-dashoffset="0"/>
-                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#7c3aed" stroke-width="12" stroke-dasharray="67 238" stroke-dashoffset="-148"/>
-                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#94a3b8" stroke-width="12" stroke-dasharray="24 238" stroke-dashoffset="-215"/>
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#2563eb" stroke-width="12"
+                      stroke-dasharray="148 238" stroke-dashoffset="0" />
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#7c3aed" stroke-width="12"
+                      stroke-dasharray="67 238" stroke-dashoffset="-148" />
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#94a3b8" stroke-width="12"
+                      stroke-dasharray="24 238" stroke-dashoffset="-215" />
                   </svg>
                   <div class="donut-center-metric">
                     <span class="donut-metric-val">12.5K</span>
@@ -1793,15 +1963,18 @@
 
                 <div class="donut-legend-vertical">
                   <div class="donut-legend-row">
-                    <div class="donut-row-left"><span class="dot-circle" style="background:#2563eb"></span><span>Images</span></div>
+                    <div class="donut-row-left"><span class="dot-circle"
+                        style="background:#2563eb"></span><span>Images</span></div>
                     <span class="donut-row-percent">62%</span>
                   </div>
                   <div class="donut-legend-row">
-                    <div class="donut-row-left"><span class="dot-circle" style="background:#7c3aed"></span><span>Videos</span></div>
+                    <div class="donut-row-left"><span class="dot-circle"
+                        style="background:#7c3aed"></span><span>Videos</span></div>
                     <span class="donut-row-percent">28%</span>
                   </div>
                   <div class="donut-legend-row">
-                    <div class="donut-row-left"><span class="dot-circle" style="background:#94a3b8"></span><span>Others</span></div>
+                    <div class="donut-row-left"><span class="dot-circle"
+                        style="background:#94a3b8"></span><span>Others</span></div>
                     <span class="donut-row-percent">10%</span>
                   </div>
                 </div>
@@ -1811,8 +1984,13 @@
             <div class="white-card" style="display:flex;flex-direction:column;justify-content:space-between">
               <div>
                 <div class="card-heading-title" style="margin-bottom:12px">
-                  <span style="width:24px;height:24px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;color:#16a34a">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                  <span
+                    style="width:24px;height:24px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;color:#16a34a">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg>
                   </span>
                   <span>Storage Optimization</span>
                 </div>
@@ -1825,21 +2003,24 @@
                   </div>
 
                   <svg class="opt-bars-chart-svg" viewBox="0 0 100 60">
-                    <rect x="5" y="44" width="7" height="16" rx="2" fill="#d1fae5"/>
-                    <rect x="18" y="38" width="7" height="22" rx="2" fill="#a7f3d0"/>
-                    <rect x="31" y="30" width="7" height="30" rx="2" fill="#6ee7b7"/>
-                    <rect x="44" y="24" width="7" height="36" rx="2" fill="#34d399"/>
-                    <rect x="57" y="16" width="7" height="44" rx="2" fill="#10b981"/>
-                    <rect x="70" y="8" width="7" height="52" rx="2" fill="#059669"/>
-                    <rect x="83" y="2" width="7" height="58" rx="2" fill="#047857"/>
-                    <path d="M 5,42 Q 40,24 88,3" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="5" y="44" width="7" height="16" rx="2" fill="#d1fae5" />
+                    <rect x="18" y="38" width="7" height="22" rx="2" fill="#a7f3d0" />
+                    <rect x="31" y="30" width="7" height="30" rx="2" fill="#6ee7b7" />
+                    <rect x="44" y="24" width="7" height="36" rx="2" fill="#34d399" />
+                    <rect x="57" y="16" width="7" height="44" rx="2" fill="#10b981" />
+                    <rect x="70" y="8" width="7" height="52" rx="2" fill="#059669" />
+                    <rect x="83" y="2" width="7" height="58" rx="2" fill="#047857" />
+                    <path d="M 5,42 Q 40,24 88,3" fill="none" stroke="#059669" stroke-width="2"
+                      stroke-linecap="round" />
                   </svg>
                 </div>
               </div>
 
               <button class="opt-view-details-btn" onclick="navigateTo('storage-management')">
                 <span>View Details</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
               </button>
             </div>
 
@@ -1847,13 +2028,15 @@
 
           <!-- ROW 3: 3 CARDS -->
           <div class="row3-grid">
-            
+
             <div class="white-card">
               <div class="card-header-row">
                 <div class="card-heading-title">Recent Uploads</div>
                 <a class="view-all-link" onclick="navigateTo('media-library')">
                   <span>View all</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
                 </a>
               </div>
 
@@ -1861,7 +2044,9 @@
                 <div class="upload-item-row" onclick="inspectFileByName('summer-campaign.jpg')">
                   <div class="upload-item-left">
                     <div class="upload-thumb-wrap">
-                      <img class="upload-thumb-img" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=120&auto=format&fit=crop&q=80" alt="summer-campaign">
+                      <img class="upload-thumb-img"
+                        src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=120&auto=format&fit=crop&q=80"
+                        alt="summer-campaign">
                     </div>
                     <div>
                       <div class="upload-item-title">summer-campaign.jpg</div>
@@ -1870,16 +2055,21 @@
                   </div>
                   <div style="display:flex;align-items:center">
                     <span class="status-completed-badge">Completed</span>
-                    <button class="three-dots-btn" onclick="event.stopPropagation(); inspectFileByName('summer-campaign.jpg')">•••</button>
+                    <button class="three-dots-btn"
+                      onclick="event.stopPropagation(); inspectFileByName('summer-campaign.jpg')">•••</button>
                   </div>
                 </div>
 
                 <div class="upload-item-row" onclick="inspectFileByName('product-video.mp4')">
                   <div class="upload-item-left">
                     <div class="upload-thumb-wrap">
-                      <img class="upload-thumb-img" src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=120&auto=format&fit=crop&q=80" alt="product-video">
+                      <img class="upload-thumb-img"
+                        src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=120&auto=format&fit=crop&q=80"
+                        alt="product-video">
                       <div class="upload-play-overlay">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff">
+                          <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
                       </div>
                     </div>
                     <div>
@@ -1889,14 +2079,17 @@
                   </div>
                   <div style="display:flex;align-items:center">
                     <span class="status-completed-badge">Completed</span>
-                    <button class="three-dots-btn" onclick="event.stopPropagation(); inspectFileByName('product-video.mp4')">•••</button>
+                    <button class="three-dots-btn"
+                      onclick="event.stopPropagation(); inspectFileByName('product-video.mp4')">•••</button>
                   </div>
                 </div>
 
                 <div class="upload-item-row" onclick="inspectFileByName('event-photo.webp')">
                   <div class="upload-item-left">
                     <div class="upload-thumb-wrap">
-                      <img class="upload-thumb-img" src="https://images.unsplash.com/photo-1477959858617-67f30bc75b82?w=120&auto=format&fit=crop&q=80" alt="event-photo">
+                      <img class="upload-thumb-img"
+                        src="https://images.unsplash.com/photo-1477959858617-67f30bc75b82?w=120&auto=format&fit=crop&q=80"
+                        alt="event-photo">
                     </div>
                     <div>
                       <div class="upload-item-title">event-photo.webp</div>
@@ -1905,7 +2098,8 @@
                   </div>
                   <div style="display:flex;align-items:center">
                     <span class="status-completed-badge">Completed</span>
-                    <button class="three-dots-btn" onclick="event.stopPropagation(); inspectFileByName('event-photo.webp')">•••</button>
+                    <button class="three-dots-btn"
+                      onclick="event.stopPropagation(); inspectFileByName('event-photo.webp')">•••</button>
                   </div>
                 </div>
               </div>
@@ -1916,14 +2110,18 @@
                 <div class="card-heading-title">Processing Activity</div>
                 <a class="view-all-link" onclick="navigateTo('upload-media')">
                   <span>View all</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
                 </a>
               </div>
 
               <div class="stepper-timeline">
                 <div class="timeline-step-row done">
                   <div class="step-marker-icon done">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
                   </div>
                   <div>
                     <div class="step-text-title">Upload to S3 Raw Bucket</div>
@@ -1933,7 +2131,9 @@
 
                 <div class="timeline-step-row done">
                   <div class="step-marker-icon done">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
                   </div>
                   <div>
                     <div class="step-text-title">Trigger AWS Lambda</div>
@@ -1943,7 +2143,9 @@
 
                 <div class="timeline-step-row done">
                   <div class="step-marker-icon done">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
                   </div>
                   <div>
                     <div class="step-text-title">Image Compression</div>
@@ -1952,13 +2154,19 @@
                 </div>
 
                 <div class="timeline-step-row">
-                  <div class="step-marker-icon pending"><span style="width:5px;height:5px;border-radius:50%;background:#94a3b8"></span></div>
-                  <div><div class="step-text-title pending">Generate Thumbnails</div></div>
+                  <div class="step-marker-icon pending"><span
+                      style="width:5px;height:5px;border-radius:50%;background:#94a3b8"></span></div>
+                  <div>
+                    <div class="step-text-title pending">Generate Thumbnails</div>
+                  </div>
                 </div>
 
                 <div class="timeline-step-row">
-                  <div class="step-marker-icon pending"><span style="width:5px;height:5px;border-radius:50%;background:#94a3b8"></span></div>
-                  <div><div class="step-text-title pending">Update Metadata</div></div>
+                  <div class="step-marker-icon pending"><span
+                      style="width:5px;height:5px;border-radius:50%;background:#94a3b8"></span></div>
+                  <div>
+                    <div class="step-text-title pending">Update Metadata</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1971,9 +2179,12 @@
               <div class="storage-classes-flex">
                 <div class="donut-svg-wrap">
                   <svg viewBox="0 0 100 100" style="width:100%;height:100%;transform:rotate(-90deg)">
-                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#2563eb" stroke-width="12" stroke-dasharray="172 238" stroke-dashoffset="0"/>
-                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#38bdf8" stroke-width="12" stroke-dasharray="48 238" stroke-dashoffset="-172"/>
-                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#fbbf24" stroke-width="12" stroke-dasharray="19 238" stroke-dashoffset="-220"/>
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#2563eb" stroke-width="12"
+                      stroke-dasharray="172 238" stroke-dashoffset="0" />
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#38bdf8" stroke-width="12"
+                      stroke-dasharray="48 238" stroke-dashoffset="-172" />
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#fbbf24" stroke-width="12"
+                      stroke-dasharray="19 238" stroke-dashoffset="-220" />
                   </svg>
                   <div class="donut-center-metric">
                     <span class="donut-metric-val" style="font-size:1.15rem">148.6 GB</span>
@@ -1983,15 +2194,18 @@
 
                 <div class="donut-legend-vertical">
                   <div class="donut-legend-row">
-                    <div class="donut-row-left"><span class="dot-circle" style="background:#2563eb"></span><span>S3 Standard</span></div>
+                    <div class="donut-row-left"><span class="dot-circle" style="background:#2563eb"></span><span>S3
+                        Standard</span></div>
                     <span class="donut-row-percent">72%</span>
                   </div>
                   <div class="donut-legend-row">
-                    <div class="donut-row-left"><span class="dot-circle" style="background:#38bdf8"></span><span>Processed</span></div>
+                    <div class="donut-row-left"><span class="dot-circle"
+                        style="background:#38bdf8"></span><span>Processed</span></div>
                     <span class="donut-row-percent">20%</span>
                   </div>
                   <div class="donut-legend-row">
-                    <div class="donut-row-left"><span class="dot-circle" style="background:#fbbf24"></span><span>Glacier</span></div>
+                    <div class="donut-row-left"><span class="dot-circle"
+                        style="background:#fbbf24"></span><span>Glacier</span></div>
                     <span class="donut-row-percent">8%</span>
                   </div>
                 </div>
@@ -2009,9 +2223,11 @@
           <div class="page-title-banner">
             <div>
               <h1 class="banner-heading">Media Library</h1>
-              <p class="banner-subheading">Centralized digital asset management distributed globally via Amazon CloudFront CDN.</p>
+              <p class="banner-subheading">Centralized digital asset management distributed globally via Amazon
+                CloudFront CDN.</p>
             </div>
-            <button class="date-filter-button" style="background:#5046e5;color:#fff;border-color:#5046e5" onclick="navigateTo('upload-media')">
+            <button class="date-filter-button" style="background:#5046e5;color:#fff;border-color:#5046e5"
+              onclick="navigateTo('upload-media')">
               + Upload Media
             </button>
           </div>
@@ -2020,17 +2236,21 @@
           <div class="white-card" style="margin-bottom:20px;padding:14px 20px">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
               <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <button class="date-filter-button" id="lib-filter-all" style="background:#5046e5;color:#fff;border-color:#5046e5" onclick="filterMediaLibrary('all', this)">All Files (6)</button>
+                <button class="date-filter-button" id="lib-filter-all"
+                  style="background:#5046e5;color:#fff;border-color:#5046e5"
+                  onclick="filterMediaLibrary('all', this)">All Files (6)</button>
                 <button class="date-filter-button" onclick="filterMediaLibrary('images', this)">Images (4)</button>
                 <button class="date-filter-button" onclick="filterMediaLibrary('videos', this)">Videos (1)</button>
                 <button class="date-filter-button" onclick="filterMediaLibrary('glacier', this)">Glacier IR (2)</button>
               </div>
-              <input type="text" placeholder="Filter by title or tag..." class="search-box-input" style="width:260px;height:36px" oninput="searchMediaLibrary(this.value)">
+              <input type="text" placeholder="Filter by title or tag..." class="search-box-input"
+                style="width:260px;height:36px" oninput="searchMediaLibrary(this.value)">
             </div>
           </div>
 
           <!-- Media Cards Grid -->
-          <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px" id="library-grid-cards">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px"
+            id="library-grid-cards">
             <!-- Populated by JS -->
           </div>
         </div>
@@ -2042,7 +2262,8 @@
           <div class="page-title-banner">
             <div>
               <h1 class="banner-heading">Upload Media Studio</h1>
-              <p class="banner-subheading">Direct S3 ingestion using Presigned URLs and automated event-driven Lambda transcoding.</p>
+              <p class="banner-subheading">Direct S3 ingestion using Presigned URLs and automated event-driven Lambda
+                transcoding.</p>
             </div>
           </div>
 
@@ -2050,20 +2271,31 @@
             <!-- Left: Dropzone & Form -->
             <div class="white-card">
               <div class="card-heading-title" style="margin-bottom:14px">Asset Ingestion</div>
-              
-              <div style="border:2px dashed #cbd5e1;border-radius:12px;padding:36px 20px;text-align:center;background:var(--input-bg);cursor:pointer;transition:border-color 0.2s" onclick="document.getElementById('file-upload-input').click()">
-                <input type="file" id="file-upload-input" style="display:none" accept="image/*,video/*" onchange="handleFileSelected(this)">
-                <div style="width:52px;height:52px;border-radius:50%;background:#e0e7ff;color:#5046e5;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+
+              <div
+                style="border:2px dashed #cbd5e1;border-radius:12px;padding:36px 20px;text-align:center;background:var(--input-bg);cursor:pointer;transition:border-color 0.2s"
+                onclick="document.getElementById('file-upload-input').click()">
+                <input type="file" id="file-upload-input" style="display:none" accept="image/*,video/*"
+                  onchange="handleFileSelected(this)">
+                <div
+                  style="width:52px;height:52px;border-radius:50%;background:#e0e7ff;color:#5046e5;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+                    <path d="M12 12v9" />
+                    <path d="m16 16-4-4-4 4" />
+                  </svg>
                 </div>
-                <div style="font-weight:700;font-size:0.95rem;color:var(--text-main)" id="upload-box-text">Choose file or drag & drop here</div>
-                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">JPEG, PNG, WebP, MP4 up to 100 MB per asset</p>
+                <div style="font-weight:700;font-size:0.95rem;color:var(--text-main)" id="upload-box-text">Choose file
+                  or drag & drop here</div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">JPEG, PNG, WebP, MP4 up to 100 MB
+                  per asset</p>
               </div>
 
               <div style="margin-top:18px;display:flex;flex-direction:column;gap:12px">
                 <div>
                   <label class="form-field-label">Asset Title</label>
-                  <input type="text" class="input-field-control" id="form-upload-title" placeholder="e.g., Summer Brand Hero 4K" value="Autumn Product Launch Banner">
+                  <input type="text" class="input-field-control" id="form-upload-title"
+                    placeholder="e.g., Summer Brand Hero 4K" value="Autumn Product Launch Banner">
                 </div>
 
                 <div>
@@ -2077,10 +2309,12 @@
 
                 <div>
                   <label class="form-field-label">Campaign Tags (comma separated)</label>
-                  <input type="text" class="input-field-control" id="form-upload-tags" placeholder="marketing, 4k, banner" value="marketing, 4k, launch2026">
+                  <input type="text" class="input-field-control" id="form-upload-tags"
+                    placeholder="marketing, 4k, banner" value="marketing, 4k, launch2026">
                 </div>
 
-                <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;font-size:0.78rem;color:var(--text-muted)">
+                <div
+                  style="display:flex;flex-direction:column;gap:8px;margin-top:4px;font-size:0.78rem;color:var(--text-muted)">
                   <label style="display:flex;align-items:center;gap:8px">
                     <input type="checkbox" checked style="accent-color:#5046e5">
                     <span>Transcode to modern WebP (68% file size savings)</span>
@@ -2091,13 +2325,21 @@
                   </label>
                 </div>
 
-                <button class="date-filter-button" style="width:100%;justify-content:center;background:#5046e5;color:#fff;border-color:#5046e5;margin-top:8px;height:42px;font-size:0.86rem" onclick="runInteractiveUploadPipeline(false)">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <button class="date-filter-button"
+                  style="width:100%;justify-content:center;background:#5046e5;color:#fff;border-color:#5046e5;margin-top:8px;height:42px;font-size:0.86rem"
+                  onclick="runInteractiveUploadPipeline(false)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
                   <span>Chạy Pipeline Mô Phỏng (Diễn Tập Demo)</span>
                 </button>
 
-                <button class="date-filter-button" style="width:100%;justify-content:center;background:#059669;color:#fff;border-color:#059669;margin-top:8px;height:42px;font-size:0.86rem" onclick="runInteractiveUploadPipeline(true)">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <button class="date-filter-button"
+                  style="width:100%;justify-content:center;background:#059669;color:#fff;border-color:#059669;margin-top:8px;height:42px;font-size:0.86rem"
+                  onclick="runInteractiveUploadPipeline(true)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                  </svg>
                   <span>⚡ Kích Hoạt Lambda Thật Trên AWS S3</span>
                 </button>
               </div>
@@ -2107,7 +2349,8 @@
             <div class="white-card">
               <div class="card-header-row">
                 <div class="card-heading-title">AWS Serverless Pipeline Engine</div>
-                <span class="status-completed-badge" id="pipeline-live-pill" style="background:#e0e7ff;color:#4f46e5">Standby</span>
+                <span class="status-completed-badge" id="pipeline-live-pill"
+                  style="background:#e0e7ff;color:#4f46e5">Standby</span>
               </div>
 
               <!-- Animated Visual Stepper -->
@@ -2119,7 +2362,8 @@
                       <span>1. AWS S3 Presigned URL (STS Token)</span>
                       <span class="step-text-time" id="ui-step-time-1">--</span>
                     </div>
-                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">IAM Role temporary credentials for direct client-to-S3 upload</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">IAM Role temporary credentials
+                      for direct client-to-S3 upload</div>
                   </div>
                 </div>
 
@@ -2130,7 +2374,8 @@
                       <span>2. Direct Upload to S3 Raw Bucket</span>
                       <span class="step-text-time" id="ui-step-time-2">--</span>
                     </div>
-                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">ap-southeast-1 Raw bucket with SSE-KMS encryption</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">ap-southeast-1 Raw bucket with
+                      SSE-KMS encryption</div>
                   </div>
                 </div>
 
@@ -2141,7 +2386,8 @@
                       <span>3. S3 ObjectCreated ➔ EventBridge Trigger</span>
                       <span class="step-text-time" id="ui-step-time-3">--</span>
                     </div>
-                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">Asynchronous event triggers AWS Lambda Graviton2</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">Asynchronous event triggers
+                      AWS Lambda Graviton2</div>
                   </div>
                 </div>
 
@@ -2152,7 +2398,8 @@
                       <span>4. AWS Lambda WebP & Thumbnail Generation</span>
                       <span class="step-text-time" id="ui-step-time-4">--</span>
                     </div>
-                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">Generates 3 responsive thumbnails + Sharp WebP encoding</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">Generates 3 responsive
+                      thumbnails + Sharp WebP encoding</div>
                   </div>
                 </div>
 
@@ -2163,19 +2410,24 @@
                       <span>5. Metadata Aurora MySQL & DynamoDB Commit</span>
                       <span class="step-text-time" id="ui-step-time-5">--</span>
                     </div>
-                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">Persisted to RDS catalog and published to CloudFront CDN</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">Persisted to RDS catalog and
+                      published to CloudFront CDN</div>
                   </div>
                 </div>
               </div>
 
-              <div id="pipeline-success-card" style="display:none;margin-top:20px;padding:14px;border-radius:10px;background:#ecfdf5;border:1px solid #a7f3d0">
+              <div id="pipeline-success-card"
+                style="display:none;margin-top:20px;padding:14px;border-radius:10px;background:#ecfdf5;border:1px solid #a7f3d0">
                 <div style="font-weight:700;font-size:0.86rem;color:#059669;display:flex;align-items:center;gap:6px">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
                   <span>Asset Successfully Published!</span>
                 </div>
                 <div style="font-size:0.76rem;color:#047857;margin-top:4px">
                   Original: 4.8 MB ➔ WebP Processed: <strong>1.4 MB (71% savings)</strong>.<br>
-                  CDN: <a href="#" style="color:#047857;text-decoration:underline" onclick="copyModalCdnLink(); return false;">https://d123456.cloudfront.net/media/autumn-banner.webp</a>
+                  CDN: <a href="#" style="color:#047857;text-decoration:underline"
+                    onclick="copyModalCdnLink(); return false;">https://d123456.cloudfront.net/media/autumn-banner.webp</a>
                 </div>
               </div>
             </div>
@@ -2189,9 +2441,11 @@
           <div class="page-title-banner">
             <div>
               <h1 class="banner-heading">Media Collections</h1>
-              <p class="banner-subheading">Organize campaign media and creative assets into shared enterprise project workspaces.</p>
+              <p class="banner-subheading">Organize campaign media and creative assets into shared enterprise project
+                workspaces.</p>
             </div>
-            <button class="date-filter-button" style="background:#5046e5;color:#fff;border-color:#5046e5" onclick="openNewCollectionModal()">
+            <button class="date-filter-button" style="background:#5046e5;color:#fff;border-color:#5046e5"
+              onclick="openNewCollectionModal()">
               + New Collection
             </button>
           </div>
@@ -2213,16 +2467,20 @@
           </div>
 
           <!-- Collections Grid -->
-          <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(290px, 1fr));gap:18px" id="collections-grid-box">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(290px, 1fr));gap:18px"
+            id="collections-grid-box">
             <!-- Collection Card 1 -->
             <div class="white-card" style="padding:16px;cursor:pointer" onclick="navigateTo('media-library')">
               <div style="height:140px;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px">
-                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&auto=format&fit=crop&q=80" style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&auto=format&fit=crop&q=80"
+                  style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s"
+                  onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
               </div>
               <div style="display:flex;justify-content:space-between;align-items:flex-start">
                 <div>
                   <div style="font-weight:800;font-size:0.95rem;color:var(--text-main)">Summer Campaign 2026</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">48 assets • 124 MB • 4 members</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">48 assets • 124 MB • 4 members
+                  </div>
                 </div>
                 <span class="status-completed-badge" style="background:#e0e7ff;color:#4f46e5">#Marketing</span>
               </div>
@@ -2231,12 +2489,15 @@
             <!-- Collection Card 2 -->
             <div class="white-card" style="padding:16px;cursor:pointer" onclick="navigateTo('media-library')">
               <div style="height:140px;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px">
-                <img src="https://images.unsplash.com/photo-1477959858617-67f30bc75b82?w=400&auto=format&fit=crop&q=80" style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="https://images.unsplash.com/photo-1477959858617-67f30bc75b82?w=400&auto=format&fit=crop&q=80"
+                  style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s"
+                  onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
               </div>
               <div style="display:flex;justify-content:space-between;align-items:flex-start">
                 <div>
                   <div style="font-weight:800;font-size:0.95rem;color:var(--text-main)">Corporate Brand Guidelines</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">26 assets • 86 MB • 6 members</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">26 assets • 86 MB • 6 members
+                  </div>
                 </div>
                 <span class="status-completed-badge" style="background:#e0f2fe;color:#0284c7">#Branding</span>
               </div>
@@ -2245,12 +2506,15 @@
             <!-- Collection Card 3 -->
             <div class="white-card" style="padding:16px;cursor:pointer" onclick="navigateTo('media-library')">
               <div style="height:140px;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px">
-                <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&auto=format&fit=crop&q=80" style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&auto=format&fit=crop&q=80"
+                  style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s"
+                  onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
               </div>
               <div style="display:flex;justify-content:space-between;align-items:flex-start">
                 <div>
                   <div style="font-weight:800;font-size:0.95rem;color:var(--text-main)">Social Media 9:16 Shorts</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">34 assets • 540 MB • 2 members</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">34 assets • 540 MB • 2 members
+                  </div>
                 </div>
                 <span class="status-completed-badge" style="background:#ecfdf5;color:#10b981">#Social</span>
               </div>
@@ -2259,12 +2523,15 @@
             <!-- Collection Card 4 -->
             <div class="white-card" style="padding:16px;cursor:pointer" onclick="navigateTo('media-library')">
               <div style="height:140px;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px">
-                <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&auto=format&fit=crop&q=80" style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&auto=format&fit=crop&q=80"
+                  style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s"
+                  onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
               </div>
               <div style="display:flex;justify-content:space-between;align-items:flex-start">
                 <div>
                   <div style="font-weight:800;font-size:0.95rem;color:var(--text-main)">Product Photography 4K RAW</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">52 assets • 680 MB • 5 members</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">52 assets • 680 MB • 5 members
+                  </div>
                 </div>
                 <span class="status-completed-badge" style="background:#fef3c7;color:#d97706">#RawMedia</span>
               </div>
@@ -2279,10 +2546,14 @@
           <div class="page-title-banner">
             <div>
               <h1 class="banner-heading">Analytics & Global CDN Telemetry</h1>
-              <p class="banner-subheading">Real-time edge cache performance, egress bandwidth, and WebP compression analytics.</p>
+              <p class="banner-subheading">Real-time edge cache performance, egress bandwidth, and WebP compression
+                analytics.</p>
             </div>
             <button class="date-filter-button" onclick="triggerAnalyticsChartAnimation()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.5 2v6h-6" />
+                <path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+              </svg>
               <span>Replay Animation</span>
             </button>
           </div>
@@ -2291,7 +2562,10 @@
           <div class="kpi-row-grid">
             <div class="kpi-single-card">
               <div class="kpi-icon-square purple">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 3v18h18" />
+                  <path d="m19 9-5 5-4-4-3 3" />
+                </svg>
               </div>
               <div class="kpi-data-meta">
                 <div class="kpi-big-number">4.28 TB</div>
@@ -2302,7 +2576,10 @@
 
             <div class="kpi-single-card">
               <div class="kpi-icon-square blue">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
               </div>
               <div class="kpi-data-meta">
                 <div class="kpi-big-number">18.4 ms</div>
@@ -2313,7 +2590,9 @@
 
             <div class="kpi-single-card">
               <div class="kpi-icon-square green">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
               </div>
               <div class="kpi-data-meta">
                 <div class="kpi-big-number">98.4%</div>
@@ -2324,7 +2603,10 @@
 
             <div class="kpi-single-card">
               <div class="kpi-icon-square amber">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
               </div>
               <div class="kpi-data-meta">
                 <div class="kpi-big-number">$842.50</div>
@@ -2339,12 +2621,16 @@
             <div class="card-header-row">
               <div>
                 <div class="card-heading-title">Daily Egress Bandwidth & Edge Requests (30-Day Stream)</div>
-                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">Sequential curves animate from left to right on initial view</p>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">Sequential curves animate from left
+                  to right on initial view</p>
               </div>
               <div class="chart-legend-dots">
-                <div class="legend-item-dot"><span class="dot-circle" style="background:#5046e5"></span><span>Edge Bandwidth (GB)</span></div>
-                <div class="legend-item-dot"><span class="dot-circle" style="background:#06b6d4"></span><span>Requests (x1,000)</span></div>
-                <div class="legend-item-dot"><span class="dot-circle" style="background:#10b981"></span><span>WebP Savings (%)</span></div>
+                <div class="legend-item-dot"><span class="dot-circle" style="background:#5046e5"></span><span>Edge
+                    Bandwidth (GB)</span></div>
+                <div class="legend-item-dot"><span class="dot-circle" style="background:#06b6d4"></span><span>Requests
+                    (x1,000)</span></div>
+                <div class="legend-item-dot"><span class="dot-circle" style="background:#10b981"></span><span>WebP
+                    Savings (%)</span></div>
               </div>
             </div>
 
@@ -2353,57 +2639,42 @@
               <svg viewBox="0 0 800 200" style="width:100%;height:100%;overflow:visible" id="analytics-svg-chart">
                 <defs>
                   <linearGradient id="analyticsGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#5046e5" stop-opacity="0.25"/>
-                    <stop offset="100%" stop-color="#5046e5" stop-opacity="0.0"/>
+                    <stop offset="0%" stop-color="#5046e5" stop-opacity="0.25" />
+                    <stop offset="100%" stop-color="#5046e5" stop-opacity="0.0" />
                   </linearGradient>
                 </defs>
 
                 <!-- Grid lines -->
-                <line x1="0" y1="40" x2="800" y2="40" stroke="rgba(148, 163, 184, 0.15)" stroke-dasharray="4"/>
-                <line x1="0" y1="90" x2="800" y2="90" stroke="rgba(148, 163, 184, 0.15)" stroke-dasharray="4"/>
-                <line x1="0" y1="140" x2="800" y2="140" stroke="rgba(148, 163, 184, 0.15)" stroke-dasharray="4"/>
-                <line x1="0" y1="190" x2="800" y2="190" stroke="rgba(148, 163, 184, 0.25)"/>
+                <line x1="0" y1="40" x2="800" y2="40" stroke="rgba(148, 163, 184, 0.15)" stroke-dasharray="4" />
+                <line x1="0" y1="90" x2="800" y2="90" stroke="rgba(148, 163, 184, 0.15)" stroke-dasharray="4" />
+                <line x1="0" y1="140" x2="800" y2="140" stroke="rgba(148, 163, 184, 0.15)" stroke-dasharray="4" />
+                <line x1="0" y1="190" x2="800" y2="190" stroke="rgba(148, 163, 184, 0.25)" />
 
                 <!-- Fill area below line 1 -->
-                <polygon points="0,170 80,140 160,110 240,130 320,80 400,95 480,60 560,70 640,40 720,55 800,25 800,190 0,190" fill="url(#analyticsGrad)"/>
+                <polygon
+                  points="0,170 80,140 160,110 240,130 320,80 400,95 480,60 560,70 640,40 720,55 800,25 800,190 0,190"
+                  fill="url(#analyticsGrad)" />
 
                 <!-- Line 1: Edge Bandwidth (Purple) - Draws Left to Right -->
-                <path 
-                  id="anim-path-1" 
-                  class="path-animated-1 animate-running-1"
-                  d="M 0,170 C 80,140 120,110 200,120 C 280,130 300,80 380,85 C 460,90 520,60 600,65 C 680,70 720,35 800,25" 
-                  fill="none" 
-                  stroke="#5046e5" 
-                  stroke-width="3" 
-                  stroke-linecap="round"
-                />
+                <path id="anim-path-1" class="path-animated-1 animate-running-1"
+                  d="M 0,170 C 80,140 120,110 200,120 C 280,130 300,80 380,85 C 460,90 520,60 600,65 C 680,70 720,35 800,25"
+                  fill="none" stroke="#5046e5" stroke-width="3" stroke-linecap="round" />
 
                 <!-- Line 2: Request Volume (Cyan) - Draws Left to Right with 0.3s delay -->
-                <path 
-                  id="anim-path-2" 
-                  class="path-animated-2 animate-running-2"
-                  d="M 0,185 C 80,165 120,140 200,145 C 280,150 300,110 380,115 C 460,120 520,95 600,90 C 680,85 720,65 800,60" 
-                  fill="none" 
-                  stroke="#06b6d4" 
-                  stroke-width="2.5" 
-                  stroke-linecap="round"
-                />
+                <path id="anim-path-2" class="path-animated-2 animate-running-2"
+                  d="M 0,185 C 80,165 120,140 200,145 C 280,150 300,110 380,115 C 460,120 520,95 600,90 C 680,85 720,65 800,60"
+                  fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linecap="round" />
 
                 <!-- Line 3: WebP Savings (Green) - Draws Left to Right with 0.6s delay -->
-                <path 
-                  id="anim-path-3" 
-                  class="path-animated-3 animate-running-3"
-                  d="M 0,195 C 80,185 120,170 200,175 C 280,170 300,150 380,145 C 460,140 520,130 600,125 C 680,120 720,110 800,105" 
-                  fill="none" 
-                  stroke="#10b981" 
-                  stroke-width="2.5" 
-                  stroke-linecap="round"
-                />
+                <path id="anim-path-3" class="path-animated-3 animate-running-3"
+                  d="M 0,195 C 80,185 120,170 200,175 C 280,170 300,150 380,145 C 460,140 520,130 600,125 C 680,120 720,110 800,105"
+                  fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
               </svg>
             </div>
 
             <!-- X Axis Labels -->
-            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-dim);margin-top:12px">
+            <div
+              style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-dim);margin-top:12px">
               <span>Day 1</span>
               <span>Day 5</span>
               <span>Day 10</span>
@@ -2456,12 +2727,16 @@
               <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:16px">
                 AWS Lambda Graviton2 converted 12,480 images into modern WebP with zero perceptual loss.
               </p>
-              <div style="display:flex;align-items:center;justify-content:space-between;background:var(--input-bg);padding:14px;border-radius:10px;font-size:0.8rem">
+              <div
+                style="display:flex;align-items:center;justify-content:space-between;background:var(--input-bg);padding:14px;border-radius:10px;font-size:0.8rem">
                 <div>
                   <div style="font-size:0.7rem;color:var(--text-muted)">Original Format Storage</div>
                   <div style="font-size:1.15rem;font-weight:800;color:var(--text-main)">148.6 GB</div>
                 </div>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5046e5" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5046e5" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
                 <div>
                   <div style="font-size:0.7rem;color:var(--text-muted)">WebP Transcoded Size</div>
                   <div style="font-size:1.15rem;font-weight:800;color:#10b981">47.5 GB</div>
@@ -2478,7 +2753,8 @@
           <div class="page-title-banner">
             <div>
               <h1 class="banner-heading">S3 Storage Management & FinOps Lifecycle</h1>
-              <p class="banner-subheading">Lifecycle policies, automated cold archive migration, and AWS cost reduction metrics.</p>
+              <p class="banner-subheading">Lifecycle policies, automated cold archive migration, and AWS cost reduction
+                metrics.</p>
             </div>
           </div>
 
@@ -2486,7 +2762,10 @@
           <div class="kpi-row-grid">
             <div class="kpi-single-card">
               <div class="kpi-icon-square blue">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="8" x="2" y="3" rx="2"/><rect width="20" height="8" x="2" y="13" rx="2"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="20" height="8" x="2" y="3" rx="2" />
+                  <rect width="20" height="8" x="2" y="13" rx="2" />
+                </svg>
               </div>
               <div class="kpi-data-meta">
                 <div class="kpi-big-number">107.0 GB</div>
@@ -2497,7 +2776,11 @@
 
             <div class="kpi-single-card">
               <div class="kpi-icon-square green">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v20" />
+                  <path d="m17 5-5-3-5 3" />
+                  <path d="m17 19-5 3-5-3" />
+                </svg>
               </div>
               <div class="kpi-data-meta">
                 <div class="kpi-big-number">41.6 GB</div>
@@ -2508,7 +2791,10 @@
 
             <div class="kpi-single-card">
               <div class="kpi-icon-square purple">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
               </div>
               <div class="kpi-data-meta">
                 <div class="kpi-big-number">$884.20</div>
@@ -2519,7 +2805,9 @@
 
             <div class="kpi-single-card">
               <div class="kpi-icon-square amber">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
               </div>
               <div class="kpi-data-meta">
                 <div class="kpi-big-number">Active</div>
@@ -2532,25 +2820,38 @@
           <!-- Lifecycle Visual Timeline Flow -->
           <div class="white-card" style="margin-bottom:20px;padding:24px">
             <div class="card-heading-title" style="margin-bottom:6px">Amazon S3 Object Lifecycle Architecture</div>
-            <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:20px">Configured via Terraform IaC in <code>terraform/storage.tf</code></p>
+            <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:20px">Configured via Terraform IaC in
+              <code>terraform/storage.tf</code></p>
 
             <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px">
-              <div style="padding:16px;border-radius:10px;background:var(--input-bg);border:1px solid var(--card-border)">
-                <span class="status-completed-badge" style="background:#e0e7ff;color:#4f46e5;margin-bottom:8px">DAY 0: INGESTION</span>
-                <div style="font-weight:800;font-size:0.95rem;color:var(--text-main);margin-top:6px">S3 Standard Raw</div>
-                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Cost: <strong>$0.023/GB/mo</strong>. High-throughput uploads and active transformation tier.</p>
+              <div
+                style="padding:16px;border-radius:10px;background:var(--input-bg);border:1px solid var(--card-border)">
+                <span class="status-completed-badge" style="background:#e0e7ff;color:#4f46e5;margin-bottom:8px">DAY 0:
+                  INGESTION</span>
+                <div style="font-weight:800;font-size:0.95rem;color:var(--text-main);margin-top:6px">S3 Standard Raw
+                </div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Cost: <strong>$0.023/GB/mo</strong>.
+                  High-throughput uploads and active transformation tier.</p>
               </div>
 
-              <div style="padding:16px;border-radius:10px;background:var(--input-bg);border:1px solid var(--card-border)">
-                <span class="status-completed-badge" style="background:#ecfdf5;color:#10b981;margin-bottom:8px">DAY 30: AUTO TRANSITION</span>
-                <div style="font-weight:800;font-size:0.95rem;color:var(--text-main);margin-top:6px">S3 Glacier Instant Retrieval</div>
-                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Cost: <strong>$0.004/GB/mo (-82.6%)</strong>. Preserves millisecond retrieval for web streaming.</p>
+              <div
+                style="padding:16px;border-radius:10px;background:var(--input-bg);border:1px solid var(--card-border)">
+                <span class="status-completed-badge" style="background:#ecfdf5;color:#10b981;margin-bottom:8px">DAY 30:
+                  AUTO TRANSITION</span>
+                <div style="font-weight:800;font-size:0.95rem;color:var(--text-main);margin-top:6px">S3 Glacier Instant
+                  Retrieval</div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Cost: <strong>$0.004/GB/mo
+                    (-82.6%)</strong>. Preserves millisecond retrieval for web streaming.</p>
               </div>
 
-              <div style="padding:16px;border-radius:10px;background:var(--input-bg);border:1px solid var(--card-border)">
-                <span class="status-completed-badge" style="background:#fef3c7;color:#d97706;margin-bottom:8px">DAY 90: ARCHIVAL</span>
-                <div style="font-weight:800;font-size:0.95rem;color:var(--text-main);margin-top:6px">Glacier Deep Archive</div>
-                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Cost: <strong>$0.00099/GB/mo (-95.7%)</strong>. Enterprise compliance and long-term storage.</p>
+              <div
+                style="padding:16px;border-radius:10px;background:var(--input-bg);border:1px solid var(--card-border)">
+                <span class="status-completed-badge" style="background:#fef3c7;color:#d97706;margin-bottom:8px">DAY 90:
+                  ARCHIVAL</span>
+                <div style="font-weight:800;font-size:0.95rem;color:var(--text-main);margin-top:6px">Glacier Deep
+                  Archive</div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Cost: <strong>$0.00099/GB/mo
+                    (-95.7%)</strong>. Enterprise compliance and long-term storage.</p>
               </div>
             </div>
           </div>
@@ -2558,17 +2859,21 @@
           <!-- FinOps Cost Calculator Slider -->
           <div class="white-card" style="padding:24px">
             <div class="card-heading-title" style="margin-bottom:6px">Interactive FinOps Savings Calculator</div>
-            <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:18px">Drag to estimate how much your organization saves by adopting S3 Glacier Lifecycle</p>
+            <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:18px">Drag to estimate how much your
+              organization saves by adopting S3 Glacier Lifecycle</p>
 
             <div style="display:flex;align-items:center;gap:20px;margin-bottom:16px">
-              <input type="range" min="100" max="2000" step="50" value="500" id="finops-calc-slider" style="flex:1;accent-color:#5046e5" oninput="updateFinopsCalc(this.value)">
-              <span style="font-weight:800;font-size:1.15rem;color:#5046e5;min-width:100px" id="calc-volume-label">500 GB</span>
+              <input type="range" min="100" max="2000" step="50" value="500" id="finops-calc-slider"
+                style="flex:1;accent-color:#5046e5" oninput="updateFinopsCalc(this.value)">
+              <span style="font-weight:800;font-size:1.15rem;color:#5046e5;min-width:100px" id="calc-volume-label">500
+                GB</span>
             </div>
 
             <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;text-align:center">
               <div style="padding:12px;background:var(--input-bg);border-radius:10px">
                 <div style="font-size:0.72rem;color:var(--text-muted)">Standard Monthly Cost</div>
-                <div style="font-size:1.15rem;font-weight:800;color:var(--text-main)" id="calc-std-cost">$11.50 / mo</div>
+                <div style="font-size:1.15rem;font-weight:800;color:var(--text-main)" id="calc-std-cost">$11.50 / mo
+                </div>
               </div>
               <div style="padding:12px;background:var(--input-bg);border-radius:10px">
                 <div style="font-size:0.72rem;color:var(--text-muted)">Glacier Monthly Cost</div>
@@ -2589,9 +2894,11 @@
           <div class="page-title-banner">
             <div>
               <h1 class="banner-heading">Settings & Security Governance</h1>
-              <p class="banner-subheading">AWS Zero Static Secret Keys, WAFv2 Application Firewall & SonarQube quality gates.</p>
+              <p class="banner-subheading">AWS Zero Static Secret Keys, WAFv2 Application Firewall & SonarQube quality
+                gates.</p>
             </div>
-            <button class="date-filter-button" style="background:#5046e5;color:#fff;border-color:#5046e5" onclick="showToast('Governance policies synchronized with AWS')">
+            <button class="date-filter-button" style="background:#5046e5;color:#fff;border-color:#5046e5"
+              onclick="showToast('Governance policies synchronized with AWS')">
               Save Configuration
             </button>
           </div>
@@ -2600,18 +2907,22 @@
             <!-- Card 1: AWS Zero Secret Keys -->
             <div class="white-card">
               <div class="card-heading-title" style="margin-bottom:6px">AWS Zero Static Keys Architecture</div>
-              <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:16px">No IAM Access Keys or Secret Keys stored in code or repository</p>
+              <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:16px">No IAM Access Keys or Secret Keys
+                stored in code or repository</p>
 
               <div style="display:flex;flex-direction:column;gap:12px;font-size:0.8rem">
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px">
+                <div
+                  style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px">
                   <div>
                     <div style="font-weight:700">GitHub Actions OIDC Provider</div>
-                    <div style="font-size:0.7rem;color:var(--text-muted)">Role: arn:aws:iam::586643076560:role/GitHubOIDC</div>
+                    <div style="font-size:0.7rem;color:var(--text-muted)">Role:
+                      arn:aws:iam::586643076560:role/GitHubOIDC</div>
                   </div>
                   <span class="status-completed-badge" style="background:#ecfdf5;color:#10b981">ENFORCED</span>
                 </div>
 
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px">
+                <div
+                  style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px">
                   <div>
                     <div style="font-weight:700">AWS KMS Customer Managed Key</div>
                     <div style="font-size:0.7rem;color:var(--text-muted)">Envelope encryption for S3 buckets & DB</div>
@@ -2619,7 +2930,8 @@
                   <span class="status-completed-badge" style="background:#e0e7ff;color:#4f46e5">AES-256</span>
                 </div>
 
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px">
+                <div
+                  style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px">
                   <div>
                     <div style="font-weight:700">Secrets Manager Password Rotation</div>
                     <div style="font-size:0.7rem;color:var(--text-muted)">Master DB password rotated every 30 days</div>
@@ -2632,18 +2944,22 @@
             <!-- Card 2: AWS WAFv2 & DevSecOps Gates -->
             <div class="white-card">
               <div class="card-heading-title" style="margin-bottom:6px">DevSecOps CI/CD Quality Gates</div>
-              <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:16px">Pipeline stops automatically if code quality or security gates fail</p>
+              <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:16px">Pipeline stops automatically if
+                code quality or security gates fail</p>
 
               <div style="display:flex;flex-direction:column;gap:14px">
                 <div>
-                  <div style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:700;margin-bottom:6px">
+                  <div
+                    style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:700;margin-bottom:6px">
                     <span>SonarQube Code Coverage Gate</span>
                     <span style="color:#5046e5" id="sonar-gate-label">80%</span>
                   </div>
-                  <input type="range" min="60" max="95" value="80" style="width:100%;accent-color:#5046e5" oninput="document.getElementById('sonar-gate-label').textContent=this.value+'%'">
+                  <input type="range" min="60" max="95" value="80" style="width:100%;accent-color:#5046e5"
+                    oninput="document.getElementById('sonar-gate-label').textContent=this.value+'%'">
                 </div>
 
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px;font-size:0.8rem">
+                <div
+                  style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px;font-size:0.8rem">
                   <div>
                     <div style="font-weight:700">Trivy Container Vulnerability Gate</div>
                     <div style="font-size:0.7rem;color:var(--text-muted)">Block PR on Critical or High CVEs</div>
@@ -2651,7 +2967,8 @@
                   <span class="status-completed-badge" style="background:#ecfdf5;color:#10b981">PASS (0 CVEs)</span>
                 </div>
 
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px;font-size:0.8rem">
+                <div
+                  style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:8px;font-size:0.8rem">
                   <div>
                     <div style="font-weight:700">AWS WAFv2 Application Shield</div>
                     <div style="font-size:0.7rem;color:var(--text-muted)">Rate Limit 100 req/5m + SQLi Filter</div>
@@ -2689,7 +3006,8 @@
           </tr>
           <tr>
             <td>Storage Class</td>
-            <td id="spec-storage-class"><span class="status-completed-badge" style="background:#e0e7ff;color:#4f46e5">S3_STANDARD</span></td>
+            <td id="spec-storage-class"><span class="status-completed-badge"
+                style="background:#e0e7ff;color:#4f46e5">S3_STANDARD</span></td>
           </tr>
           <tr>
             <td>Dimensions & Size</td>
@@ -2714,10 +3032,14 @@
         </table>
 
         <div style="display:flex;gap:10px;margin-top:18px">
-          <button class="date-filter-button" style="flex:1;justify-content:center;background:#5046e5;color:#fff;border-color:#5046e5" onclick="copyModalCdnLink()">
+          <button class="date-filter-button"
+            style="flex:1;justify-content:center;background:#5046e5;color:#fff;border-color:#5046e5"
+            onclick="copyModalCdnLink()">
             Copy CDN URL
           </button>
-          <button class="date-filter-button" style="flex:1;justify-content:center;background:#10b981;color:#fff;border-color:#10b981" onclick="archiveCurrentModalFile()">
+          <button class="date-filter-button"
+            style="flex:1;justify-content:center;background:#10b981;color:#fff;border-color:#10b981"
+            onclick="archiveCurrentModalFile()">
             Move to Glacier (FinOps)
           </button>
           <button class="date-filter-button" onclick="closeFileModal()">
@@ -2736,18 +3058,23 @@
         <button class="modal-close-x" onclick="closeProfileModal()">&times;</button>
       </div>
       <div class="modal-body-content" style="text-align:center">
-        <img id="modal-profile-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 12px;border:3px solid #5046e5">
+        <img id="modal-profile-avatar"
+          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+          style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 12px;border:3px solid #5046e5">
         <h2 style="font-size:1.15rem;font-weight:800;color:var(--text-main)" id="modal-profile-name">Nguyen Van A</h2>
-        <p style="font-size:0.78rem;color:var(--text-muted)" id="modal-profile-role">Lead Cloud Architect & DevSecOps Engineer</p>
+        <p style="font-size:0.78rem;color:var(--text-muted)" id="modal-profile-role">Lead Cloud Architect & DevSecOps
+          Engineer</p>
 
-        <div style="margin-top:16px;text-align:left;background:var(--input-bg);padding:14px;border-radius:10px;font-size:0.78rem">
+        <div
+          style="margin-top:16px;text-align:left;background:var(--input-bg);padding:14px;border-radius:10px;font-size:0.78rem">
           <div style="display:flex;justify-content:space-between;margin-bottom:8px">
             <span style="color:var(--text-muted)">Email</span>
             <strong id="modal-profile-email">admin@cms.com</strong>
           </div>
           <div style="display:flex;justify-content:space-between;margin-bottom:8px">
             <span style="color:var(--text-muted)">AWS IAM Role</span>
-            <strong style="font-family:var(--font-mono);font-size:0.72rem" id="modal-profile-iam">CloudMediaStudioAdmin</strong>
+            <strong style="font-family:var(--font-mono);font-size:0.72rem"
+              id="modal-profile-iam">CloudMediaStudioAdmin</strong>
           </div>
           <div style="display:flex;justify-content:space-between;margin-bottom:8px">
             <span style="color:var(--text-muted)">Region</span>
@@ -2759,7 +3086,8 @@
           </div>
         </div>
 
-        <button class="date-filter-button" style="width:100%;justify-content:center;margin-top:18px" onclick="closeProfileModal()">
+        <button class="date-filter-button" style="width:100%;justify-content:center;margin-top:18px"
+          onclick="closeProfileModal()">
           Close Profile
         </button>
       </div>
@@ -2768,18 +3096,27 @@
 
   <!-- Logout Confirmation Modal -->
   <div class="modal-backdrop-scrim" id="logout-modal" onclick="closeLogoutModal(event)">
-    <div class="modal-dialog-box" style="max-width:380px;text-align:center;padding:24px" onclick="event.stopPropagation()">
-      <div style="width:48px;height:48px;border-radius:50%;background:#fee2e2;color:#ef4444;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    <div class="modal-dialog-box" style="max-width:380px;text-align:center;padding:24px"
+      onclick="event.stopPropagation()">
+      <div
+        style="width:48px;height:48px;border-radius:50%;background:#fee2e2;color:#ef4444;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
       </div>
       <h3 style="font-size:1.1rem;font-weight:800;color:var(--text-main);margin-bottom:6px">Confirm Sign Out</h3>
-      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:20px">Are you sure you want to end your current AWS IAM Identity Center session?</p>
-      
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:20px">Are you sure you want to end your current
+        AWS IAM Identity Center session?</p>
+
       <div style="display:flex;gap:10px">
         <button class="date-filter-button" style="flex:1;justify-content:center" onclick="closeLogoutModal()">
           Cancel
         </button>
-        <button class="date-filter-button" style="flex:1;justify-content:center;background:#ef4444;color:#fff;border-color:#ef4444" onclick="confirmSignOut()">
+        <button class="date-filter-button"
+          style="flex:1;justify-content:center;background:#ef4444;color:#fff;border-color:#ef4444"
+          onclick="confirmSignOut()">
           Sign Out
         </button>
       </div>
@@ -2803,7 +3140,9 @@
             <label class="form-field-label">Tag / Category</label>
             <input type="text" id="new-col-tag" class="input-field-control" placeholder="e.g. #Marketing">
           </div>
-          <button class="date-filter-button" style="width:100%;justify-content:center;background:#5046e5;color:#fff;border-color:#5046e5;margin-top:6px" onclick="createCollectionAction()">
+          <button class="date-filter-button"
+            style="width:100%;justify-content:center;background:#5046e5;color:#fff;border-color:#5046e5;margin-top:6px"
+            onclick="createCollectionAction()">
             Create Workspace
           </button>
         </div>
@@ -3375,4 +3714,5 @@
     }
   </script>
 </body>
+
 </html>
