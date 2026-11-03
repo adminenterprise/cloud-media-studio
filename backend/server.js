@@ -154,6 +154,29 @@ function calculateFinOpsStats() {
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const DIST_INDEX = path.join(__dirname, '..', 'dist', 'index.html');
+
+// ------------------------------------------------------------------------------
+// IN-MEMORY RATE LIMITER (BẢO VỆ CHỐNG DDOS / BRUTE FORCE)
+// ------------------------------------------------------------------------------
+const rateLimitStore = new Map();
+const RATE_LIMIT_WINDOW_MS = 10 * 1000; // 10s
+const RATE_LIMIT_MAX = 50;              // 50 requests / 10s
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  if (!rateLimitStore.has(ip)) {
+    rateLimitStore.set(ip, []);
+  }
+  const timestamps = rateLimitStore.get(ip).filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+  timestamps.push(now);
+  rateLimitStore.set(ip, timestamps);
+  return {
+    exceeded: timestamps.length > RATE_LIMIT_MAX,
+    current: timestamps.length,
+    limit: RATE_LIMIT_MAX
+  };
+}
+
 const FRONTEND_INDEX = fs.existsSync(DIST_INDEX) ? DIST_INDEX : path.join(__dirname, '..', 'frontend', 'index.html');
 
 // ==============================================================================
@@ -395,6 +418,23 @@ if (express) {
       res.end(JSON.stringify(data));
     };
 
+    
+    // Rate Limiter Check cho /api/*
+    const clientIp = req.socket.remoteAddress || '127.0.0.1';
+    if (pathname.startsWith('/api/')) {
+      const rl = checkRateLimit(clientIp);
+      if (rl.exceeded) {
+        res.setHeader('Retry-After', '10');
+        return sendJson(429, {
+          error: 'Too Many Requests',
+          status: 429,
+          message: 'Rate limit exceeded: 50 requests per 10s. Slow down!',
+          currentRequests: rl.current,
+          limit: rl.limit
+        });
+      }
+    }
+  
     // 1. Phục vụ giao diện Web Frontend
     if (pathname === '/' || pathname === '/index.html') {
       if (fs.existsSync(FRONTEND_INDEX)) {
