@@ -336,7 +336,7 @@ if (express) {
 
   app.get('/api/lambda/pipeline-status', (_, res) => {
     res.json({
-      functionName: 'enterprise-cloud-devsecops-image-processor',
+      functionName: 'cloud-media-studio-image-processor',
       runtime: 'nodejs22.x',
       architecture: 'arm64 / Graviton2',
       status: 'ACTIVE_HEALTHY'
@@ -359,7 +359,7 @@ if (express) {
         message: 'Đã tải tệp lên S3 và kích hoạt thành công AWS Lambda!',
         s3Uri: `s3://${bucket}/${s3Key}`,
         region: 'ap-southeast-1',
-        lambdaFunction: 'enterprise-cloud-devsecops-image-processor',
+        lambdaFunction: 'cloud-media-studio-image-processor',
         output: stdout.trim()
       });
     });
@@ -503,7 +503,7 @@ if (express) {
             message: 'Đã tải tệp lên S3 và kích hoạt thành công AWS Lambda!',
             s3Uri: `s3://${bucket}/${s3Key}`,
             region: 'ap-southeast-1',
-            lambdaFunction: 'enterprise-cloud-devsecops-image-processor',
+            lambdaFunction: 'cloud-media-studio-image-processor',
             output: stdout.trim()
           });
         });

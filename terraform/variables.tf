@@ -10,7 +10,7 @@ variable "aws_region" {
 variable "project_name" {
   description = "Project name identifier used in resource tags and prefixes"
   type        = string
-  default     = "enterprise-cloud-devsecops"
+  default     = "cloud-media-studio"
 }
 
 variable "environment" {
