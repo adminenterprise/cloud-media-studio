@@ -1,4 +1,3 @@
-import React from 'react';
 import { PageId } from '../../App';
 import { INITIAL_USER } from '../../services/mockData';
 

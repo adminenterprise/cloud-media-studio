@@ -1,6 +1,5 @@
-import React from 'react';
 import { PageId } from '../App';
-import { INITIAL_MEDIA_ITEMS, INITIAL_STORAGE_STATS } from '../services/mockData';
+import { INITIAL_MEDIA_ITEMS } from '../services/mockData';
 
 interface DashboardPageProps {
   onNavigate: (page: PageId) => void;

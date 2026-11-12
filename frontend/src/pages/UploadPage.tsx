@@ -9,7 +9,7 @@ export default function UploadPage({ onUploadSuccess }: UploadPageProps) {
   const [format, setFormat] = useState('PNG');
   const [size, setSize] = useState('12.5');
   const [tags, setTags] = useState('Marketing, 4K');
-  const [author, setAuthor] = useState('Creative Marketing');
+  const [author] = useState('Creative Marketing');
   const [autoWebP, setAutoWebP] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);

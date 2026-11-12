@@ -1,0 +1,102 @@
+name: Deploy Frontend (doduc) to CloudFront & S3
+
+on:
+  push:
+    branches:
+      - doduc
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend-doduc.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-frontend-doduc
+  cancel-in-progress: true
+
+permissions:
+  id-token: write   # Yêu cầu để xin JWT token OIDC từ GitHub (Zero Secret Keys)
+  contents: read
+
+env:
+  AWS_REGION: ap-southeast-1
+  S3_BUCKET: cloud-media-studio-assets-586643076560
+  CLOUDFRONT_DISTRIBUTION_ID: E23QIJLQ2A8EEN
+  CLOUDFRONT_DOMAIN: d10b9bys5mn60c.cloudfront.net
+
+jobs:
+  deploy-frontend:
+    name: Build React App & Deploy (S3 + CloudFront)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # ========================================================================
+      # BƯỚC 1: npm ci — Cài dependencies từ lockfile (build deterministic)
+      # ========================================================================
+      - name: 1. Install dependencies (npm ci)
+        working-directory: frontend
+        run: npm ci
+
+      # ========================================================================
+      # BƯỚC 2: Build React App thật sự (tsc typecheck + vite bundle -> frontend/dist)
+      # ========================================================================
+      - name: 2. Build React App (tsc + vite build)
+        working-directory: frontend
+        run: npm run build
+
+      # ========================================================================
+      # BƯỚC 3: Xác thực OIDC với AWS (Zero Static Secret Keys)
+      # ========================================================================
+      - name: 3. Configure AWS Credentials (OIDC - Zero Secret Keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::586643076560:role/github-action
+          aws-region: ${{ env.AWS_REGION }}
+
+      # ========================================================================
+      # BƯỚC 4: Đẩy build output lên S3
+      #   - index.html: no-cache (người dùng luôn nhận bản mới nhất)
+      #   - assets hash (*.js, *.css): cache 1 năm immutable tại Edge
+      # ========================================================================
+      - name: 4. Sync frontend/dist to S3
+        working-directory: frontend
+        run: |
+          echo "Uploading index.html with no-cache header..."
+          aws s3 cp dist/index.html s3://${{ env.S3_BUCKET }}/index.html \
+            --content-type "text/html" \
+            --cache-control "max-age=0,no-cache,no-store,must-revalidate"
+
+          echo "Syncing hashed static assets (cache 1 year, immutable)..."
+          aws s3 sync dist/ s3://${{ env.S3_BUCKET }}/ \
+            --exclude "index.html" \
+            --cache-control "public,max-age=31536000,immutable" \
+            --delete
+
+      # ========================================================================
+      # BƯỚC 5: CloudFront Invalidation (làm mới cache CDN trên Edge)
+      # ========================================================================
+      - name: 5. CloudFront Origin Invalidation
+        run: |
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*" \
+            --query "Invalidation.Id" \
+            --output text)
+          echo "Invalidation created with ID: $INVALIDATION_ID"
+
+      - name: 6. Deployment Summary
+        run: |
+          echo "=========================================================="
+          echo "🎉 CI/CD PIPELINE THÀNH CÔNG (branch: doduc)!"
+          echo "📦 Build: React 18 + TypeScript + Vite (frontend/dist)"
+          echo "🌐 CloudFront Live URL: https://${{ env.CLOUDFRONT_DOMAIN }}"
+          echo "=========================================================="

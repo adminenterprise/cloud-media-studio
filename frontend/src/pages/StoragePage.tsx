@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function StoragePage() {
   const tiers = [
     { name: 'S3 Standard', price: '$0.025', desc: 'Đơn giá / GB / tháng', note: 'Truy xuất tức thì', border: 'border-t-indigo-600' },

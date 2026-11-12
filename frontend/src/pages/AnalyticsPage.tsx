@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function AnalyticsPage() {
   const formats = [
     { label: 'WebP (Đã nén tối ưu)', pct: 48, color: 'bg-indigo-600' },

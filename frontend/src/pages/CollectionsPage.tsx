@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { 
   FolderPlus, 
   Folder, 
-  MoreVertical, 
   ExternalLink, 
   Trash2, 
   Layers, 
-  Calendar, 
   HardDrive,
   Search,
   CheckCircle2,

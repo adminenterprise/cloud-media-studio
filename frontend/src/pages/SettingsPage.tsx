@@ -3,15 +3,11 @@ import {
   User, 
   ShieldCheck, 
   Cloud, 
-  Cpu, 
   KeyRound, 
   Lock, 
   CheckCircle2, 
   Server, 
-  Bell, 
   GitBranch, 
-  AlertTriangle,
-  RefreshCw,
   Save
 } from 'lucide-react';
 

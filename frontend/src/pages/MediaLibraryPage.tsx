@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { INITIAL_MEDIA_ITEMS } from '../services/mockData';
 import { MediaItem } from '../types/media';
 

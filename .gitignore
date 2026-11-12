@@ -72,3 +72,8 @@ yarn-error.log*
 member1.md
 member*.md
 node_modules/
+
+# ==========================================
+# 6. Frontend build output (Vite)
+# ==========================================
+frontend/dist/
