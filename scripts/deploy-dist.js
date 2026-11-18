@@ -53,8 +53,8 @@ try {
   console.log('     > Uploading index.html với no-cache header...');
   execSync(uploadIndexCmd, { stdio: 'inherit' });
 
-  // Sync toàn bộ dist/
-  const syncDistCmd = `aws s3 sync "${DIST_DIR}" "s3://${S3_BUCKET}/" --exclude "index.html" --exclude "uploads/*" --cache-control "public,max-age=31536000,immutable"`;
+  // Sync toàn bộ dist/ (bảo vệ uploads/, processed/, thumbnails/)
+  const syncDistCmd = `aws s3 sync "${DIST_DIR}" "s3://${S3_BUCKET}/" --exclude "index.html" --exclude "uploads/*" --exclude "processed/*" --exclude "thumbnails/*" --cache-control "public,max-age=31536000,immutable"`;
   execSync(syncDistCmd, { stdio: 'inherit' });
   console.log('     ✅ Đồng bộ S3 thành công!');
 } catch (err) {

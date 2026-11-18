@@ -3031,8 +3031,8 @@
             <td>Enabled (SSE-KMS AES-256)</td>
           </tr>
           <tr>
-            <td>WebP Optimization</td>
-            <td>Transcoded by AWS Lambda (68% compression)</td>
+            <td>WebP & Thumbnails</td>
+            <td id="spec-webp-info">Transcoded by AWS Lambda (sharp ARM64)</td>
           </tr>
         </table>
 
@@ -3340,23 +3340,74 @@
       });
     }
 
+    const CLOUD_SERVERLESS_API = 'https://jtkvl7zyutkt34p3m5g3ui76ge0mehbp.lambda-url.ap-southeast-1.on.aws';
     let mediaFiles = getStoredMediaFiles();
 
-    // Cập nhật badge môi trường (Localhost Backend vs CDN Static)
-    setTimeout(() => {
+    // Đồng bộ danh sách file THẬT trực tiếp từ Amazon S3 (uploads/, processed/, thumbnails/)
+    async function syncLiveS3Assets() {
       const badge = document.getElementById('upload-env-badge');
-      if (badge) {
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-          badge.textContent = '🟢 Local Backend Connected (S3 Upload Thật)';
+      try {
+        const res = await fetch(CLOUD_SERVERLESS_API + '/api/s3-media');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        if (data && data.ok && Array.isArray(data.items)) {
+          const liveItems = data.items.map((item) => ({
+            ...item,
+            dimensions: item.dimensions || 'Auto-detected (WebP)',
+            time: item.lastModified ? new Date(item.lastModified).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : 'Live S3'
+          }));
+          const liveTitles = new Set(liveItems.map((x) => x.title));
+          const nonLive = mediaFiles.filter((m) => !m.isLiveS3 && !liveTitles.has(m.title));
+          mediaFiles = [...liveItems, ...nonLive];
+          saveStoredMediaFiles();
+          renderLibraryGrid();
+        }
+        if (badge) {
+          badge.textContent = '🟢 AWS Serverless Connected (Presigned S3 + Real WebP)';
           badge.style.background = '#ecfdf5';
           badge.style.color = '#059669';
-        } else {
-          badge.textContent = '🌐 CloudFront CDN Static (Chế độ Xem & Demo)';
-          badge.style.background = '#eff6ff';
-          badge.style.color = '#2563eb';
+        }
+      } catch (err) {
+        console.warn('[S3 Sync Warning]:', err);
+        if (badge) {
+          badge.textContent = '🟡 Offline Fallback Mode';
+          badge.style.background = '#fef3c7';
+          badge.style.color = '#b45309';
         }
       }
-    }, 200);
+    }
+
+    // Tạo ảnh PNG mẫu thật (1280x800) trên trình duyệt nếu người dùng bấm test nhanh chưa chọn file
+    function generateSampleCanvasBlob(labelText) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1280;
+        canvas.height = 800;
+        const ctx = canvas.getContext('2d');
+        const grad = ctx.createLinearGradient(0, 0, 1280, 800);
+        grad.addColorStop(0, '#312e81');
+        grad.addColorStop(0.5, '#4f46e5');
+        grad.addColorStop(1, '#059669');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 1280, 800);
+        ctx.fillStyle = 'rgba(255,255,255,0.12)';
+        for (let i = 0; i < 12; i++) {
+          ctx.beginPath();
+          ctx.arc(120 + i * 100, 150 + (i % 3) * 220, 90, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 54px Inter, sans-serif';
+        ctx.fillText('CLOUD MEDIA STUDIO — LIVE S3', 90, 370);
+        ctx.font = '32px Inter, sans-serif';
+        ctx.fillText(labelText || 'Serverless ARM64 WebP Pipeline', 90, 440);
+        ctx.font = '24px monospace';
+        ctx.fillText(new Date().toISOString(), 90, 500);
+        canvas.toBlob((blob) => resolve(blob), 'image/png');
+      });
+    }
+
+    setTimeout(() => { syncLiveS3Assets(); }, 150);
     let currentModalFile = null;
 
     function showToast(msg) {
@@ -3396,6 +3447,9 @@
       if (tabId === 'analytics') {
         triggerAnalyticsChartAnimation();
       }
+      if (tabId === 'media-library') {
+        syncLiveS3Assets();
+      }
     }
 
     // Trigger the left-to-right line chart drawing animation
@@ -3429,13 +3483,11 @@
     async function runInteractiveUploadPipeline(triggerReal = false) {
       const title = document.getElementById('form-upload-title').value.trim() || 'Autumn Campaign Asset';
       const pill = document.getElementById('pipeline-live-pill');
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-      pill.textContent = triggerReal ? 'Calling AWS Cloud...' : 'Transcoding...';
+      pill.textContent = triggerReal ? 'Requesting S3 Presigned URL...' : 'Simulating...';
       pill.style.background = '#e0e7ff';
       pill.style.color = '#5046e5';
 
-      // Reset steps UI
       for (let i = 1; i <= 5; i++) {
         const icon = document.getElementById(`ui-step-icon-${i}`);
         icon.className = 'step-marker-icon pending';
@@ -3444,147 +3496,152 @@
       }
       document.getElementById('pipeline-success-card').style.display = 'none';
 
-      let realResult = null;
-      let uploadFilename = (selectedUploadFile ? selectedUploadFile.name : ('asset-' + Date.now() + '.png')).replace(/[^a-zA-Z0-9._-]/g, '');
-      let uploadContentType = selectedUploadFile ? (selectedUploadFile.type || 'image/png') : 'image/png';
-
-      // Tạo trước ảnh preview thu nhỏ từ file thật người dùng chọn để hiển thị ngay & lưu vào localStorage
-      let previewThumb = null;
-      if (selectedUploadFile) {
-        previewThumb = await createThumbnailDataUrl(selectedUploadFile, 500);
-      }
-
-      if (triggerReal) {
-        showToast('🚀 Đang xử lý file & gửi lên AWS S3 (ap-southeast-1)...');
-        try {
-          let fileBase64 = null;
-          if (selectedUploadFile) {
-            fileBase64 = await new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.onload = (e) => resolve(e.target.result);
-              reader.onerror = () => resolve(null);
-              reader.readAsDataURL(selectedUploadFile);
-            });
-          }
-
-          const res = await fetch('/api/trigger-lambda', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              filename: uploadFilename,
-              title: title,
-              base64: fileBase64,
-              contentType: uploadContentType
-            })
-          });
-
-          if (res.ok) {
-            realResult = await res.json();
-            console.log('[AWS Real Trigger Result]:', realResult);
-          }
-        } catch (e) {
-          console.warn('[AWS Real Trigger Notice]: Chạy trên Static CDN / Standalone Mode');
-        }
-      }
-
-      const steps = [
-        { num: 1, ms: '42ms', delay: 250 },
-        { num: 2, ms: '180ms', delay: 400 },
-        { num: 3, ms: '28ms', delay: 300 },
-        { num: 4, ms: '112ms', delay: 500 },
-        { num: 5, ms: '94ms', delay: 350 }
-      ];
-
-      let idx = 0;
-      function stepNext() {
-        if (idx < steps.length) {
-          const s = steps[idx];
-          const icon = document.getElementById(`ui-step-icon-${s.num}`);
+      function markStepDone(stepNum, timeText) {
+        const icon = document.getElementById(`ui-step-icon-${stepNum}`);
+        if (icon) {
           icon.className = 'step-marker-icon done';
-          icon.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
-          document.getElementById(`ui-step-time-${s.num}`).textContent = s.ms;
-          idx++;
-          setTimeout(stepNext, s.delay);
-        } else {
-          pill.textContent = (realResult && realResult.ok) ? '⚡ AWS Lambda Triggered!' : 'Complete (WebP 71%)';
-          pill.style.background = '#ecfdf5';
-          pill.style.color = '#059669';
-
-          const card = document.getElementById('pipeline-success-card');
-          card.style.display = 'block';
-
-          const realCdnUrl = (realResult && realResult.cloudFrontUrl)
-            ? realResult.cloudFrontUrl
-            : 'https://d10b9bys5mn60c.cloudfront.net/uploads/' + uploadFilename;
-          const realS3Uri = (realResult && realResult.s3Uri)
-            ? realResult.s3Uri
-            : 's3://cloud-media-studio-assets-586643076560/uploads/' + uploadFilename;
-
-          // Ảnh hiển thị: Ưu tiên ảnh preview thực người dùng vừa chọn, hoặc link CDN
-          const finalThumb = previewThumb || ((realResult && realResult.cloudFrontUrl) ? realResult.cloudFrontUrl : 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80');
-
-          if (realResult && realResult.ok) {
-            card.innerHTML = `
-              <div style="font-weight:700;font-size:0.86rem;color:#059669;display:flex;align-items:center;gap:6px">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>⚡ ĐÃ TẢI LÊN S3 & KÍCH HOẠT LAMBDA THẬT TRÊN AWS!</span>
-              </div>
-              <div style="font-size:0.76rem;color:#047857;margin-top:6px;line-height:1.6">
-                • <strong>S3 Object:</strong> <code>${realS3Uri}</code><br>
-                • <strong>CloudFront CDN URL:</strong> <a href="${realCdnUrl}" target="_blank" rel="noopener noreferrer" style="color:#047857;font-weight:700;text-decoration:underline">${realCdnUrl}</a><br>
-                • <strong>Hàm Lambda:</strong> <code>${realResult.lambdaFunction || 'cloud-media-studio-image-processor'}</code> (ap-southeast-1)<br>
-                • <strong>Lưu trữ bền vững:</strong> Đã lưu trữ vĩnh viễn (F5/Reload không bị mất dữ liệu!)
-              </div>
-            `;
-            showToast('⚡ Thành công! Đã tải file thật lên S3 và kích hoạt Lambda!');
-          } else if (triggerReal && !isLocalhost) {
-            // Trường hợp người dùng đang ở trên link CloudFront CDN mà bấm Kích Hoạt Lambda Thật
-            card.innerHTML = `
-              <div style="font-weight:700;font-size:0.86rem;color:#d97706;display:flex;align-items:center;gap:6px">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                <span>CHÚ Ý: ĐANG DUYỆT TRÊN CLOUDFRONT CDN TĨNH</span>
-              </div>
-              <div style="font-size:0.76rem;color:#92400e;margin-top:6px;line-height:1.6">
-                • <strong>Lý do:</strong> CloudFront CDN chỉ phân phối nội dung tĩnh (HTML/CSS/JS), không có server Node.js để chạy lệnh upload S3.<br>
-                • <strong>Cách upload file thật lên S3:</strong> Vui lòng mở trang tại <a href="http://localhost:3000" target="_blank" style="color:#b45309;font-weight:700;text-decoration:underline">http://localhost:3000</a> (Backend Node.js đang chạy sẵn trên máy bạn).<br>
-                • File này tạm thời được lưu trong bộ nhớ trình duyệt để bạn xem thử giao diện.
-              </div>
-            `;
-            showToast('⚠️ Để file tải lên S3 thật, vui lòng mở trang tại http://localhost:3000!');
-          } else {
-            card.innerHTML = `
-              <div style="font-weight:700;font-size:0.86rem;color:#059669;display:flex;align-items:center;gap:6px">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>Asset Successfully Published! (Mô Phỏng Demo)</span>
-              </div>
-              <div style="font-size:0.76rem;color:#047857;margin-top:4px">
-                Original: 4.8 MB ➔ WebP Processed: <strong>1.4 MB (71% savings)</strong>.<br>
-                CDN URL: <a href="${realCdnUrl}" target="_blank" rel="noopener noreferrer" style="color:#047857;text-decoration:underline" onclick="copyModalCdnLink(); return false;">${realCdnUrl}</a>
-              </div>
-            `;
-            showToast(`Asset "${title}" đã hoàn tất quy trình mô phỏng!`);
-          }
-
-          // Thêm file vào mediaFiles và LƯU VĨNH VIỄN VÀO LOCALSTORAGE
-          mediaFiles.unshift({
-            id: Date.now(),
-            title: uploadFilename,
-            format: (uploadFilename.split('.').pop() || 'PNG').toUpperCase(),
-            size: selectedUploadFile ? (selectedUploadFile.size > 1048576 ? (selectedUploadFile.size / 1048576).toFixed(1) + ' MB' : (selectedUploadFile.size / 1024).toFixed(0) + ' KB') : '1.4 MB',
-            dimensions: '3840 x 2160',
-            storage_class: 'S3_STANDARD',
-            time: 'Just now',
-            thumb: finalThumb,
-            cdn_url: realCdnUrl,
-            s3_url: realS3Uri
-          });
-
-          // Lưu vĩnh viễn vào localStorage
-          saveStoredMediaFiles();
-          renderLibraryGrid();
+          icon.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
         }
+        const tEl = document.getElementById(`ui-step-time-${stepNum}`);
+        if (tEl) tEl.textContent = timeText;
       }
-      stepNext();
+
+      if (!triggerReal) {
+        // Chế độ mô phỏng nhanh trên giao diện
+        const simSteps = [
+          { num: 1, ms: '38ms', delay: 220 },
+          { num: 2, ms: '165ms', delay: 320 },
+          { num: 3, ms: '24ms', delay: 250 },
+          { num: 4, ms: '118ms', delay: 400 },
+          { num: 5, ms: '62ms', delay: 260 }
+        ];
+        let idx = 0;
+        function nextSim() {
+          if (idx < simSteps.length) {
+            markStepDone(simSteps[idx].num, simSteps[idx].ms);
+            const d = simSteps[idx].delay;
+            idx++;
+            setTimeout(nextSim, d);
+          } else {
+            pill.textContent = 'Simulation Complete';
+            pill.style.background = '#ecfdf5';
+            pill.style.color = '#059669';
+            const card = document.getElementById('pipeline-success-card');
+            card.style.display = 'block';
+            card.innerHTML = `
+              <div style="font-weight:700;font-size:0.86rem;color:#059669">✓ Hoàn tất chạy thử mô phỏng giao diện!</div>
+              <div style="font-size:0.76rem;color:#047857;margin-top:4px">Bấm nút xanh <strong>"⚡ Kích Hoạt Lambda Thật Trên AWS S3"</strong> bên trái để tải file thật trực tiếp lên S3 qua Presigned URL và nén WebP thật.</div>
+            `;
+          }
+        }
+        nextSim();
+        return;
+      }
+
+      // LUỒNG 100% CLOUD-NATIVE: XIN S3 PRESIGNED PUT URL -> BẮN THẲNG LÊN S3 -> LAMBDA SHARP NÉN WEBP THẬT
+      try {
+        let binaryToUpload = selectedUploadFile;
+        let rawName = selectedUploadFile
+          ? selectedUploadFile.name
+          : (title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString().slice(-5) + '.png');
+        let contentType = selectedUploadFile ? (selectedUploadFile.type || 'application/octet-stream') : 'image/png';
+
+        if (!binaryToUpload) {
+          binaryToUpload = await generateSampleCanvasBlob(title);
+        }
+
+        // BƯỚC 1: Xin S3 Presigned PUT URL từ AWS Lambda Function URL
+        const t1 = performance.now();
+        showToast('🔐 Bước 1/5: Xin cấp chữ ký số S3 Presigned URL từ AWS...');
+        const presignRes = await fetch(CLOUD_SERVERLESS_API + '/api/presign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: rawName, contentType, title })
+        });
+        const presign = await presignRes.json();
+        if (!presign.ok || !presign.uploadUrl) {
+          throw new Error(presign.error || 'Không lấy được S3 Presigned URL');
+        }
+        markStepDone(1, Math.round(performance.now() - t1) + 'ms');
+
+        // BƯỚC 2: Trình duyệt PUT thẳng nhị phân lên Amazon S3 (ap-southeast-1)
+        pill.textContent = 'Uploading Direct to S3...';
+        const t2 = performance.now();
+        showToast('☁️ Bước 2/5: Đang đẩy trực tiếp file nhị phân lên Amazon S3...');
+        const putRes = await fetch(presign.uploadUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': contentType },
+          body: binaryToUpload
+        });
+        if (!putRes.ok) {
+          throw new Error('S3 Direct PUT thất bại: HTTP ' + putRes.status);
+        }
+        markStepDone(2, Math.round(performance.now() - t2) + 'ms');
+        markStepDone(3, 'Event Fired');
+
+        // BƯỚC 3-5: Chờ hàm Lambda (sharp ARM64) xuất file .webp và 3 thumbnails thật vào S3
+        pill.textContent = 'Lambda ARM64 Transcoding WebP...';
+        const t4 = performance.now();
+        const isImage = /\.(jpe?g|png|webp|gif|avif|tiff|bmp)$/i.test(presign.filename);
+        let s3ProcessedItem = null;
+
+        for (let attempt = 1; attempt <= (isImage ? 7 : 2); attempt++) {
+          await new Promise((r) => setTimeout(r, 1300));
+          const listRes = await fetch(CLOUD_SERVERLESS_API + '/api/s3-media');
+          const listJson = await listRes.json();
+          const match = (listJson.items || []).find((x) => x.title === presign.filename);
+          if (match && (!isImage || match.webpProcessed)) {
+            s3ProcessedItem = match;
+            break;
+          } else if (match) {
+            s3ProcessedItem = match;
+          }
+        }
+
+        markStepDone(4, Math.round(performance.now() - t4) + 'ms');
+        markStepDone(5, 'Edge Ready');
+
+        pill.textContent = '⚡ Live S3 & WebP Ready!';
+        pill.style.background = '#ecfdf5';
+        pill.style.color = '#059669';
+
+        const card = document.getElementById('pipeline-success-card');
+        card.style.display = 'block';
+
+        const finalWebpUrl = (s3ProcessedItem && s3ProcessedItem.webp_cdn_url) || presign.cloudFrontUrl;
+        const origSizeTxt = s3ProcessedItem ? s3ProcessedItem.originalSizeFormatted : ((binaryToUpload.size / 1024).toFixed(1) + ' KB');
+        const webpSizeTxt = (s3ProcessedItem && s3ProcessedItem.webpSizeFormatted) ? s3ProcessedItem.webpSizeFormatted : origSizeTxt;
+        const savingsTxt = (s3ProcessedItem && s3ProcessedItem.savingsPct !== null) ? `Giảm thật ${s3ProcessedItem.savingsPct}%` : 'Đã lưu S3';
+
+        const thumbsHtml = (s3ProcessedItem && s3ProcessedItem.thumbnails && s3ProcessedItem.thumbnails.mobile)
+          ? `<br>• <strong>3 Thumbnails thật trên S3:</strong>
+             <a href="${s3ProcessedItem.thumbnails.mobile.url}" target="_blank" style="color:#047857;text-decoration:underline">Mobile 320w (${s3ProcessedItem.thumbnails.mobile.size})</a> •
+             <a href="${s3ProcessedItem.thumbnails.tablet.url}" target="_blank" style="color:#047857;text-decoration:underline">Tablet 768w (${s3ProcessedItem.thumbnails.tablet.size})</a> •
+             <a href="${s3ProcessedItem.thumbnails.desktop.url}" target="_blank" style="color:#047857;text-decoration:underline">Desktop 1200w (${s3ProcessedItem.thumbnails.desktop.size})</a>`
+          : '';
+
+        card.innerHTML = `
+          <div style="font-weight:700;font-size:0.86rem;color:#059669;display:flex;align-items:center;gap:6px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>⚡ ĐÃ UPLOAD TRỰC TIẾP LÊN S3 & NÉN WEBP THẬT TRÊN AWS!</span>
+          </div>
+          <div style="font-size:0.76rem;color:#047857;margin-top:6px;line-height:1.65">
+            • <strong>File gốc S3:</strong> <code>${presign.s3Uri}</code> (${origSizeTxt})<br>
+            • <strong>Kết quả nén Lambda (sharp ARM64):</strong> <strong>${origSizeTxt} ➔ ${webpSizeTxt} (${savingsTxt})</strong><br>
+            • <strong>CloudFront WebP URL:</strong> <a href="${finalWebpUrl}" target="_blank" rel="noopener noreferrer" style="color:#047857;font-weight:700;text-decoration:underline">${finalWebpUrl}</a>
+            ${thumbsHtml}
+          </div>
+        `;
+
+        await syncLiveS3Assets();
+        showToast('🎉 Đã lưu file gốc + ảnh nén WebP + 3 Thumbnails thật lên Amazon S3!');
+      } catch (err) {
+        console.error('[Cloud Upload Error]:', err);
+        pill.textContent = 'Upload Error';
+        pill.style.background = '#fee2e2';
+        pill.style.color = '#dc2626';
+        showToast('❌ Lỗi khi tải lên AWS S3: ' + err.message);
+      }
     }
 
     function handleFileSelected(input) {
@@ -3840,11 +3897,26 @@
           ${file.storage_class}
         </span>
       `;
-      document.getElementById('spec-dimensions').textContent = `${file.dimensions} • ${file.size}`;
+      document.getElementById('spec-dimensions').textContent = `${file.dimensions || 'Auto'} • ${file.size}`;
       const s3Uri = file.s3_url || ('s3://cloud-media-studio-assets-586643076560/uploads/' + file.title);
-      const cdnUrl = (file.thumb && file.thumb.includes('cloudfront.net')) ? file.thumb : ('https://d10b9bys5mn60c.cloudfront.net/uploads/' + encodeURIComponent(file.title));
-      document.getElementById('spec-s3-uri').textContent = s3Uri;
+      const cdnUrl = file.cdn_url || ((file.thumb && file.thumb.includes('cloudfront.net')) ? file.thumb : ('https://d10b9bys5mn60c.cloudfront.net/uploads/' + encodeURIComponent(file.title)));
+      document.getElementById('spec-s3-uri').textContent = file.processed_s3_url ? `${s3Uri}  ➔  ${file.processed_s3_url}` : s3Uri;
       document.getElementById('spec-cdn-url').innerHTML = `<a href="${cdnUrl}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:underline;word-break:break-all">${cdnUrl}</a>`;
+
+      const webpInfoEl = document.getElementById('spec-webp-info');
+      if (webpInfoEl) {
+        if (file.webpProcessed && file.thumbnails) {
+          const links = [];
+          if (file.original_cdn_url) links.push(`<a href="${file.original_cdn_url}" target="_blank" style="color:#4f46e5;text-decoration:underline">Original (${file.originalSizeFormatted})</a>`);
+          if (file.webp_cdn_url) links.push(`<a href="${file.webp_cdn_url}" target="_blank" style="color:#059669;font-weight:700;text-decoration:underline">WebP (${file.webpSizeFormatted}, -${file.savingsPct}%)</a>`);
+          if (file.thumbnails.mobile) links.push(`<a href="${file.thumbnails.mobile.url}" target="_blank" style="color:#2563eb;text-decoration:underline">320w (${file.thumbnails.mobile.size})</a>`);
+          if (file.thumbnails.tablet) links.push(`<a href="${file.thumbnails.tablet.url}" target="_blank" style="color:#2563eb;text-decoration:underline">768w (${file.thumbnails.tablet.size})</a>`);
+          if (file.thumbnails.desktop) links.push(`<a href="${file.thumbnails.desktop.url}" target="_blank" style="color:#2563eb;text-decoration:underline">1200w (${file.thumbnails.desktop.size})</a>`);
+          webpInfoEl.innerHTML = links.join(' • ');
+        } else {
+          webpInfoEl.textContent = 'Transcoded by AWS Lambda (sharp ARM64)';
+        }
+      }
 
       document.getElementById('file-modal').classList.add('open');
     }
@@ -3855,13 +3927,32 @@
 
     function copyModalCdnLink() {
       if (!currentModalFile) return;
-      const url = (currentModalFile.thumb && currentModalFile.thumb.includes('cloudfront.net')) ? currentModalFile.thumb : ('https://d10b9bys5mn60c.cloudfront.net/uploads/' + encodeURIComponent(currentModalFile.title));
+      const url = currentModalFile.cdn_url || ((currentModalFile.thumb && currentModalFile.thumb.includes('cloudfront.net')) ? currentModalFile.thumb : ('https://d10b9bys5mn60c.cloudfront.net/uploads/' + encodeURIComponent(currentModalFile.title)));
       navigator.clipboard?.writeText(url);
-      showToast('CloudFront CDN URL copied to clipboard!');
+      showToast('Đã sao chép CloudFront CDN URL: ' + url);
     }
 
-    function archiveCurrentModalFile() {
+    async function archiveCurrentModalFile() {
       if (!currentModalFile) return;
+      if (currentModalFile.isLiveS3) {
+        try {
+          showToast('❄️ Đang chuyển đối tượng trên AWS S3 sang lớp lưu trữ Glacier Instant Retrieval...');
+          const res = await fetch(CLOUD_SERVERLESS_API + '/api/s3-archive', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: currentModalFile.title })
+          });
+          const data = await res.json();
+          if (!res.ok || !data.ok) throw new Error(data.error || 'Archive failed');
+          await syncLiveS3Assets();
+          inspectFileByName(currentModalFile.title);
+          showToast(`❄️ Đã chuyển thật "${currentModalFile.title}" sang S3 Glacier IR trên AWS!`);
+          return;
+        } catch (err) {
+          showToast('⚠️ Lỗi chuyển Glacier trên S3: ' + err.message);
+          return;
+        }
+      }
       currentModalFile.storage_class = 'GLACIER_IR';
       saveStoredMediaFiles();
       inspectFileByName(currentModalFile.title);
@@ -3869,10 +3960,29 @@
       showToast(`Asset "${currentModalFile.title}" moved to S3 Glacier Instant Retrieval!`);
     }
 
-    function deleteCurrentModalFile() {
+    async function deleteCurrentModalFile() {
       if (!currentModalFile) return;
-      if (!confirm(`Bạn có chắc chắn muốn xóa tài nguyên "${currentModalFile.title}"?`)) return;
+      if (!confirm(`Bạn có chắc chắn muốn xóa tài nguyên "${currentModalFile.title}" (bao gồm cả trên Amazon S3 nếu là file thật)?`)) return;
       const deletedTitle = currentModalFile.title;
+      if (currentModalFile.isLiveS3) {
+        try {
+          showToast('🗑️ Đang xóa file gốc, bản WebP và 3 Thumbnails trên Amazon S3...');
+          const res = await fetch(CLOUD_SERVERLESS_API + '/api/s3-delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: deletedTitle })
+          });
+          const data = await res.json();
+          if (!res.ok || !data.ok) throw new Error(data.error || 'Delete failed');
+          closeFileModal();
+          await syncLiveS3Assets();
+          showToast(`✅ Đã xóa sạch "${deletedTitle}" trên Amazon S3!`);
+          return;
+        } catch (err) {
+          showToast('⚠️ Lỗi khi xóa trên S3: ' + err.message);
+          return;
+        }
+      }
       mediaFiles = mediaFiles.filter(f => f.title !== deletedTitle);
       saveStoredMediaFiles();
       closeFileModal();

@@ -46,6 +46,13 @@ jobs:
         with:
           terraform_version: 1.5.7
 
+      - name: Build Lambda Deployment Artifacts
+        working-directory: .
+        run: |
+          npm --prefix backend/lambda/image_processor install --os=linux --cpu=arm64 --include=optional
+          (cd backend/lambda/image_processor && zip -qr ../../../terraform/lambda_payload.zip index.js package.json node_modules)
+          (cd backend/lambda/media_api && zip -qr ../../../terraform/lambda_api_payload.zip index.js)
+
       - name: Terraform Format Check
         run: terraform fmt -check
 

@@ -64,10 +64,12 @@ jobs:
             --content-type "text/html" \
             --cache-control "max-age=0,no-cache,no-store,must-revalidate"
           
-          # 2. Sync các static assets còn lại (nếu có) với cache 1 năm tại Edge (Bảo vệ thư mục uploads/ không bị xóa)
+          # 2. Sync các static assets còn lại (Bảo vệ uploads/, processed/, thumbnails/ không bị ghi đè/xóa)
           aws s3 sync dist/ s3://cloud-media-studio-assets-586643076560/ \
             --exclude "index.html" \
             --exclude "uploads/*" \
+            --exclude "processed/*" \
+            --exclude "thumbnails/*" \
             --cache-control "public,max-age=31536000,immutable"
 
       # ========================================================================
