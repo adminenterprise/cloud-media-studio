@@ -7,6 +7,7 @@ on:
       - mquan
     paths:
       - 'frontend/**'
+      - 'index.html'
       - 'dist/**'
       - 'scripts/**'
       - 'package.json'
@@ -63,11 +64,13 @@ jobs:
             --content-type "text/html" \
             --cache-control "max-age=0,no-cache,no-store,must-revalidate"
           
-          # 2. Sync các static assets còn lại (nếu có) với cache 1 năm tại Edge
+          # 2. Sync các static assets còn lại (Bảo vệ uploads/, processed/, thumbnails/ không bị ghi đè/xóa)
           aws s3 sync dist/ s3://cloud-media-studio-assets-586643076560/ \
             --exclude "index.html" \
-            --cache-control "public,max-age=31536000,immutable" \
-            --delete
+            --exclude "uploads/*" \
+            --exclude "processed/*" \
+            --exclude "thumbnails/*" \
+            --cache-control "public,max-age=31536000,immutable"
 
       # ========================================================================
       # BƯỚC 4: CloudFront Invalidation (Làm mới Cache CDN trên Edge)

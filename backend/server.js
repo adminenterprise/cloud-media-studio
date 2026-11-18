@@ -35,7 +35,7 @@ try {
 // ------------------------------------------------------------------------------
 // DỮ LIỆU MEDIA MẪU (DÙNG CHO CẢ IN-MEMORY VÀ LOCAL DEMO)
 // ------------------------------------------------------------------------------
-let mediaItems = [
+const defaultMediaItems = [
   {
     id: 1,
     title: 'Brand Identity Logo 2026',
@@ -116,6 +116,29 @@ let mediaItems = [
   }
 ];
 
+const DB_FILE = path.join(__dirname, 'media-data.json');
+function loadMediaItems() {
+  try {
+    if (fs.existsSync(DB_FILE)) {
+      const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (e) {
+    console.warn('[DB] Dùng dữ liệu media mặc định.');
+  }
+  return [...defaultMediaItems];
+}
+
+function saveMediaItems() {
+  try {
+    fs.writeFileSync(DB_FILE, JSON.stringify(mediaItems, null, 2), 'utf8');
+  } catch (e) {
+    console.warn('[DB] Lỗi lưu media-data.json:', e.message);
+  }
+}
+
+let mediaItems = loadMediaItems();
+
 // Helper tính toán FinOps
 function calculateFinOpsStats() {
   const totalCount = mediaItems.length;
@@ -152,8 +175,102 @@ function calculateFinOpsStats() {
   };
 }
 
+
+// ------------------------------------------------------------------------------
+// UPLOAD ẢNH THẬT LÊN AMAZON S3 & KÍCH HOẠT AWS LAMBDA
+// ------------------------------------------------------------------------------
+const DEFAULT_PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAUSURBVHhe7cExAQAAAMKg9U9tDQ8gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4GCRsAAXgKvwEAAAAASUVORK5CYII=';
+
+function handleRealImageUpload(body, callback) {
+  const title = body.title || 'Untitled Image';
+  let buffer = null;
+  let filename = (body.filename || 'upload-' + Date.now() + '.png').replace(/[^a-zA-Z0-9._-]/g, '');
+  let contentType = body.contentType || 'image/png';
+
+  if (body.base64 && typeof body.base64 === 'string') {
+    const pureBase64 = body.base64.replace(/^data:[^;]+;base64,/, '');
+    buffer = Buffer.from(pureBase64, 'base64');
+  } else {
+    buffer = Buffer.from(DEFAULT_PNG_BASE64, 'base64');
+    filename = 'sample-' + Date.now() + '.png';
+  }
+
+  const tempFile = path.join(os.tmpdir(), filename);
+  fs.writeFileSync(tempFile, buffer);
+
+  const bucket = 'cloud-media-studio-assets-586643076560';
+  const s3Key = `uploads/${filename}`;
+  const cmd = `aws s3 cp "${tempFile}" "s3://${bucket}/${s3Key}" --content-type "${contentType}" --region ap-southeast-1`;
+
+  exec(cmd, (err, stdout, stderr) => {
+    try { fs.unlinkSync(tempFile); } catch (e) {}
+
+    if (err) {
+      console.error('[UploadReal] S3 Upload Error:', stderr || err.message);
+      return callback({ ok: false, error: stderr || err.message });
+    }
+
+    const s3Uri = `s3://${bucket}/${s3Key}`;
+    const cloudFrontUrl = `https://d10b9bys5mn60c.cloudfront.net/${s3Key}`;
+    const fileSizeMb = parseFloat((buffer.length / (1024 * 1024)).toFixed(2)) || 0.01;
+
+    const newItem = {
+      id: Date.now(),
+      title: title,
+      format: (filename.split('.').pop() || 'PNG').toUpperCase(),
+      file_size_mb: fileSizeMb,
+      storage_class: 'S3-Standard',
+      tags: 'Upload, Real-S3',
+      author: 'User (Live S3)',
+      thumbnail_url: cloudFrontUrl,
+      s3_url: s3Uri,
+      status: 'READY',
+      created_at: new Date().toISOString()
+    };
+    mediaItems.unshift(newItem);
+    saveMediaItems();
+
+    console.log(`[UploadReal] Đã tải ảnh thật (${buffer.length} bytes) lên ${s3Uri} và kích hoạt Lambda!`);
+
+    callback({
+      ok: true,
+      message: 'Đã tải ảnh thật lên S3 và kích hoạt thành công AWS Lambda!',
+      filename,
+      s3Uri,
+      cloudFrontUrl,
+      fileSize: buffer.length,
+      lambdaFunction: 'cloud-media-studio-image-processor',
+      item: newItem,
+      output: stdout.trim()
+    });
+  });
+}
+
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const DIST_INDEX = path.join(__dirname, '..', 'dist', 'index.html');
+
+// ------------------------------------------------------------------------------
+// IN-MEMORY RATE LIMITER (BẢO VỆ CHỐNG DDOS / BRUTE FORCE)
+// ------------------------------------------------------------------------------
+const rateLimitStore = new Map();
+const RATE_LIMIT_WINDOW_MS = 10 * 1000; // 10s
+const RATE_LIMIT_MAX = 50;              // 50 requests / 10s
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  if (!rateLimitStore.has(ip)) {
+    rateLimitStore.set(ip, []);
+  }
+  const timestamps = rateLimitStore.get(ip).filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+  timestamps.push(now);
+  rateLimitStore.set(ip, timestamps);
+  return {
+    exceeded: timestamps.length > RATE_LIMIT_MAX,
+    current: timestamps.length,
+    limit: RATE_LIMIT_MAX
+  };
+}
+
 const FRONTEND_INDEX = fs.existsSync(DIST_INDEX) ? DIST_INDEX : path.join(__dirname, '..', 'frontend', 'index.html');
 
 // ==============================================================================
@@ -198,7 +315,7 @@ if (express) {
     }
   });
 
-  app.get('/health', async (_, res) => {
+  app.get(['/health', '/api/health'], async (_, res) => {
     let dbStatus = 'disconnected';
     if (pool) {
       try {
@@ -344,25 +461,10 @@ if (express) {
     });
   });
 
-  app.post('/api/trigger-lambda', (req, res) => {
-    const filename = (req.body.filename || 'web-upload-' + Date.now() + '.jpg').replace(/[^a-zA-Z0-9._-]/g, '');
-    const bucket = 'cloud-media-studio-assets-586643076560';
-    const sampleFile = path.join(__dirname, 'server.js');
-    const s3Key = `uploads/${filename}`;
-    const cmd = `aws s3 cp "${sampleFile}" "s3://${bucket}/${s3Key}" --region ap-southeast-1`;
-
-    exec(cmd, (err, stdout, stderr) => {
-      if (err) {
-        return res.status(500).json({ ok: false, error: stderr || err.message });
-      }
-      res.json({
-        ok: true,
-        message: 'Đã tải tệp lên S3 và kích hoạt thành công AWS Lambda!',
-        s3Uri: `s3://${bucket}/${s3Key}`,
-        region: 'ap-southeast-1',
-        lambdaFunction: 'cloud-media-studio-image-processor',
-        output: stdout.trim()
-      });
+  app.post(['/api/trigger-lambda', '/api/upload-real'], (req, res) => {
+    handleRealImageUpload(req.body || {}, (result) => {
+      if (!result.ok) return res.status(500).json(result);
+      res.json(result);
     });
   });
 
@@ -395,6 +497,23 @@ if (express) {
       res.end(JSON.stringify(data));
     };
 
+    
+    // Rate Limiter Check cho /api/*
+    const clientIp = req.socket.remoteAddress || '127.0.0.1';
+    if (pathname.startsWith('/api/')) {
+      const rl = checkRateLimit(clientIp);
+      if (rl.exceeded) {
+        res.setHeader('Retry-After', '10');
+        return sendJson(429, {
+          error: 'Too Many Requests',
+          status: 429,
+          message: 'Rate limit exceeded: 50 requests per 10s. Slow down!',
+          currentRequests: rl.current,
+          limit: rl.limit
+        });
+      }
+    }
+  
     // 1. Phục vụ giao diện Web Frontend
     if (pathname === '/' || pathname === '/index.html') {
       if (fs.existsSync(FRONTEND_INDEX)) {
@@ -405,7 +524,7 @@ if (express) {
     }
 
     // 2. Health check
-    if (pathname === '/health') {
+    if (pathname === '/health' || pathname === '/api/health') {
       return sendJson(200, {
         status: 'ok',
         service: 'cloud-media-studio-api',
@@ -481,32 +600,9 @@ if (express) {
       } catch (e) {}
 
       // 7.5. Kích hoạt AWS S3 Upload -> Trigger AWS Lambda Thật
-      if (pathname === '/api/trigger-lambda' && req.method === 'POST') {
-        const filename = (body.filename || 'web-upload-' + Date.now() + '.jpg').replace(/[^a-zA-Z0-9._-]/g, '');
-        const bucket = 'cloud-media-studio-assets-586643076560';
-        const sampleFile = path.join(__dirname, 'server.js');
-        const s3Key = `uploads/${filename}`;
-        const cmd = `aws s3 cp "${sampleFile}" "s3://${bucket}/${s3Key}" --region ap-southeast-1`;
-
-        exec(cmd, (err, stdout, stderr) => {
-          if (err) {
-            console.error('[TriggerLambda] Lỗi gọi AWS CLI:', stderr || err.message);
-            return sendJson(500, {
-              ok: false,
-              error: stderr || err.message,
-              note: 'Không thể kết nối AWS CLI. Hãy đảm bảo AWS CLI đã được cấu hình.'
-            });
-          }
-
-          console.log('[TriggerLambda] Đã tải tệp lên S3 và kích hoạt Lambda thật:', stdout.trim());
-          return sendJson(200, {
-            ok: true,
-            message: 'Đã tải tệp lên S3 và kích hoạt thành công AWS Lambda!',
-            s3Uri: `s3://${bucket}/${s3Key}`,
-            region: 'ap-southeast-1',
-            lambdaFunction: 'cloud-media-studio-image-processor',
-            output: stdout.trim()
-          });
+      if ((pathname === '/api/trigger-lambda' || pathname === '/api/upload-real') && req.method === 'POST') {
+        handleRealImageUpload(body || {}, (result) => {
+          sendJson(result.ok ? 200 : 500, result);
         });
         return;
       }
@@ -536,6 +632,7 @@ if (express) {
           created_at: new Date().toISOString()
         };
         mediaItems.unshift(newItem);
+        saveMediaItems();
 
         return sendJson(201, {
           ok: true,
@@ -559,6 +656,7 @@ if (express) {
         if (item) {
           item.storage_class = 'Glacier';
           item.status = 'ARCHIVED';
+          saveMediaItems();
         }
         return sendJson(200, {
           ok: true,
@@ -572,6 +670,7 @@ if (express) {
       if (deleteMatch && req.method === 'DELETE') {
         const id = parseInt(deleteMatch[1], 10);
         mediaItems = mediaItems.filter(m => m.id !== id);
+        saveMediaItems();
         return sendJson(200, { ok: true, message: `Đã xóa tài nguyên #${id}` });
       }
 

@@ -175,3 +175,9 @@ variable "management_subnet_cidrs" {
 }
 
 
+
+variable "enable_fargate" {
+  description = "Bat/Tat ECS Fargate service (FinOps: false khi khong test de tiet kiem credit)"
+  type        = bool
+  default     = false
+}

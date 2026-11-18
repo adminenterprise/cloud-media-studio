@@ -35,6 +35,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Configure AWS Credentials (OIDC - Zero Secret Keys)
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -45,6 +50,14 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.5.7
+
+      - name: Build Lambda Deployment Artifacts (Cross-Arch ARM64)
+        working-directory: ${{ github.workspace }}
+        run: |
+          npm --prefix backend/lambda/image_processor install --os=linux --cpu=arm64 --libc=glibc --include=optional --force --no-audit --no-fund
+          (cd backend/lambda/image_processor && zip -qr "${{ github.workspace }}/terraform/lambda_payload.zip" index.js package.json node_modules)
+          (cd backend/lambda/media_api && zip -qr "${{ github.workspace }}/terraform/lambda_api_payload.zip" index.js)
+          ls -lh "${{ github.workspace }}/terraform/lambda_payload.zip" "${{ github.workspace }}/terraform/lambda_api_payload.zip"
 
       - name: Terraform Format Check
         run: terraform fmt -check
