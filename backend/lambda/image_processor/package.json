@@ -4,8 +4,10 @@
   "description": "Real WebP & Responsive Thumbnail Serverless Processor on AWS Graviton2 (ARM64)",
   "main": "index.js",
   "dependencies": {
-    "@img/sharp-libvips-linux-arm64": "^1.0.4",
-    "@img/sharp-linux-arm64": "^0.33.5",
-    "sharp": "^0.33.5"
+    "sharp": "0.33.5"
+  },
+  "optionalDependencies": {
+    "@img/sharp-libvips-linux-arm64": "1.0.4",
+    "@img/sharp-linux-arm64": "0.33.5"
   }
 }
