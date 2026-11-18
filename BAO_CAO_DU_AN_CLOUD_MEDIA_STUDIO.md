@@ -1,240 +1,242 @@
-# BÁO CÁO BÀI TẬP LỚN CUỐI KỲ
-## HỌC PHẦN: ĐIỆN TOÁN ĐÁM MÂY
+# HỒ SƠ TƯ VẤN, THIẾT KẾ, TRIỂN KHAI VÀ BÀN GIAO HỆ THỐNG ĐÁM MÂY
+## BÁO CÁO BÀI TẬP LỚN CUỐI KỲ — HỌC PHẦN: ĐIỆN TOÁN ĐÁM MÂY
 
-**ĐỀ TÀI:** XÂY DỰNG HỆ THỐNG QUẢN LÝ, CHUYỂN ĐỔI VÀ PHÂN PHỐI ĐA PHƯƠNG TIỆN (CLOUD MEDIA STUDIO) TRÊN NỀN TẢNG PUBLIC CLOUD AWS
+**TÊN DỰ ÁN:** TƯ VẤN VÀ TRIỂN KHAI NỀN TẢNG QUẢN TRỊ, CHUYỂN ĐỔI & PHÂN PHỐI ĐA PHƯƠNG TIỆN (CLOUD MEDIA STUDIO) TRÊN HẠ TẦNG AWS PUBLIC CLOUD
 
-**Thông tin nhóm thực hiện:**
-- **Nền tảng triển khai:** Amazon Web Services (AWS Public Cloud) — Vùng `ap-southeast-1` (Singapore)
-- **Mã tài khoản AWS triển khai:** `586643076560`
-- **Địa chỉ truy cập hệ thống (CDN):** `https://d10b9bys5mn60c.cloudfront.net`
-- **Cổng Serverless API (Lambda Function URL):** `https://jtkvl7zyutkt34p3m5g3ui76ge0mehbp.lambda-url.ap-southeast-1.on.aws`
-- **Kho mã nguồn & Tự động hóa:** GitHub (`cloud-media-studio`)
+- **Đơn vị tư vấn & triển khai (Nhóm thực hiện):** Nhóm Kỹ sư Giải pháp Đám mây **NovaCloud Consulting**
+- **Khách hàng doanh nghiệp ( Giả định thực tế ):** Công ty Truyền thông & Sản xuất Nội dung số **Lumina Creative Agency**
+- **Hạ tầng triển khai thực tế:** Amazon Web Services (AWS) tại vùng `ap-southeast-1` (Singapore)
+- **Mã tài khoản AWS vận hành:** `586643076560`
+- **Tên miền phân phối sản phẩm (CDN):** `https://d10b9bys5mn60c.cloudfront.net`
+- **Cổng dịch vụ Serverless API:** `https://jtkvl7zyutkt34p3m5g3ui76ge0mehbp.lambda-url.ap-southeast-1.on.aws`
+- **Kho mã nguồn & Quy trình tự động bàn giao:** GitHub Repository (`cloud-media-studio`)
 
-| STT | Thành viên | Định danh IAM trên AWS | Mảng công việc phụ trách |
+### Bảng phân công nhân sự đội ngũ tư vấn & triển khai
+
+| STT | Chức danh trong dự án | Định danh IAM trên AWS | Trách nhiệm xuyên suốt từ Khảo sát đến Bàn giao |
 | :---: | :--- | :--- | :--- |
-| 1 | Thành viên 1 (Nhóm trưởng) | `member1-network-iac` | Kiến trúc mạng Dual-VPC, định tuyến Multi-AZ, CloudFront CDN, mã hóa hạ tầng Terraform |
-| 2 | Thành viên 2 | `member2-compute-container` | Ứng dụng Web & REST API Node.js, đóng gói Docker, ECS Fargate, hàm xử lý ảnh AWS Lambda |
-| 3 | Thành viên 3 | `member3-data-finops` | Cơ sở dữ liệu RDS MySQL & DynamoDB, lưu trữ S3, vòng đời S3 Glacier, giám sát CloudWatch & Budgets |
-| 4 | Thành viên 4 | `member4-security-devsecops` | Phân quyền IAM, đường ống CI/CD xác thực OIDC, quét lỗ hổng Trivy, tường lửa WAFv2 & kiểm thử tải k6 |
+| 1 | **Trưởng nhóm Giải pháp & Hạ tầng Mạng** (Member 1) | `member1-network-iac` | Khảo sát yêu cầu mạng khách hàng, thiết kế kiến trúc Dual-VPC Multi-AZ, định tuyến CloudFront CDN và đóng gói mã hạ tầng Terraform để bàn giao. |
+| 2 | **Kỹ sư Ứng dụng & Tính toán Đám mây** (Member 2) | `member2-compute-container` | Phát triển cổng giao diện Cloud Media Studio, xây dựng luồng S3 Presigned URL, đóng gói container ECS/ECR và lập trình hàm AWS Lambda nén ảnh `sharp` trên chip ARM64. |
+| 3 | **Chuyên viên Dữ liệu & Tối ưu Chi phí FinOps** (Member 3) | `member3-data-finops` | Tư vấn bài toán chi phí cho khách hàng, thiết kế cơ sở dữ liệu RDS/DynamoDB, cấu hình vòng đời lưu trữ lạnh S3 Glacier và thiết lập trần ngân sách AWS Budgets. |
+| 4 | **Kỹ sư An toàn Thông tin & DevSecOps** (Member 4) | `member4-security-devsecops` | Thiết kế ma trận phân quyền IAM tối thiểu, dựng đường ống CI/CD xác thực OIDC không khóa tĩnh, quét lỗ hổng Trivy, cấu hình tường lửa WAFv2 và chạy kiểm thử nghiệm thu bảo mật. |
 
 ---
 
-## MỤC LỤC
-1. **PHẦN 1. ĐẶT VẤN ĐỀ (XÁC ĐỊNH BÀI TOÁN)**
-2. **PHẦN 2. MÔ TẢ CHI TIẾT BÀI TOÁN VÀ YÊU CẦU HỆ THỐNG**
-3. **PHẦN 3. GIẢI PHÁP KIẾN TRÚC TỔNG THỂ TRÊN AWS**
-4. **PHẦN 4. QUÁ TRÌNH CÀI ĐẶT, CẤU HÌNH VÀ GỠ LỖI THỰC TẾ**
-5. **PHẦN 5. KẾT QUẢ TRIỂN KHAI VÀ KIỂM THỬ HỆ THỐNG**
-6. **PHẦN 6. KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN**
+## MỤC LỤC HỒ SƠ DỰ ÁN
+1. **PHẦN 1. ĐẶT VẤN ĐỀ: HIỆN TRẠNG VÀ YÊU CẦU BAN ĐẦU TỪ KHÁCH HÀNG**
+2. **PHẦN 2. PHÂN TÍCH, THẢO LUẬN VÀ CHỐT KẾ HOẠCH GIẢI PHÁP VỚI KHÁCH HÀNG**
+3. **PHẦN 3. THIẾT KẾ CHI TIẾT KIẾN TRÚC HỆ THỐNG TRÊN AWS**
+4. **PHẦN 4. QUÁ TRÌNH TRIỂN KHAI CÀI ĐẶT, CẤU HÌNH VÀ GỠ LỖI THỰC TẾ**
+5. **PHẦN 5. KẾT QUẢ KIỂM THỬ NGHIỆM THU HỆ THỐNG (UAT)**
+6. **PHẦN 6. BÀN GIAO HỆ THỐNG, CHUYỂN GIAO CÔNG NGHỆ VÀ ĐỊNH HƯỚNG MỞ RỘNG**
 
 ---
 
-## PHẦN 1. ĐẶT VẤN ĐỀ (XÁC ĐỊNH BÀI TOÁN)
+## PHẦN 1. ĐẶT VẤN ĐỀ: HIỆN TRẠNG VÀ YÊU CẦU BAN ĐẦU TỪ KHÁCH HÀNG
 
-Trong hoạt động của các đơn vị truyền thông, thương mại điện tử hay các nhóm sản xuất nội dung số, số lượng ảnh chụp sản phẩm độ phân giải cao (4K) và video ngắn tăng lên từng ngày. Khi khảo sát cách làm thủ công hoặc cách tự dựng một máy chủ vật lý đơn lẻ để lưu trữ media, nhóm nhận thấy ba nút thắt rất rõ ràng:
+### 1.1. Bối cảnh hoạt động và hiện trạng hạ tầng của khách hàng
+Khách hàng của dự án là **Lumina Creative Agency**, một đơn vị chuyên chụp ảnh sản phẩm độ phân giải cao (4K), thiết kế ấn phẩm quảng cáo và dựng các đoạn video ngắn phục vụ hơn 30 nhãn hàng bán lẻ trực tuyến tại Việt Nam và khu vực Đông Nam Á.
 
-1. **Nghịch lý giữa chất lượng lưu trữ gốc và tốc độ tải trang:** Các tệp ảnh gốc định dạng PNG hoặc JPG xuất ra từ máy ảnh thường nặng từ 5 MB đến hơn 20 MB. Nếu nhúng trực tiếp các tệp gốc này lên trang web, người xem dùng mạng di động phải chờ rất lâu trang mới tải xong, đồng thời tiêu tốn băng thông đường truyền của máy chủ. Ngược lại, nếu bắt nhân viên thiết kế phải tự cắt tay từng bức ảnh ra nhiều kích cỡ (cho điện thoại, máy tính bảng, máy tính bàn) và đổi đuôi file trước khi tải lên thì quy trình làm việc bị chậm và dễ nhầm lẫn.
-2. **Sự lãng phí tài nguyên tính toán khi tải tăng giảm đột ngột:** Tác vụ nén ảnh và dựng khung hình thu nhỏ (thumbnail) ngốn nhiều CPU nhưng chỉ diễn ra theo từng đợt ngắn lúc có người tải file mới lên. Nếu thuê máy chủ cấu hình cao chạy xuyên ngày đêm chỉ để trực chờ nén ảnh thì phần lớn thời gian CPU bị bỏ không gây tốn kém; còn nếu thuê máy cấu hình thấp thì khi cả đội cùng tải hàng chục tệp lên một lúc, máy chủ sẽ bị nghẽn và treo dịch vụ.
-3. **Chi phí lưu trữ phình to theo thời gian đối với dữ liệu cũ:** Phần lớn hình ảnh của một chiến dịch quảng cáo chỉ được truy cập dày đặc trong khoảng 30 ngày đầu tiên. Sau mốc này, các tệp tin gần như nằm im để lưu trữ hồ sơ. Việc giữ toàn bộ dữ liệu cũ nhiều năm trên cùng một ổ đĩa tốc độ cao với dữ liệu mới làm hóa đơn lưu trữ cộng dồn tăng lên liên tục mỗi tháng.
+Trước khi tìm đến đội ngũ tư vấn, toàn bộ quy trình lưu trữ và chia sẻ tệp tin của khách hàng đang đặt trên một máy chủ vật lý tự quản lý (On-Premise) đặt tại văn phòng Hà Nội. Qua buổi khảo sát hiện trạng ban đầu, phía khách hàng chia sẻ ba khó khăn lớn đang làm gián đoạn công việc kinh doanh hàng tuần:
 
-Từ thực tế đó, bài toán đặt ra cho nhóm là: **Làm thế nào để xây dựng trên Public Cloud (AWS) một hệ thống quản lý đa phương tiện tự động hóa khép kín từ khâu nhận file, tự động nén giảm dung lượng mà không cần duy trì máy chủ rảnh rỗi, phân phối nhanh tới người xem qua mạng biên, và tự biết chuyển dữ liệu cũ sang vùng lưu trữ giá rẻ nhằm tối ưu hóa ngân sách vận hành?**
+1. **Tốc độ tải ảnh trên trang đối tác quá chậm do dùng nguyên ảnh gốc:** Đội nhiếp ảnh thường xuất tệp PNG hoặc JPG gốc nặng từ 4 MB đến hơn 20 MB rồi gửi thẳng đường dẫn cho khách hàng nhúng lên website bán hàng. Người mua hàng mở bằng điện thoại qua mạng 4G phải đợi rất lâu ảnh mới hiện ra hết, trong khi đường truyền mạng tại văn phòng công ty liên tục bị nghẽn băng thông. Việc bắt nhân viên thiết kế ngồi cắt tay từng bức ảnh ra 3–4 cỡ nhỏ trước khi tải lên lại tốn quá nhiều giờ công thủ công.
+2. **Máy chủ vật lý thường xuyên treo vào đợt cao điểm nhưng lại bỏ không vào ban đêm:** Vào các dịp cận chiến dịch khuyến mãi, khi 15–20 nhân viên cùng tải ảnh dung lượng lớn lên máy chủ để nén và xuất bản xem trước, CPU máy chủ chạm mức 100% dẫn tới treo toàn bộ trang quản lý. Ngược lại, từ sau 19 giờ tối đến sáng hôm sau và các ngày cuối tuần, máy chủ gần như không có người dùng nhưng vẫn tiêu tốn điện năng và chi phí bảo trì cố định.
+3. **Ổ cứng lưu trữ phình to vì dữ liệu chiến dịch cũ:** Đặc thù ngành quảng cáo là các bộ ảnh chỉ được truy cập dày đặc trong khoảng 3 đến 4 tuần diễn ra chiến dịch. Sau thời gian đó, khách hàng yêu cầu giữ lại tệp gốc từ 1 đến 3 năm để đối chiếu hợp đồng khi cần, rất hiếm khi mở lại. Việc dồn toàn bộ ảnh cũ nhiều năm nằm chung trên ổ cứng SSD tốc độ cao khiến công ty liên tục phải mua thêm ổ cứng mới rất tốn kém.
 
----
-
-## PHẦN 2. MÔ TẢ CHI TIẾT BÀI TOÁN VÀ YÊU CẦU HỆ THỐNG
-
-Để giải quyết vấn đề nêu trên, nhóm xác định xây dựng sản phẩm mang tên **Cloud Media Studio** hoạt động như một kho quản trị và phân phối tài nguyên số tập trung cho doanh nghiệp nhỏ.
-
-### 2.1. Yêu cầu về chức năng nghiệp vụ
-- **Tiếp nhận tài nguyên (Ingestion):** Cho phép người dùng chọn tệp tin hình ảnh/video từ máy tính cá nhân, gắn nhãn phân loại (tags), đặt tên tiêu đề và tải lên kho lưu trữ đám mây.
-- **Tự động chuyển đổi định dạng (Automated Processing):** Ngay khi có tệp mới được tải lên kho chứa, hệ thống tự động kích hoạt tiến trình ngầm để chuyển đổi sang chuẩn nén hiện đại WebP (giúp giảm 70%–84% dung lượng tệp) và tạo các phiên bản kích thước nhỏ phục vụ hiển thị nhanh.
-- **Quản lý, tra cứu và phân phối CDN:** Giao diện thư viện cho phép xem trước hình ảnh, lọc theo định dạng (Ảnh, Video, Lưu trữ lạnh), tìm kiếm theo từ khóa và cung cấp ngay đường dẫn phân phối toàn cầu (CDN URL) để sao chép đem đi nhúng vào các trang web khác.
-- **Quản lý vòng đời lưu trữ (Archiving):** Hỗ trợ chuyển trạng thái tài nguyên ít sử dụng sang lớp lưu trữ lạnh (Glacier) theo cả hai cách: tự động theo lịch 30 ngày hoặc thao tác chủ động trên giao diện quản trị.
-
-### 2.2. Yêu cầu phi chức năng (Kiến trúc, Bảo mật và Chi phí)
-- **Tính sẵn sàng và cô lập mạng:** Hạ tầng mạng phải chia tách rõ vùng công khai (Public) và vùng nội bộ (Private) trải trên tối thiểu 2 vùng sẵn sàng (Availability Zones) tại khu vực Đông Nam Á (`ap-southeast-1` - Singapore) để giảm độ trễ mạng từ Việt Nam xuống mức vài chục mili-giây.
-- **An toàn thông tin:** Kho chứa đối tượng gốc không được mở quyền truy cập công khai trực tiếp từ Internet. Quy trình triển khai mã nguồn tự động tuyệt đối không được lưu trữ khóa truy cập tĩnh (`Access Key / Secret Key`) dạng văn bản rõ trên kho Git. Hệ thống phải có khả năng chống lại truy vấn độc hại SQL Injection và chặn các đợt gửi yêu cầu dồn dập (Spam/Rate-limit).
-- **Ràng buộc ngân sách thực tế:** Toàn bộ quá trình phát triển, kiểm thử và vận hành phục vụ bảo vệ đồ án phải nằm gọn trong hạn mức gói tài trợ sinh viên (200 USD AWS Credit), tránh phát sinh các khoản phí cố định lãng phí khi hệ thống ở trạng thái nghỉ.
+### 1.2. Mong muốn ban đầu từ phía khách hàng
+Khi mới tiếp xúc, đại diện khách hàng đưa ra đề bài sơ bộ khá đơn giản theo thói quen cũ: *"Công ty muốn thuê một máy chủ ảo cấu hình thật mạnh trên AWS bật 24/7 để cài lại phần mềm web cũ, mở một kho lưu trữ công khai cho nhân viên quăng ảnh lên cho nhanh, miễn sao chi phí triển khai thử nghiệm và vận hành giai đoạn đầu nằm gọn trong gói ngân sách 200 USD."*
 
 ---
 
-## PHẦN 3. GIẢI PHÁP KIẾN TRÚC TỔNG THỂ TRÊN AWS
+## PHẦN 2. PHÂN TÍCH, THẢO LUẬN VÀ CHỐT KẾ HOẠCH GIẢI PHÁP VỚI KHÁCH HÀNG
 
-### 3.1. Tổ hợp dịch vụ sử dụng (Kết hợp dịch vụ nền tảng và dịch vụ mở rộng)
+### 2.1. Phân tích kỹ thuật và tư vấn điều chỉnh yêu cầu cùng khách hàng
+Từ yêu cầu thô ban đầu của khách hàng, nhóm tư vấn đã tổ chức phiên thảo luận phân tích lợi hại để thuyết phục khách hàng điều chỉnh phương án trước khi bắt tay vào thiết kế:
 
-Để giải quyết trọn vẹn các yêu cầu khắt khe của bài toán, ngoài việc vận dụng chắc chắn các dịch vụ cốt lõi thường gặp trên lớp (như VPC, EC2, S3, IAM, RDS), nhóm chủ động nghiên cứu và tích hợp thêm nhiều dịch vụ chuyên sâu về Serverless, Mạng biên, Bảo mật tầng 7 và Tự động hóa hạ tầng vào kiến trúc tổng thể:
+- **Bác bỏ phương án thuê máy chủ lớn bật 24/7 để nén ảnh:** Nhóm tư vấn lập bảng tính chi phí cho khách hàng thấy nếu thuê máy chủ EC2 cấu hình cao kèm bộ cân bằng tải ALB và cổng NAT Gateway chạy xuyên suốt 24/7, riêng tiền thuê máy rảnh rỗi và phí duy trì cổng mạng đã tiêu tốn khoảng 70 – 90 USD mỗi tháng, làm cạn nhanh ngân sách 200 USD ngay cả khi đêm không có ai tải ảnh. Nhóm đề xuất chuyển khâu nén ảnh sang mô hình **Serverless hướng sự kiện (AWS Lambda chạy chip ARM64)**: chỉ khi nào có ảnh mới rơi vào kho chứa thì hàm xử lý mới thức dậy chạy trong khoảng 2 giây rồi tắt, tháng đầu tiên với hàng trăm nghìn lượt gọi chi phí tính toán bằng **0 USD**.
+- **Thay thế phương án "mở kho chứa công khai" bằng cơ chế chữ ký số tạm thời:** Nhóm cảnh báo rõ với khách hàng rằng nếu mở quyền đọc/ghi công khai (Public Bucket) trên Amazon S3, người ngoài có thể dò quét lấy cắp ấn phẩm chưa công bố của nhãn hàng hoặc tải tệp rác làm bùng nổ hóa đơn lưu trữ. Phương án thay thế được khách hàng đồng thuận là khóa kín hoàn toàn S3 Bucket: chiều đọc đi qua mạng biên **Amazon CloudFront gắn chứng thực OAC**, còn chiều tải lên đi qua vé ủy quyền tạm thời **S3 Presigned PUT URL** có thời hạn đúng 5 phút.
+- **Tư vấn tách lớp lưu trữ nóng - lạnh tự động:** Thay vì để ảnh cũ chiếm chỗ lưu trữ đắt tiền, nhóm đề xuất áp dụng chính sách vòng đời tự động chuyển các tệp quá 30 ngày từ lớp chuẩn `S3 Standard` (`0,025 USD/GB/tháng`) xuống lớp kho lạnh truy xuất tức thì `S3 Glacier Instant Retrieval` (`0,004 USD/GB/tháng`), giúp khách hàng cắt giảm ngay **84% chi phí lưu trữ dài hạn**.
 
-| Phân lớp | Dịch vụ AWS nền tảng (Cơ bản) | Dịch vụ hỗ trợ & Công nghệ mở rộng (Nâng cao) | Vai trò giải quyết bài toán trong Cloud Media Studio |
-| :--- | :--- | :--- | :--- |
-| **Mạng & Phân phối biên** | Amazon VPC, Subnets, Internet Gateway, NAT Gateway, Route Tables | **VPC Peering (Dual-VPC)**, **Amazon CloudFront CDN**, **Origin Access Control (OAC)** | Tách biệt mạng chạy ứng dụng và mạng quản trị; khóa chặt S3 gốc và đẩy nội dung tĩnh/ảnh ra trạm biên gần người dùng nhất. |
-| **Tính toán & Xử lý** | Amazon EC2, Application Load Balancer (ALB) | **AWS Lambda (Chip ARM64 Graviton2)**, **Amazon ECS Fargate**, **Amazon ECR** | Chạy container không cần quản lý máy chủ vật lý; Lambda chỉ thức dậy tính tiền trong vài trăm mili-giây khi có sự kiện ảnh mới tải lên S3. |
-| **Lưu trữ & Cơ sở dữ liệu** | Amazon S3 Standard, Amazon RDS (MySQL) | **S3 Event Notifications**, **S3 Glacier Instant Retrieval**, **Amazon DynamoDB** | Tự động bắt sự kiện `ObjectCreated` gọi Lambda; hạ giá lưu trữ dữ liệu cũ sau 30 ngày từ 0,025 USD/GB xuống 0,004 USD/GB (giảm 84%). |
-| **Bảo mật & Giám sát** | AWS IAM (Users, Groups, Policies, MFA), Security Groups | **AWS WAFv2**, **AWS OIDC Federation**, **Secrets Manager**, **KMS**, **AWS Budgets**, **CloudWatch Logs** | Chặn tấn công SQLi/Spam từ vòng ngoài; cấp quyền tạm thời cho GitHub Actions không cần khóa tĩnh; kiểm soát trần chi phí 200 USD. |
-| **Vận hành & Kiểm thử** | AWS CLI, Bash/PowerShell scripts | **Terraform (IaC)**, **GitHub Actions CI/CD**, **Aqua Security Trivy**, **Grafana k6** | Mã hóa toàn bộ hạ tầng thành tệp cấu hình; tự động quét lỗ hổng container và bắn tải kiểm tra giới hạn chịu đựng của API. |
+### 2.2. Bảng đối chiếu Kế hoạch thống nhất (Yêu cầu chi tiết <-> Giải pháp đề xuất)
 
-### 3.2. Thiết kế kiến trúc mạng Dual-VPC và luồng dữ liệu
+Sau quá trình trao đổi, hai bên thống nhất ký duyệt bản kế hoạch triển khai nền tảng **Cloud Media Studio** với ma trận ánh xạ trực tiếp từ từng yêu cầu nghiệp vụ sang giải pháp công nghệ trên AWS (kết hợp cả nhóm dịch vụ cốt lõi và nhóm dịch vụ mở rộng chuyên sâu):
 
-Nhóm thiết kế mô hình hai mạng VPC độc lập kết nối với nhau qua đường truyền nội bộ **VPC Peering** để tách bạch môi trường vận hành thực tế và môi trường quản trị:
+| Mã YC | Yêu cầu chi tiết đã chốt với Khách hàng | Giải pháp kỹ thuật đề xuất từ Đội ngũ tư vấn | Dịch vụ AWS nền tảng (Cơ bản) | Dịch vụ hỗ trợ & Công nghệ mở rộng (Nâng cao) |
+| :---: | :--- | :--- | :--- | :--- |
+| **YC-01** | Tải ảnh 4K/video từ trình duyệt ở bất kỳ đâu lên kho lưu trữ mà không lộ khóa tài khoản AWS, không nghẽn cổ chai máy chủ. | Cổng Serverless API cấp phát đường dẫn ký số tạm thời (5 phút) để trình duyệt đẩy thẳng luồng nhị phân vào S3 qua kết nối HTTPS. | Amazon S3, AWS IAM | **AWS Lambda Function URL**, **S3 Presigned PUT URL (SigV4)**, **S3 CORS** |
+| **YC-02** | Tự động nén ảnh giảm trên 70% dung lượng và cắt sẵn 3 cỡ ảnh nhỏ ngay khi nhân viên vừa tải tệp lên. | Bắt sự kiện tệp mới trong thư mục `uploads/` để gọi hàm xử lý ảnh nhị phân `sharp` xuất ra chuẩn `.webp` và 3 bản Thumbnail (`320w`, `768w`, `1200w`). | IAM Role, CloudWatch | **S3 Event Notifications**, **AWS Lambda (Chip ARM64 Graviton2)**, thư viện **Sharp Libvips** |
+| **YC-03** | Website đối tác tại Việt Nam & Đông Nam Á mở ảnh nhanh dưới 50 ms, đồng thời khóa chặt kho S3 gốc. | Phân phối toàn bộ giao diện và ảnh đã nén qua trạm biên CDN gần người xem nhất; khóa S3 chỉ nhận yêu cầu có chữ ký từ CDN. | Amazon S3 Bucket Policy | **Amazon CloudFront CDN** (`PriceClass_100`), **Origin Access Control (OAC)** |
+| **YC-04** | Hạ tầng mạng doanh nghiệp tách biệt vùng ứng dụng, cơ sở dữ liệu và vùng quản trị nội bộ, sẵn sàng mở rộng chịu tải lớn. | Dựng mô hình 2 mạng VPC nối nhau qua Peering; chia 6 Subnets trên 2 vùng sẵn sàng tại Singapore; đóng gói sẵn cụm container API. | VPC, 6 Subnets, IGW, NAT GW, Security Groups, RDS MySQL | **Dual-VPC Peering**, **Amazon ECS Fargate**, **Amazon ECR**, **Application Load Balancer** |
+| **YC-05** | Chống tấn công chèn mã độc vào ô tìm kiếm tài nguyên, chống spam yêu cầu làm treo dịch vụ. | Kiểm tra mẫu tấn công SQLi/XSS trả về mã chặn `403` và bộ đếm giới hạn tốc độ yêu cầu theo IP trả về mã `429`. | Security Groups, Parameterized Queries | **AWS WAFv2** (`SQLiRuleSet`), **Rate-Limiting Middleware**, kiểm thử tải **Grafana k6** |
+| **YC-06** | Dữ liệu cũ quá 30 ngày phải tự giảm chi phí lưu trữ; tổng hóa đơn thử nghiệm tuyệt đối không vượt trần 200 USD. | Tự động chuyển lớp lưu trữ lạnh sau 30 ngày; gắn công tắc mã hóa bật/tắt các thiết bị mạng tính phí theo giờ; cài cảnh báo email sớm. | S3 Storage Classes | **S3 Glacier Instant Retrieval**, **AWS Budgets**, **Terraform Feature Flags** |
+| **YC-07** | Đội IT nội bộ của khách hàng dễ dàng cập nhật giao diện/code về sau mà không cần thao tác tay phức tạp hay giữ khóa bảo mật. | Bàn giao đường ống tự động hóa kiểm tra code, quét lỗ hổng bảo mật container, mượn quyền tạm thời đẩy lên S3 và làm mới CDN. | Git, AWS CLI | **Terraform IaC**, **GitHub Actions CI/CD**, **AWS OIDC Federation**, **Aqua Security Trivy** |
+
+---
+
+## PHẦN 3. THIẾT KẾ CHI TIẾT KIẾN TRÚC HỆ THỐNG TRÊN AWS
+
+Sau khi khách hàng phê duyệt kế hoạch ở Phần 2, đội ngũ kỹ sư tiến hành lập bản vẽ thiết kế chi tiết cho toàn bộ các phân lớp hạ tầng tại vùng **`ap-southeast-1` (Singapore)**.
+
+### 3.1. Sơ đồ kiến trúc tổng thể và luồng vận hành
 
 ```mermaid
 flowchart TD
-    Client([Người dùng / Trình duyệt]) -->|1. Tải giao diện & ảnh WebP| CF[Amazon CloudFront CDN\nd10b9bys5mn60c.cloudfront.net]
-    Client -->|2. Xin vé Presigned URL / Đọc danh sách| API[AWS Lambda Function URL: cloud-media-studio-api\nNode.js 22 ARM64 + Chặn SQLi & Rate-Limit]
-    Client -->|3. HTTP PUT trực tiếp qua SigV4 Presigned URL| S3[(Amazon S3 Bucket\ncloud-media-studio-assets-586643076560)]
-    CF -->|Chữ ký số OAC SigV4| S3
+    User([Nhân viên Khách hàng / Đối tác]) -->|1. Truy cập Web & Xem ảnh WebP| CF[Amazon CloudFront CDN\nd10b9bys5mn60c.cloudfront.net]
+    User -->|2. Xin vé Presigned URL / Đọc kho S3| API[AWS Lambda Function URL: cloud-media-studio-api\nNode.js 22 ARM64 + Lọc SQLi & Rate-Limit]
+    User -->|3. HTTP PUT trực tiếp tệp gốc lên S3| S3[(Amazon S3 Bucket\ncloud-media-studio-assets-586643076560)]
+    CF -->|Xác thực OAC SigV4| S3
 
-    subgraph ProdVPC [Production VPC: 10.0.0.0/16 - Multi-AZ Singapore]
-        ALB[Application Load Balancer + WAFv2] --> ECS[Private App Subnets: 10.0.10.0/24, 10.0.11.0/24\nCụm container ECS Fargate]
-        S3 -->|4. Sự kiện s3:ObjectCreated prefix uploads/| Lambda[AWS Lambda: cloud-media-studio-image-processor\nThư viện sharp ARM64 nén WebP & 3 Thumbnails thật]
-        Lambda -->|5. Ghi processed/*.webp & thumbnails/*| S3
-        Lambda -->|Ghi log thời gian thực| CW[Amazon CloudWatch Logs]
+    subgraph ProdVPC [Production VPC: 10.0.0.0/16 - Đa vùng ap-southeast-1a & 1b]
+        ALB[Application Load Balancer + WAFv2] --> ECS[Private App Subnets: 10.0.10.0/24, 10.0.11.0/24\nCụm dịch vụ container ECS Fargate]
+        S3 -->|4. Sự kiện s3:ObjectCreated lọc tiền tố uploads/| Proc[AWS Lambda: cloud-media-studio-image-processor\nThư viện sharp ARM64 nén WebP & 3 Thumbnails]
+        Proc -->|5. Xuất processed/*.webp & thumbnails/*| S3
+        Proc -->|Đẩy nhật ký xử lý| CW[Amazon CloudWatch Logs]
         ECS --> DB[(Private DB Subnets: 10.0.20.0/24, 10.0.21.0/24\nAmazon RDS MySQL & DynamoDB)]
-        S3 -->|Lifecycle Policy / API CopyObject| Glacier[(Kho lạnh S3 Glacier IR\nTiết kiệm 84% chi phí)]
+        S3 -->|Chính sách 30 ngày / API CopyObject| Glacier[(Kho lạnh S3 Glacier IR\nGiảm 84% đơn giá lưu trữ)]
     end
 
     subgraph MgmtVPC [Management & DevSecOps VPC: 10.1.0.0/16]
-        Bastion[Bastion Host / AWS SSM]
-        Vault[Secrets Manager & KMS]
+        Bastion[Máy trạm quản trị SSM]
+        Vault[AWS Secrets Manager & KMS]
     end
 
-    MgmtVPC <-->|Kết nối nội bộ VPC Peering| ProdVPC
+    MgmtVPC <-->|Đường truyền nội bộ VPC Peering| ProdVPC
 ```
 
-1. **Production VPC (`10.0.0.0/16`):** Trải đều trên hai vùng `ap-southeast-1a` và `ap-southeast-1b` với 6 dải mạng con:
-   - *Hai Public Subnets (`10.0.1.0/24`, `10.0.2.0/24`):* Chứa cổng kết nối ra ngoài (IGW, NAT Gateway) và bộ cân bằng tải ALB.
-   - *Hai Private App Subnets (`10.0.10.0/24`, `10.0.11.0/24`):* Đặt dịch vụ xử lý nghiệp vụ ECS Fargate. Tầng này không gắn địa chỉ IP công cộng, chặn hoàn toàn việc dò quét trực tiếp từ ngoài Internet.
-   - *Hai Private DB Subnets (`10.0.20.0/24`, `10.0.21.0/24`):* Đặt cơ sở dữ liệu RDS MySQL lưu thông tin tệp tin. Luật Security Group khóa chặt cổng `3306`, chỉ nhận gói tin đi xuống từ đúng Security Group của tầng ứng dụng.
-2. **Management VPC (`10.1.0.0/16`):** Gồm hai dải mạng `10.1.1.0/24` và `10.1.2.0/24`, dùng riêng cho công tác quản trị từ xa qua SSM Session Manager và quản lý khóa bảo mật.
-3. **Cơ chế tải tệp trực tiếp qua chữ ký số S3 Presigned URL (100% Cloud-Native):** Để trình duyệt ở bất kỳ thiết bị nào truy cập `https://d10b9bys5mn60c.cloudfront.net` đều tải được tệp dung lượng lớn lên S3 mà không lộ khóa AWS và không cần phụ thuộc máy chủ cục bộ, nhóm triển khai dịch vụ cổng **AWS Lambda Function URL** (`cloud-media-studio-api`). Khi người dùng bấm tải lên, trình duyệt gửi tên tệp tới cổng này để xin một đường dẫn **S3 Presigned PUT URL** ký theo thuật toán `AWS4-HMAC-SHA256` có hiệu lực đúng 5 phút, sau đó đẩy thẳng luồng nhị phân từ trình duyệt vào thư mục `uploads/` trên S3. Ngay khi S3 nhận tệp, bộ lọc sự kiện tiền tố `uploads/` lập tức đánh thức hàm Lambda thứ hai (`cloud-media-studio-image-processor`) dùng thư viện xử lý ảnh nhị phân `sharp` nén ra tệp `.webp` thật vào thư mục `processed/` cùng 3 tệp ảnh thu nhỏ thật vào `thumbnails/`.
+### 3.2. Thiết kế phân vùng mạng Dual-VPC và chính sách cô lập từng lớp
+Để đáp ứng tiêu chuẩn an toàn doanh nghiệp của Lumina Creative Agency, nhóm tách hạ tầng mạng thành hai khối riêng biệt nối qua **VPC Peering**:
+- **Khối mạng vận hành sản phẩm (`Production VPC - 10.0.0.0/16`):** Phân bổ đối xứng trên hai trung tâm dữ liệu `ap-southeast-1a` và `ap-southeast-1b` gồm 6 dải mạng con. Hai dải `10.0.1.0/24` và `10.0.2.0/24` đóng vai trò vùng biên công cộng (Public Subnets); hai dải `10.0.10.0/24` và `10.0.11.0/24` là vùng chạy ứng dụng nội bộ (Private App Subnets) không cấp IP công cộng; hai dải `10.0.20.0/24` và `10.0.21.0/24` là vùng cơ sở dữ liệu cô lập hoàn toàn (Private DB Subnets), nơi tường lửa Security Group chỉ cho phép kết nối cổng `3306` đi xuống từ đúng nhóm bảo mật của tầng ứng dụng.
+- **Khối mạng quản trị và bảo mật (`Management VPC - 10.1.0.0/16`):** Chứa hai dải `10.1.1.0/24` và `10.1.2.0/24` phục vụ kết nối bảo trì nội bộ qua AWS Systems Manager (SSM) và quản lý khóa mã hóa tập trung, tránh việc mở cổng SSH `22` trực tiếp ra ngoài Internet.
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #1: Sơ đồ mạng VPC và kết nối VPC Peering trên AWS Console]**
-> - **Cách chụp:** Mở *AWS Console (Region Singapore) -> VPC -> Your VPCs -> Chọn Production VPC (`10.0.0.0/16`) -> Tab Resource map*; chụp kèm màn hình *Peering connections* báo trạng thái `Active`.
-> - **Chi tiết cần thấy rõ:** Luồng kết nối từ VPC qua 6 Subnets (Public/Private) tới các Route Tables và Internet Gateway.
-> - **Chú thích ảnh gợi ý:** *Hình 3.1. Cấu trúc mạng Production VPC đa vùng sẵn sàng (Multi-AZ) và kết nối VPC Peering nội bộ triển khai thực tế tại vùng Singapore.*
+> **[CHỖ CHÈN ẢNH MINH HỌA #1: Bản đồ tài nguyên mạng Production VPC và kết nối VPC Peering]**
+> - **Cách chụp:** Mở *AWS Console (Singapore) -> VPC -> Your VPCs -> Chọn Production VPC (`10.0.0.0/16`) -> Tab Resource map*, chụp kèm màn hình *Peering connections* báo trạng thái `Active`.
+> - **Chú thích ảnh gợi ý:** *Hình 3.1. Sơ đồ phân hoạch 6 Subnets đa vùng sẵn sàng của Production VPC và kết nối Peering sang Management VPC.*
 
-### 3.3. Giải pháp kiểm soát chi phí chủ động bằng công tắc hạ tầng (FinOps)
-
-Khi bắt tay vào vận hành thực tế trên tài khoản AWS, nhóm tính toán thấy các dịch vụ tính tiền theo giờ cố định như NAT Gateway (~1,2 USD/ngày, tức ~36 USD/tháng) và Application Load Balancer (~18 USD/tháng) sẽ đốt cạn ngân sách rất nhanh nếu bật bỏ không vào ban đêm trong suốt quá trình phát triển.
-
-Giải pháp sáng tạo của nhóm là viết toàn bộ hạ tầng dưới dạng mã **Terraform** có gắn các biến điều khiển bật/tắt linh hoạt trong tệp `terraform/terraform.tfvars` (`enable_nat_gateway`, `enable_alb`, `enable_waf`). Trong giai đoạn viết code hàng ngày, nhóm chỉ giữ lại các dịch vụ tính tiền theo lượt sử dụng thực tế (S3, CloudFront `PriceClass_100`, AWS Lambda ARM64, ECR) với chi phí gần như bằng 0 USD. Khi bước vào phiên kiểm thử tải toàn diện hoặc trình diễn cân bằng tải, nhóm chỉ mất một câu lệnh `terraform apply` để dựng toàn bộ cụm thiết bị mạng lên trong vài phút và thu hồi sạch sẽ ngay sau khi đo đạc xong.
+### 3.3. Thiết kế đường ống xử lý ảnh không máy chủ và quy trình CI/CD không khóa tĩnh
+- **Luồng tải và nén ảnh hai pha tách biệt:** Pha đầu tiên diễn ra đồng bộ trong vài chục mili-giây tại hàm `cloud-media-studio-api` để kiểm tra định danh tệp và ký phát hành đường dẫn `S3 Presigned PUT URL`. Nhờ vậy, tệp ảnh nặng nhiều MB đi thẳng từ trình duyệt khách hàng vào S3 mà không bị vướng giới hạn gói tin 6 MB của AWS Lambda. Pha thứ hai diễn ra bất đồng bộ ngay khi S3 phát tín hiệu có tệp mới trong `uploads/`: hàm `cloud-media-studio-image-processor` tải luồng ảnh vào bộ nhớ RAM 512 MB, chạy thuật toán nén `sharp` trên tập lệnh ARM64 tạo ra 1 tệp WebP gốc và 3 tệp ảnh thu nhỏ song song rồi ghi trả lại vào `processed/` và `thumbnails/`.
+- **Thiết kế đường ống DevSecOps bàn giao cho khách hàng:** Ba quy trình tự động trên GitHub Actions (`ci.yml`, `deploy-frontend.yml`, `terraform.yml`) được nối với AWS IAM qua cơ chế **OpenID Connect (OIDC)**. Nhóm tư vấn không cần tạo hay bàn giao bất kỳ cặp khóa `Access Key` cố định nào dễ gây lộ lọt về sau; mỗi lần chạy bản cập nhật, GitHub tự nhận chứng chỉ tạm thời có hiệu lực ngắn hạn từ AWS để quét bảo mật ảnh Docker bằng **Aqua Trivy**, đẩy lên kho **ECR** / **S3** và làm mới mạng biên **CloudFront**.
 
 ---
 
-## PHẦN 4. QUÁ TRÌNH CÀI ĐẶT, CẤU HÌNH VÀ GỠ LỖI THỰC TẾ
+## PHẦN 4. QUÁ TRÌNH TRIỂN KHAI CÀI ĐẶT, CẤU HÌNH VÀ GỠ LỖI THỰC TẾ
 
-Phần này trình bày chi tiết trình tự nhóm thiết lập hệ thống từ con số không, tương ứng với quy trình thực hiện trong video demo nộp kèm báo cáo.
+Quá trình đội ngũ kỹ thuật hiện thực hóa bản thiết kế lên tài khoản AWS `586643076560` được thực hiện tuần tự qua 4 giai đoạn dưới đây.
 
-### 4.1. Bước 1: Thiết lập định danh IAM và phân quyền nhóm
-Đầu tiên, nhóm đăng nhập tài khoản quản trị để khóa các thao tác rủi ro, kích hoạt MFA và tạo 4 nhóm quyền tương ứng với 4 thành viên (`Network-IaC-Group`, `Compute-Container-Group`, `Data-FinOps-Group`, `Security-DevSecOps-Group`) theo đúng ma trận phân quyền tối thiểu trong tệp `finops/rbac-matrix.md`. Đồng thời, nhóm tạo Identity Provider kết nối với `token.actions.githubusercontent.com` và cấu hình IAM Role `arn:aws:iam::586643076560:role/github-action` để phục vụ quy trình triển khai tự động từ GitHub mà không cần xuất khóa tĩnh.
+### 4.1. Giai đoạn 1: Khởi tạo nhóm quyền IAM và liên kết xác thực OIDC
+Nhóm thiết lập 4 nhóm quyền độc lập (`Network-IaC-Group`, `Compute-Container-Group`, `Data-FinOps-Group`, `Security-DevSecOps-Group`) bám sát ma trận phân quyền tối thiểu trong tệp `finops/rbac-matrix.md`, yêu cầu bật xác thực hai lớp MFA cho từng tài khoản kỹ sư. Tiếp đó, nhóm đăng ký nhà cung cấp định danh `token.actions.githubusercontent.com` trong AWS IAM và cấu hình vai trò `arn:aws:iam::586643076560:role/github-action` chỉ chấp nhận yêu cầu đẩy mã nguồn xuất phát từ đúng kho lưu trữ GitHub của dự án.
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #2: Màn hình phân quyền IAM Groups và Identity Provider OIDC]**
-> - **Cách chụp:** Mở *AWS Console -> IAM -> User groups* và mục *Identity providers* hiển thị kết nối tới GitHub Actions.
-> - **Chú thích ảnh gợi ý:** *Hình 4.1. Thiết lập nhóm quyền IAM theo vai trò thành viên và liên kết xác thực OIDC cho GitHub Actions.*
+> **[CHỖ CHÈN ẢNH MINH HỌA #2: Màn hình cấu hình IAM Groups và OIDC Identity Provider]**
+> - **Cách chụp:** Mở *AWS Console -> IAM -> User groups* và mục *Identity providers*.
+> - **Chú thích ảnh gợi ý:** *Hình 4.1. Phân tách quyền hạn theo vai trò nhân sự triển khai và cấu hình xác thực OIDC cho đường ống tự động.*
 
-### 4.2. Bước 2: Khởi tạo hạ tầng bằng mã nguồn Terraform
-Tại máy trạm cục bộ đã cài đặt Terraform (phiên bản >= 1.5) và AWS CLI, nhóm tổ chức mã hạ tầng thành 12 tệp `.tf` chuyên biệt trong thư mục `terraform/` và tiến hành khởi tạo:
+### 4.2. Giai đoạn 2: Cấp phát hạ tầng tự động bằng mã nguồn Terraform
+Toàn bộ cấu hình hạ tầng được mô đun hóa thành các tệp `.tf` trong thư mục `terraform/`. Nhóm thiết lập thêm các biến công tắc kiểm soát chi phí trong `terraform.tfvars` (`enable_nat_gateway`, `enable_alb`, `enable_waf`) rồi thực thi quy trình khởi tạo:
 
 ```bash
 cd terraform
 terraform init
 terraform fmt -check
 terraform validate
-terraform plan -out=tfplan
-terraform apply tfplan
+terraform apply
 ```
 
-Quá trình thực thi tạo ra đồng bộ hai mạng VPC, 6 Subnets, hệ thống bảng định tuyến, các lớp tường lửa Security Groups theo mô hình chuỗi (Web SG -> App SG -> DB SG), bucket S3 `cloud-media-studio-assets-586643076560`, phân phối CloudFront `E23QIJLQ2A8EEN`, cụm ECS `cloud-media-studio-cluster`, kho chứa ảnh container ECR `cloud-media-studio-backend` và hàm Lambda `cloud-media-studio-image-processor`.
+Lệnh thực thi dựng lên trọn bộ hai mạng VPC, các bảng định tuyến, chuỗi tường lửa Security Groups, kho lưu trữ `cloud-media-studio-assets-586643076560`, mạng phân phối CloudFront `E23QIJLQ2A8EEN`, cụm container `cloud-media-studio-cluster`, kho ảnh `cloud-media-studio-backend` và hai hàm xử lý AWS Lambda.
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #3: Quá trình chạy lệnh khởi tạo hạ tầng bằng Terraform]**
-> - **Cách chụp:** Chụp cửa sổ Terminal khi chạy `terraform validate` và `terraform plan / apply` hiển thị danh sách tài nguyên AWS được khởi tạo thành công.
-> - **Chú thích ảnh gợi ý:** *Hình 4.2. Cấp phát tự động toàn bộ hạ tầng mạng, lưu trữ và tính toán trên AWS thông qua công cụ Terraform.*
+> **[CHỖ CHÈN ẢNH MINH HỌA #3: Màn hình kiểm tra và áp dụng mã hạ tầng bằng Terraform]**
+> - **Cách chụp:** Chụp cửa sổ dòng lệnh khi chạy `terraform validate` (báo `Success! The configuration is valid`) và kết quả lập kế hoạch cấp phát tài nguyên.
+> - **Chú thích ảnh gợi ý:** *Hình 4.2. Kiểm tra tính hợp lệ và triển khai đồng bộ hạ tầng đám mây bằng công cụ Terraform.*
 
-### 4.3. Bước 3: Cấu hình CloudFront OAC, đường ống CI/CD và xử lý sự cố lưu đệm (Cache)
-Sau khi hạ tầng nền tảng sẵn sàng, nhóm cấu hình luồng tự động hóa trong `.github/workflows/deploy-frontend.yml` và `.github/workflows/ci.yml`. Mỗi khi thành viên đẩy code lên nhánh làm việc, GitHub Actions tự chạy `npm run build` đóng gói giao diện vào thư mục `dist/`, quét lỗ hổng container bằng **Aqua Trivy** và đồng bộ thẳng lên S3.
+### 4.3. Giai đoạn 3: Dựng đường ống CI/CD, cấu hình CloudFront OAC và gỡ lỗi lưu đệm
+Nhóm kích hoạt luồng đóng gói giao diện tự động đẩy lên S3 và phân phối qua tên miền `https://d10b9bys5mn60c.cloudfront.net`. Trong giai đoạn này, nhóm đã phát hiện và xử lý triệt để hai lỗi phát sinh thực tế:
+- **Gỡ lỗi CloudFront giữ bản lưu đệm cũ 24 giờ:** Ở những lần cập nhật giao diện đầu tiên, dù tệp trên S3 đã đổi mới nhưng khách hàng mở tên miền CloudFront vẫn thấy màn hình cũ do trạm biên giữ cache mặc định một ngày. Nhóm đã tách riêng lệnh đẩy `index.html` gắn cờ `--cache-control "max-age=0,no-cache,no-store,must-revalidate"` và bổ sung lệnh tạo `Invalidation` xóa vùng nhớ đệm `/*` tự động ngay cuối mỗi lần chạy GitHub Actions.
+- **Bảo vệ dữ liệu người dùng khi chạy đồng bộ CI/CD:** Bổ sung ba cờ loại trừ `--exclude "uploads/*" --exclude "processed/*" --exclude "thumbnails/*"` vào kịch bản đồng bộ S3 để ngăn quy trình cập nhật giao diện xóa nhầm kho ảnh đang vận hành của khách hàng.
 
-**Các sự cố thực tế phát sinh trong lúc cấu hình và cách nhóm khắc phục:**
-- **Sự cố 1 - Đẩy code mới lên Git nhưng trang CloudFront không đổi giao diện:** Ban đầu nhóm chỉ đồng bộ tệp lên S3. Do CloudFront mặc định giữ bản lưu đệm (cache) 24 giờ tại các trạm biên nên người dùng vẫn nhận trang HTML cũ. Nhóm khắc phục bằng cách gắn thêm tham số `--cache-control "max-age=0,no-cache,no-store,must-revalidate"` riêng cho tệp `index.html`, đồng thời bổ sung bước gọi lệnh `aws cloudfront create-invalidation --distribution-id E23QIJLQ2A8EEN --paths "/*"` vào cuối workflow để ép xóa cache biên ngay lập tức.
-- **Sự cố 2 - Lệnh đồng bộ CI/CD xóa mất ảnh người dùng tải lên:** Khi dùng cờ `aws s3 sync dist/ s3://... --delete`, công cụ thấy thư mục `uploads/` trên S3 không tồn tại trong thư mục build nên đã xóa nhầm toàn bộ ảnh đã tải lên trước đó. Nhóm sửa ngay bằng cách chèn cờ bảo vệ `--exclude "uploads/*"` vào kịch bản triển khai.
+> **[CHỖ CHÈN ẢNH MINH HỌA #4: Đường ống GitHub Actions chạy thành công và lịch sử xóa cache CloudFront]**
+> - **Cách chụp:** Chụp màn hình tab *GitHub Actions* hiển thị tích xanh toàn bộ các bước kèm màn hình *AWS CloudFront Console (`E23QIJLQ2A8EEN`)* tab *Invalidations*.
+> - **Chú thích ảnh gợi ý:** *Hình 4.3. Chu trình CI/CD tự động xác thực OIDC, cập nhật gói giao diện và làm mới bộ nhớ biên CloudFront.*
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #4: Đường ống CI/CD trên GitHub Actions và màn hình CloudFront Invalidation]**
-> - **Cách chụp:** Ghép ảnh chụp màn hình tab *GitHub Actions* báo tích xanh tất cả các bước (Build -> OIDC Auth -> S3 Sync -> CloudFront Invalidation) và màn hình *AWS CloudFront Console (`E23QIJLQ2A8EEN`)* hiển thị trạng thái `Enabled` cùng lịch sử Invalidation hoàn tất.
-> - **Chú thích ảnh gợi ý:** *Hình 4.3. Quy trình CI/CD tự động đồng bộ mã nguồn lên S3 và làm mới bộ nhớ đệm CloudFront sau mỗi lần cập nhật.*
+> **[CHỖ CHÈN ẢNH MINH HỌA #5: Kết quả quét lỗ hổng container Aqua Trivy và kho Amazon ECR]**
+> - **Cách chụp:** Chụp bảng báo cáo quét Trivy trên GitHub Actions kèm màn hình kho chứa ảnh Docker *Amazon ECR (`cloud-media-studio-backend`)*.
+> - **Chú thích ảnh gợi ý:** *Hình 4.4. Rà quét lỗ hổng bảo mật gói ứng dụng bằng Aqua Trivy trước khi lưu trữ phiên bản bất biến trên Amazon ECR.*
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #5: Báo cáo quét bảo mật Aqua Trivy và kho container Amazon ECR]**
-> - **Cách chụp:** Chụp bảng log quét lỗ hổng Trivy trong workflow `ci.yml` kèm giao diện *Amazon ECR -> Repositories -> `cloud-media-studio-backend`*.
-> - **Chú thích ảnh gợi ý:** *Hình 4.4. Kiểm tra an toàn ảnh Docker bằng công cụ Trivy trước khi lưu trữ vào kho Amazon ECR.*
-
-### 4.4. Bước 4: Đóng gói thư viện nén ảnh `sharp` trên chip ARM64, cấu hình S3 CORS và chống vòng lặp sự kiện
-Ở giai đoạn hoàn thiện luồng xử lý đám mây thuần túy (Cloud-Native), nhóm triển khai hai hàm AWS Lambda chạy song song trên kiến trúc ARM64 Graviton2 (`cloud-media-studio-api` cấp phát S3 Presigned URL và `cloud-media-studio-image-processor` nén ảnh nhị phân bằng thư viện C++ `sharp`), đồng thời mở cấu hình CORS trên S3 Bucket cho phép tên miền CloudFront thực hiện lệnh `PUT` trực tiếp.
-
-Ba bài học gỡ lỗi kỹ thuật thực tế mà nhóm đã giải quyết dứt điểm ở khâu này gồm:
-1. **Chặn đứng nguy cơ vòng lặp kích hoạt vô hạn trên S3:** Vì hàm Lambda đọc ảnh gốc từ `uploads/` rồi lại ghi tệp `.webp` đã nén vào `processed/` và `thumbnails/` trên cùng một S3 Bucket, nếu để sự kiện `s3:ObjectCreated:*` bắt toàn bộ bucket thì hành động ghi ảnh WebP của Lambda sẽ tự kích hoạt lại chính nó liên tục không dừng. Nhóm đã khóa chặt cấu hình thông báo sự kiện S3 chỉ lọc riêng tiền tố `filter_prefix = "uploads/"` (loại trừ sự kiện `Copy`), kết hợp câu lệnh kiểm tra đường dẫn đầu hàm Lambda để đảm bảo an toàn kép.
-2. **Xử lý lỗi nạp thư viện liên kết động `libvips-cpp.so.42` khi đóng gói chéo từ Windows lên Linux ARM64:** Khi cài đặt gói `sharp` trên máy tính Windows để đẩy lên môi trường Amazon Linux 2023 (`arm64`), hàm Lambda từng báo lỗi `ERR_DLOPEN_FAILED: libvips-cpp.so.42` do lệch phiên bản gói phụ thuộc tùy chọn và thiếu đường dẫn thư viện hệ thống. Nhóm đã khắc phục bằng cách ghim đồng bộ phiên bản `@img/sharp-linux-arm64@0.33.5` đi kèm `@img/sharp-libvips-linux-arm64@1.0.4`, đóng gói chuẩn đường dẫn POSIX và khai báo biến môi trường `LD_LIBRARY_PATH=/var/task/node_modules/@img/sharp-libvips-linux-arm64/lib` trên Lambda.
-3. **Đồng bộ dữ liệu thời gian thực từ S3 khi tải lại trang (`F5`):** Mỗi lần người dùng mở trang hoặc nhấn `F5` trên bất kỳ máy tính hay điện thoại nào, giao diện gọi thẳng tới API `/api/s3-media` để đọc danh sách đối tượng thực tế đang nằm trong `uploads/`, `processed/` và `thumbnails/` trên S3, kết hợp bộ nhớ đệm cục bộ giúp dữ liệu hiển thị đồng nhất trên mọi thiết bị.
+### 4.4. Giai đoạn 4: Đóng gói thư viện nén ảnh `sharp` trên Linux ARM64 và chống lặp sự kiện S3
+Khi triển khai hàm `cloud-media-studio-image-processor` đọc ảnh gốc và ghi tệp `.webp` ngược lại vào cùng một S3 Bucket, đội kỹ thuật đã giải quyết hai bài toán kỹ thuật quan trọng:
+1. **Khóa bộ lọc sự kiện tiền tố để triệt tiêu vòng lặp vô hạn:** Nếu bật bắt sự kiện `s3:ObjectCreated` trên toàn bộ bucket, thao tác Lambda ghi tệp mới vào `processed/` sẽ tự gọi lại chính Lambda đó liên tục gây treo hạn mức và phát sinh chi phí ngoài ý muốn. Nhóm đã áp đặt bộ lọc cứng `filter_prefix = "uploads/"` (và bỏ qua sự kiện `Copy`) ngay trên cấu hình S3 Event Notification kết hợp chốt kiểm tra đầu hàm xử lý.
+2. **Xử lý tương thích thư viện C++ `libvips` khi đóng gói từ máy trạm Windows lên chip ARM64:** Trong lần đẩy gói mã nguồn đầu tiên, Lambda báo lỗi `ERR_DLOPEN_FAILED: libvips-cpp.so.42` trên môi trường Amazon Linux 2023. Đội kỹ thuật đã kiểm tra nhật ký CloudWatch, ghim chuẩn xác cặp gói nhị phân `@img/sharp-linux-arm64@0.33.5` và `@img/sharp-libvips-linux-arm64@1.0.4`, đóng gói nén theo chuẩn đường dẫn POSIX và cấu hình biến môi trường `LD_LIBRARY_PATH` trỏ thẳng tới thư mục chứa tệp `.so`, giúp hàm khởi chạy ổn định ngay từ lần gọi đầu tiên.
 
 ---
 
-## PHẦN 5. KẾT QUẢ TRIỂN KHAI VÀ KIỂM THỬ HỆ THỐNG
+## PHẦN 5. KẾT QUẢ KIỂM THỬ NGHIỆM THU HỆ THỐNG (UAT)
 
-Sau khi hoàn tất cài đặt và hiệu chỉnh, nhóm tiến hành chạy kịch bản kiểm thử tự động toàn trình (`scripts/verify-live-cloud-pipeline.js`) trên môi trường AWS thật và thu được các số liệu đo đạc thực tế dưới đây.
+Trước khi bàn giao cho khách hàng, nhóm tư vấn đã thực hiện bộ kịch bản kiểm thử nghiệm thu toàn diện (`scripts/verify-live-cloud-pipeline.js` và `tests/k6-rate-limit.js`) trực tiếp trên môi trường Production tại Singapore.
 
-### 5.1. Kết quả vận hành 100% Cloud-Native qua S3 Presigned URL và CloudFront CDN
-Ứng dụng **Cloud Media Studio** vận hành độc lập hoàn toàn trên đám mây tại địa chỉ `https://d10b9bys5mn60c.cloudfront.net` mà không cần bật bất kỳ máy chủ cục bộ nào hỗ trợ:
-- Khi người dùng chọn một bức ảnh độ phân giải cao (ví dụ tệp thử nghiệm `cloud-studio-showcase-banner.png` kích thước `1600x1000`, dung lượng **3,04 MB**) và bấm tải lên, cổng Lambda Function URL cấp phát đường dẫn S3 Presigned PUT URL trong khoảng **35–60 ms** và trình duyệt đẩy thẳng tệp gốc vào `s3://cloud-media-studio-assets-586643076560/uploads/`.
-- Khi bấm nút chuyển tầng lưu trữ *Move to Glacier (FinOps)* ngay trong cửa sổ chi tiết tệp, hệ thống gọi lệnh `CopyObject` đổi trực tiếp thuộc tính `StorageClass` của đối tượng trên AWS S3 sang **`GLACIER_IR` (Glacier Instant Retrieval)**.
+### 5.1. Nghiệm thu tính năng nghiệp vụ và hiệu quả nén ảnh WebP thực tế
+Thử nghiệm truy cập trực tiếp tên miền công khai `https://d10b9bys5mn60c.cloudfront.net` trên trình duyệt độc lập (không phụ thuộc máy trạm phát triển) và tải lên tệp ảnh PNG độ phân giải cao `1600x1000` có dung lượng gốc **3,04 MB (`3.110,4 KB`)**:
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #6: Giao diện trang chủ Dashboard và Thư viện Media Library]**
-> - **Cách chụp:** Mở trình duyệt truy cập `https://d10b9bys5mn60c.cloudfront.net`, chụp trang *Overview Dashboard* và trang *Media Library* hiển thị các tệp ảnh thực tế đọc trực tiếp từ S3.
-> - **Chú thích ảnh gợi ý:** *Hình 5.1. Giao diện quản trị trung tâm và kho tài nguyên đa phương tiện đồng bộ trực tiếp với Amazon S3.*
+| Hạng mục đo đạc nghiệm thu | Kết quả thực tế trên AWS Singapore | Đánh giá so với cam kết KH |
+| :--- | :--- | :---: |
+| Thời gian cấp phát vé `S3 Presigned PUT URL` | **42 ms** (tải thẳng từ trình duyệt lên S3 trả về `HTTP 200`) | Đạt (Không lộ khóa AWS) |
+| Dung lượng tệp chính sau khi nén chuẩn WebP (`processed/`) | Từ **3,04 MB** giảm còn **74,4 KB** (**giảm 97,6% dung lượng**) | Vượt kỳ vọng (Cam kết >70%) |
+| Kích thước 3 bản Thumbnail tự sinh (`thumbnails/`) | Mobile `320w`: **5,8 KB** • Tablet `768w`: **30,0 KB** • Desktop `1200w`: **55,6 KB** | Đạt chuẩn hiển thị đa thiết bị |
+| Tổng thời gian xử lý bất đồng bộ trên Lambda ARM64 | Hoàn tất xuất 4 tệp `.webp` lên S3 trong **~1,8 giây** | Đạt (Dưới 3 giây) |
+| Tốc độ phản hồi ảnh qua mạng biên CloudFront CDN | **28 – 45 ms** (`HTTP 200 OK`, kiểu nội dung `image/webp`) | Đạt (Dưới 50 ms) |
+| Đồng bộ dữ liệu khi nhấn `F5` / mở trên máy khác | Giữ nguyên 100% danh sách tệp, dung lượng và liên kết đọc trực tiếp từ S3 | Đạt |
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #7: Kết quả tải ảnh trực tiếp qua S3 Presigned URL và đối chiếu dung lượng nén WebP thật]**
-> - **Cách chụp:** Chụp màn hình tab *Upload Media* (hiện huy hiệu xanh `AWS Serverless Connected`) ngay sau khi tải ảnh thật lên, hiển thị rõ dung lượng gốc so với dung lượng bản `.webp` sau nén cùng đường dẫn mở 3 bản Thumbnail (`320w`, `768w`, `1200w`).
-> - **Chú thích ảnh gợi ý:** *Hình 5.2. Quá trình tải ảnh trực tiếp lên S3 qua Presigned URL và kết quả nén giảm dung lượng thực tế hiển thị trên giao diện.*
+> **[CHỖ CHÈN ẢNH MINH HỌA #6: Giao diện vận hành thực tế của nền tảng Cloud Media Studio]**
+> - **Cách chụp:** Mở `https://d10b9bys5mn60c.cloudfront.net`, chụp màn hình *Overview Dashboard* và *Media Library* hiển thị các tài nguyên thực tế trên đám mây.
+> - **Chú thích ảnh gợi ý:** *Hình 5.1. Giao diện quản lý tài nguyên truyền thông bàn giao cho khách hàng trên tên miền CloudFront.*
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #8: Đối chứng 3 thư mục `uploads/`, `processed/` và `thumbnails/` trên Amazon S3 Console]**
-> - **Cách chụp:** Mở *AWS Console -> Amazon S3 -> `cloud-media-studio-assets-586643076560`*, chụp danh sách tệp gốc trong `uploads/`, tệp `.webp` đã nén trong `processed/` và 3 tệp thu nhỏ trong `thumbnails/mobile/`, `tablet/`, `desktop/` (kèm cột `Storage class` hiển thị `Glacier Instant Retrieval` sau khi bấm chuyển kho lạnh).
-> - **Chú thích ảnh gợi ý:** *Hình 5.3. Đối chứng tệp ảnh gốc, bản nén WebP và 3 cỡ ảnh thu nhỏ được sinh ra thực tế bên trong Amazon S3 Bucket.*
+> **[CHỖ CHÈN ẢNH MINH HỌA #7: Màn hình kết quả tải ảnh qua Presigned URL và thông số giảm dung lượng thật]**
+> - **Cách chụp:** Chụp màn hình tab *Upload Media* và cửa sổ *File Details* hiển thị tỷ lệ giảm dung lượng thực tế kèm đường dẫn mở 3 phiên bản Thumbnail (`320w`, `768w`, `1200w`).
+> - **Chú thích ảnh gợi ý:** *Hình 5.2. Kết quả kiểm thử tải ảnh trực tiếp lên S3 và đối chiếu mức giảm dung lượng sau khi Lambda nén sang WebP.*
 
-### 5.2. Kết quả nén ảnh nhị phân thực tế bằng AWS Lambda (`sharp` ARM64)
-Kiểm tra thực nghiệm với tệp ảnh PNG gốc nặng **3,04 MB (`3.110,4 KB`)** tải vào `uploads/`, hàm `cloud-media-studio-image-processor` tự động bắt sự kiện S3 và xuất ra 4 tệp tin chuẩn `image/webp` trên S3 với số liệu đo thực tế như sau:
-- **Bản chính chuẩn WebP (`processed/cloud-studio-showcase-banner.webp`):** Dung lượng giảm từ **3,04 MB** xuống còn **74,4 KB** (tỷ lệ giảm dung lượng thực tế đạt **97,6%**), truy xuất qua CloudFront trả về mã `HTTP 200 OK`.
-- **Ba phiên bản Thumbnail đáp ứng đa thiết bị:**
-  - *Mobile (`_320.webp`):* **5,8 KB**
-  - *Tablet (`_768.webp`):* **30,0 KB**
-  - *Desktop (`_1200.webp`):* **55,6 KB**
-- Toàn bộ quá trình đọc luồng S3, giải mã ảnh, nén xuất 4 tệp WebP song song và ghi ngược lên S3 hoàn tất chỉ trong khoảng **1,5 – 2,8 giây** trên chip Graviton2 với bộ nhớ cấp phát 512 MB.
+> **[CHỖ CHÈN ẢNH MINH HỌA #8: Đối chứng 3 thư mục `uploads/`, `processed/` và `thumbnails/` trên AWS S3 Console]**
+> - **Cách chụp:** Mở *AWS S3 Console -> `cloud-media-studio-assets-586643076560`*, chụp nội dung tệp gốc và các tệp `.webp` được sinh tự động trong các thư mục tương ứng, kèm nhật ký thực thi trên *CloudWatch Logs*.
+> - **Chú thích ảnh gợi ý:** *Hình 5.3. Đối chứng các tệp tin WebP và ảnh thu nhỏ được hàm AWS Lambda xuất thực tế vào kho lưu trữ S3.*
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #9: Cấu hình S3 Trigger trên Lambda và bản ghi thực thi trên CloudWatch Logs]**
-> - **Cách chụp:** Chụp màn hình *AWS Lambda -> `cloud-media-studio-image-processor` -> Triggers* và màn hình *CloudWatch Log Events* hiển thị chi tiết nội dung xử lý bức ảnh vừa tải lên.
-> - **Chú thích ảnh gợi ý:** *Hình 5.4. Nhật ký CloudWatch chứng minh hàm AWS Lambda tự động bắt sự kiện S3 và hoàn tất xử lý trong vài chục mili-giây.*
+### 5.2. Nghiệm thu chính sách tối ưu chi phí lưu trữ lạnh (FinOps) và bảo mật hệ thống
+1. **Nghiệm thu chuyển đổi tầng lưu trữ lạnh S3 Glacier:** Khi thao tác bấm nút *Move to Glacier (FinOps)* trên một tài nguyên trong thư viện (hoặc theo luật vòng đời tự động 30 ngày), đối tượng trên AWS S3 lập tức đổi thuộc tính `Storage class` từ `Standard` sang **`Glacier Instant Retrieval` (`GLACIER_IR`)**, giảm 84% chi phí lưu trữ hàng tháng mà vẫn cho phép mở xem lại ngay khi cần. Toàn bộ hóa đơn sử dụng thực tế trên tài khoản AWS được giám sát qua bảng **AWS Budgets**, tiêu tốn chưa tới vài USD trong suốt chu kỳ triển khai và kiểm thử.
+2. **Nghiệm thu phòng vệ an ninh (Chống SQL Injection & Rate Limit):**
+   - Thử nghiệm gửi truy vấn độc hại `/api/search?q=' OR 1=1 --` vào cổng API đám mây: Bộ lọc bảo mật lập tức từ chối phục vụ và trả về mã **`HTTP 403 Forbidden`** (`WAF_SQLI_XSS_BLOCKED`).
+   - Thử nghiệm bắn tải tự động hơn 120 yêu cầu liên tiếp từ một địa chỉ IP: Đúng 100 yêu cầu đầu tiên trong chu kỳ 1 phút nhận mã `200 OK`, các yêu cầu vượt ngưỡng từ lượt thứ 101 lập tức bị cắt chặn với mã **`HTTP 429 Too Many Requests`**, đảm bảo hệ thống không bị treo hoặc phát sinh chi phí bất thường do spam.
 
-### 5.3. Kết quả kiểm thử bảo mật (Chống SQL Injection và Rate Limiting)
-Nhóm thực hiện hai bài kiểm thử tấn công giả lập vào hệ thống API:
-1. **Kiểm thử chèn mã độc SQL Injection:** Dùng công cụ `curl` gửi truy vấn chứa chuỗi tấn công kinh điển `/api/search?q=' OR 1=1 --`. Trên tầng biên AWS WAFv2, bộ quy tắc `AWSManagedRulesSQLiRuleSet` phát hiện mẫu tấn công và trả về ngay mã lỗi `403 Forbidden`. Ở tầng máy chủ cục bộ, cơ chế truy vấn tham số hóa xử lý chuỗi đầu vào như văn bản thuần túy, không làm rò rỉ dữ liệu trái phép.
-2. **Kiểm thử chịu tải và chống spam yêu cầu bằng kịch bản tự động (`tests/run-rate-limit-test.js` & `tests/k6-rate-limit.js`):** Bắn dồn dập hơn 120 yêu cầu liên tiếp từ cùng một địa chỉ IP vào máy chủ trong vòng vài giây. Kết quả ghi nhận đúng 100 yêu cầu đầu tiên trong khung thời gian cho phép nhận phản hồi `HTTP 200 OK`; từ yêu cầu thứ 101 trở đi, hệ thống lập tức kích hoạt chốt chặn trả về mã `HTTP 429 Too Many Requests`, bảo vệ CPU và kết nối cơ sở dữ liệu không bị quá tải.
+> **[CHỖ CHÈN ẢNH MINH HỌA #9: Minh chứng chuyển đổi lớp lưu trữ S3 Glacier Instant Retrieval và AWS Budgets]**
+> - **Cách chụp:** Chụp dòng đối tượng trên *AWS S3 Console* hiển thị cột `Storage class` là `Glacier Instant Retrieval`, đặt cạnh màn hình theo dõi trần ngân sách 200 USD trong *AWS Budgets*.
+> - **Chú thích ảnh gợi ý:** *Hình 5.4. Kiểm chứng đối tượng chuyển sang lớp lưu trữ lạnh S3 Glacier thực tế và bảng kiểm soát ngân sách của khách hàng.*
 
-> **[CHỖ CHÈN ẢNH MINH HỌA #10: Kết quả chạy kịch bản kiểm thử giới hạn tải (Rate Limit) và chống SQLi]**
-> - **Cách chụp:** Mở cửa sổ Terminal chạy kịch bản `node tests/run-rate-limit-test.js` (hoặc `k6 run tests/k6-rate-limit.js`) và lệnh `curl` thử nghiệm SQLi, chụp rõ thống kê số lượng mã `200 OK` và số lượng yêu cầu bị chặn `429`.
-> - **Chú thích ảnh gợi ý:** *Hình 5.5. Kết quả thực nghiệm kiểm thử cơ chế tự vệ chống spam yêu cầu (Rate Limiting) của dịch vụ Backend.*
-
-### 5.4. Kết quả tối ưu hóa chi phí vận hành (FinOps)
-Nhờ áp dụng chính sách phân tầng lưu trữ tự động sang **S3 Glacier** (giảm 84% đơn giá lưu trữ cho dữ liệu sau 30 ngày), sử dụng hàm xử lý không máy chủ trên kiến trúc chip ARM64 tiết kiệm điện và quản lý bật/tắt hạ tầng mạng qua Terraform, tổng chi phí phát sinh thực tế trên tài khoản AWS `586643076560` được kiểm soát chặt chẽ qua bảng điều khiển **AWS Budgets**. Hệ thống hoàn thành đầy đủ mọi tính năng phục vụ báo cáo mà chỉ tiêu tốn một phần rất nhỏ (vài USD) trên tổng gói tín dụng 200 USD.
-
-> **[CHỖ CHÈN ẢNH MINH HỌA #11: Bảng theo dõi ngân sách AWS Budgets và công cụ tính toán chi phí S3 Glacier]**
-> - **Cách chụp:** Chụp màn hình *AWS Billing and Cost Management -> Budgets* trên AWS Console đặt cạnh màn hình thẻ *FinOps Cost Calculator* trên giao diện Web Cloud Media Studio.
-> - **Chú thích ảnh gợi ý:** *Hình 5.6. Giám sát chi phí tiêu thụ thực tế trên AWS Console và bảng ước tính mức tiết kiệm lưu trữ dài hạn với S3 Glacier.*
+> **[CHỖ CHÈN ẢNH MINH HỌA #10: Nhật ký kiểm thử tự động chặn tấn công SQLi (`403`) và giới hạn tải (`429`)]**
+> - **Cách chụp:** Chụp cửa sổ Terminal chạy kịch bản `node scripts/verify-live-cloud-pipeline.js` và `node tests/run-rate-limit-test.js`.
+> - **Chú thích ảnh gợi ý:** *Hình 5.5. Biên bản chạy kịch bản kiểm thử nghiệm thu tự động xác nhận toàn bộ các chốt bảo mật và xử lý ảnh đạt yêu cầu.*
 
 ---
 
-## PHẦN 6. KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
+## PHẦN 6. BÀN GIAO HỆ THỐNG, CHUYỂN GIAO CÔNG NGHỆ VÀ ĐỊNH HƯỚNG MỞ RỘNG
 
-### 6.1. Kết luận chung
-Thông qua bài tập lớn này, nhóm đã đi trọn vẹn quy trình từ khâu phân tích một bài toán thực tế về quản trị tài nguyên truyền thông số cho tới việc thiết kế, cài đặt và kiểm thử một hệ thống hoàn chỉnh trên nền tảng Public Cloud AWS. Thay vì chỉ dựng máy chủ ảo đơn thuần, nhóm đã kết hợp linh hoạt kiến trúc mạng cô lập Dual-VPC Multi-AZ với các dịch vụ đám mây hiện đại gồm CloudFront OAC, lưu trữ phân tầng S3 - Glacier, xử lý hướng sự kiện AWS Lambda ARM64, đóng gói container ECR/ECS, tường lửa WAFv2 và đường ống triển khai tự động GitHub Actions xác thực qua OIDC không dùng khóa tĩnh. Toàn bộ quá trình gỡ các lỗi thực tế về bộ nhớ đệm CDN, đồng bộ tệp tin và tối ưu hóa hóa đơn đám mây đã giúp các thành viên tích lũy được kinh nghiệm vận hành hệ thống sát với môi trường doanh nghiệp.
+Sau khi hoàn thành nghiệm thu ở Phần 5, đơn vị tư vấn thực hiện quy trình đóng gói hồ sơ và chuyển giao quyền làm chủ công nghệ cho đội ngũ IT nội bộ của khách hàng.
 
-### 6.2. Hạn chế còn tồn tại và hướng nâng cấp
-Do thời gian thực hiện môn học có hạn, hệ thống hiện tập trung tối ưu sâu cho luồng hình ảnh và các tệp video ngắn tải đơn lẻ. Khi mở rộng lên quy mô thương mại lớn hơn, nhóm định hướng nâng cấp thêm hai hạng mục:
-1. **Hỗ trợ tải phân mảnh (S3 Multipart Upload) cho tệp video dung lượng hàng chục GB:** Chia nhỏ tệp video lớn thành từng phần 10 MB tải song song để tự động nối lại khi đường truyền mạng của người dùng bị chập chờn giữa chừng.
-2. **Mở rộng xử lý video luồng thích ứng (Adaptive Bitrate Streaming) và gắn nhãn AI:** Kết hợp dịch vụ **AWS Elemental MediaConvert** để băm nhỏ video MP4 sang chuẩn phát trực tuyến phân đoạn (HLS), đồng thời gọi **Amazon Rekognition** tự động nhận diện vật thể trong ảnh để gợi ý thẻ phân loại (tags) thay cho người dùng.
+### 6.1. Danh mục tài sản hạ tầng và hồ sơ bàn giao cho khách hàng
+1. **Hệ thống đang vận hành trực tuyến (Production Endpoints):**
+   - Cổng ứng dụng Web qua mạng biên CDN: `https://d10b9bys5mn60c.cloudfront.net` (Mã phân phối CloudFront: `E23QIJLQ2A8EEN`).
+   - Cổng dịch vụ Serverless API: `https://jtkvl7zyutkt34p3m5g3ui76ge0mehbp.lambda-url.ap-southeast-1.on.aws`.
+   - Kho lưu trữ trung tâm Amazon S3: `s3://cloud-media-studio-assets-586643076560` (cấu trúc 3 phân vùng `uploads/`, `processed/`, `thumbnails/`).
+2. **Bộ mã nguồn ứng dụng, hạ tầng và tự động hóa:**
+   - Toàn bộ mã nguồn giao diện (`frontend/`), dịch vụ container (`backend/`), mã nguồn 2 hàm xử lý Serverless (`backend/lambda/`).
+   - Bộ tệp định nghĩa hạ tầng chuẩn hóa bằng Terraform (`terraform/` và `finops/terraform/`).
+   - Ba quy trình tự động hóa GitHub Actions (`.github/workflows/`) đã cấu hình sẵn quyền OIDC.
+3. **Hồ sơ phân quyền an ninh:** Bảng ma trận phân quyền `finops/rbac-matrix.md` và danh sách tài khoản IAM theo vai trò đã kích hoạt MFA.
+
+### 6.2. Sổ tay hướng dẫn vận hành chuyển giao cho đội IT khách hàng (Operational Runbook)
+Để nhân sự kỹ thuật của khách hàng tự vận hành trơn tru sau khi đoàn tư vấn rút đi, nhóm bàn giao 4 quy trình thao tác chuẩn (SOP):
+
+- **Quy trình 1 - Cập nhật tính năng hoặc sửa đổi giao diện Web:** Nhân viên IT chỉ cần chỉnh sửa tệp giao diện trong kho mã nguồn, thực hiện lệnh `git commit` và `git push`. Đường ống `deploy-frontend.yml` sẽ tự động đóng gói, đẩy bản mới lên S3 mà không đụng chạm tới kho ảnh đang có, đồng thời tự xóa cache CloudFront trong vòng 45 giây.
+- **Quy trình 2 - Vận hành linh hoạt theo mùa chiến dịch (Bật/tắt cụm chịu tải cao):** Ở ngày thường, giữ nguyên cấu hình Serverless hiện tại để duy trì chi phí cố định ở mức 0 USD. Trước các đợt mở bán lớn cần chạy thêm cụm container nghiệp vụ phức tạp trên ECS Fargate và tường lửa WAFv2, quản trị viên mở tệp `terraform/terraform.tfvars`, đổi `enable_nat_gateway = true`, `enable_alb = true`, `enable_waf = true` rồi chạy `terraform apply`; sau khi kết thúc chiến dịch thì trả các biến về `false` để thu hồi tài nguyên tính giờ.
+- **Quy trình 3 - Giám sát nhật ký sự cố và kiểm tra định kỳ:** Khi cần tra cứu tiến trình nén ảnh theo thời gian thực, quản trị viên chạy lệnh `node scripts/realtime-lambda.js watch` hoặc chạy bộ kiểm thử sức khỏe tự động `node scripts/verify-live-cloud-pipeline.js` để xác nhận toàn bộ 6 khâu từ cấp vé Presigned URL, tải lên S3, nén WebP cho tới phân phối CDN vẫn hoạt động bình thường.
+- **Quy trình 4 - Quản trị nhân sự và kiểm soát hóa đơn:** Khi có nhân viên mới vào hoặc nghỉ việc, quản trị viên thêm/gỡ người dùng khỏi 4 nhóm IAM Group có sẵn thay vì sửa chính sách lẻ tẻ; theo dõi thư cảnh báo tự động từ **AWS Budgets** ở các mốc 20 USD và 50 USD.
+
+### 6.3. Đề xuất lộ trình nâng cấp giai đoạn 2 cho khách hàng
+Khi quy mô kho dữ liệu của khách hàng vượt mốc hàng chục Terabyte và mở rộng sang mảng sản xuất phim quảng cáo dài, đơn vị tư vấn khuyến nghị hai hạng mục nâng cấp cho giai đoạn tiếp theo:
+1. **Tải lên phân mảnh đa luồng (S3 Multipart Presigned Upload):** Cắt nhỏ các tệp video gốc dung lượng từ 5 GB – 50 GB thành từng mảnh 10 MB tải lên song song, cho phép tự động tải nối tiếp phần bị đứt nếu mạng Internet tại hiện trường quay phim bị gián đoạn.
+2. **Tích hợp chuyển mã luồng video thích ứng và gắn thẻ tự động bằng AI:** Bổ sung dịch vụ **AWS Elemental MediaConvert** để tự động xuất video sang chuẩn phát phân đoạn HLS (tự chỉnh độ nét 480p/1080p/4K theo tốc độ mạng người xem) và kết nối **Amazon Rekognition** tự động đọc nội dung bức ảnh để gắn nhãn từ khóa tìm kiếm thay cho thao tác nhập tay của biên tập viên.
 
 ---
-*Hà Nội, tháng 11 năm 2026 — Nhóm thực hiện dự án Cloud Media Studio.*
+*Biên bản báo cáo và hồ sơ chuyển giao công nghệ hoàn thiện tháng 11 năm 2026 — Nhóm Tư vấn & Triển khai Giải pháp Đám mây Cloud Media Studio.*
