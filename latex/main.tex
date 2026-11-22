@@ -161,7 +161,7 @@
 \begin{document}
 
 % ==============================================================================
-% TRANG BÌA CHÍNH THỨC (CÓ KHUNG VIỀN ĐÔI)
+% TRANG BÌA CHÍNH THỨC (CÓ KHUNG VIỀN ĐÔI — GỌN GÀNG TRỌN VẸN TRONG 1 TRANG)
 % ==============================================================================
 \begin{titlepage}
   \begin{tikzpicture}[remember picture, overlay]
@@ -174,40 +174,42 @@
   \end{tikzpicture}
 
   \centering
-  \vspace*{0.4cm}
-  {\large\bfseries BỘ GIÁO DỤC VÀ ĐÀO TẠO}\\[4pt]
-  {\large\bfseries [ĐIỀN TÊN TRƯỜNG ĐẠI HỌC CỦA BẠN]}\\[4pt]
+  \vspace*{-0.6cm}
+  {\large\bfseries BỘ GIÁO DỤC VÀ ĐÀO TẠO}\\[3pt]
+  {\large\bfseries [ĐIỀN TÊN TRƯỜNG ĐẠI HỌC CỦA BẠN]}\\[3pt]
   {\normalsize\bfseries KHOA CÔNG NGHỆ THÔNG TIN}
 
-  \vspace{1.2cm}
-  {\Large\bfseries BÁO CÁO BÀI TẬP LỚN CUỐI KỲ}\\[6pt]
+  \vspace{0.7cm}
+  {\Large\bfseries BÁO CÁO BÀI TẬP LỚN CUỐI KỲ}\\[4pt]
   {\large\bfseries HỌC PHẦN: ĐIỆN TOÁN ĐÁM MÂY}
 
-  \vspace{1.0cm}
-  \begin{tcolorbox}[colback=LightBg, colframe=PrimaryBlue, boxrule=1.2pt, arc=4pt, width=0.92\textwidth]
+  \vspace{0.5cm}
+  \begin{tcolorbox}[colback=LightBg, colframe=PrimaryBlue, boxrule=1.2pt, arc=4pt, width=\textwidth]
     \centering
-    \vspace{0.25cm}
-    {\Large\bfseries\color{PrimaryBlue} HỒ SƠ TƯ VẤN, THIẾT KẾ, TRIỂN KHAI VÀ BÀN GIAO HỆ THỐNG ĐÁM MÂY}\\[10pt]
-    {\large\bfseries ĐỀ TÀI: XÂY DỰNG NỀN TẢNG QUẢN TRỊ, CHUYỂN ĐỔI WEBP TỰ ĐỘNG VÀ PHÂN PHỐI ĐA PHƯƠNG TIỆN (CLOUD MEDIA STUDIO) TRÊN AWS PUBLIC CLOUD}
-    \vspace{0.25cm}
+    \vspace{0.15cm}
+    {\large\bfseries\color{PrimaryBlue} HỒ SƠ TƯ VẤN, THIẾT KẾ, TRIỂN KHAI VÀ BÀN GIAO HỆ THỐNG ĐÁM MÂY}\\[6pt]
+    {\normalsize\bfseries ĐỀ TÀI: XÂY DỰNG NỀN TẢNG QUẢN TRỊ, CHUYỂN ĐỔI WEBP TỰ ĐỘNG VÀ PHÂN PHỐI ĐA PHƯƠNG TIỆN (CLOUD MEDIA STUDIO) TRÊN AWS PUBLIC CLOUD}
+    \vspace{0.15cm}
   \end{tcolorbox}
 
-  \vspace{1.0cm}
+  \vspace{0.5cm}
   \begin{flushleft}
-    \hspace{1.0cm}\textbf{Giảng viên hướng dẫn:} \dotfill\ [Điền tên Giảng viên]\hspace{0.6cm}\\[8pt]
-    \hspace{1.0cm}\textbf{Đơn vị tư vấn (Nhóm thực hiện):} Đội ngũ Kỹ sư \textbf{NovaCloud Consulting}\\[8pt]
-    \hspace{1.0cm}\textbf{Khách hàng doanh nghiệp:} Công ty Truyền thông \textbf{Lumina Creative Agency}\\[8pt]
-    \hspace{1.0cm}\textbf{Nền tảng triển khai:} Amazon Web Services (AWS) — Vùng \texttt{ap-southeast-1} (Singapore)\\[8pt]
-    \hspace{1.0cm}\textbf{Địa chỉ ứng dụng (CDN):} \url{https://d10b9bys5mn60c.cloudfront.net}\\[8pt]
-    \hspace{1.0cm}\textbf{Kho mã nguồn GitHub:} \url{https://github.com/adminenterprise/cloud-media-studio}
+    \small
+    \hspace{0.4cm}\textbf{Giảng viên hướng dẫn:} \dotfill\ [Điền tên Giảng viên]\hspace{0.4cm}\\[5pt]
+    \hspace{0.4cm}\textbf{Đơn vị tư vấn (Nhóm thực hiện):} Đội ngũ Kỹ sư \textbf{NovaCloud Consulting}\\[5pt]
+    \hspace{0.4cm}\textbf{Khách hàng doanh nghiệp:} Công ty Truyền thông \textbf{Lumina Creative Agency}\\[5pt]
+    \hspace{0.4cm}\textbf{Nền tảng triển khai:} Amazon Web Services (AWS) — Vùng \texttt{ap-southeast-1} (Singapore)\\[5pt]
+    \hspace{0.4cm}\textbf{Địa chỉ ứng dụng (CDN):} \url{https://d10b9bys5mn60c.cloudfront.net}\\[5pt]
+    \hspace{0.4cm}\textbf{Kho mã nguồn GitHub:} \url{https://github.com/adminenterprise/cloud-media-studio}
   \end{flushleft}
 
-  \vspace{0.6cm}
-  \begin{table}[H]
-    \centering
+  \vspace{0.3cm}
+  % Bảng thành viên: Chuẩn chiều rộng \textwidth, căn lề tự động, tuyệt đối không bị tràn hay lệch
+  % Lưu ý: Nếu nộp bài 1 mình, bạn có thể xóa các dòng thành viên 2, 3, 4 bên dưới.
+  \begin{center}
     \small
-    \renewcommand{\arraystretch}{1.25}
-    \begin{tabular}{|c|l|c|l|}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabularx}{\textwidth}{|C{1.0cm}|L{4.6cm}|C{2.2cm}|Y|}
       \hline
       \rowcolor{PrimaryBlue!12}
       \textbf{STT} & \textbf{Họ và tên Sinh viên} & \textbf{MSSV} & \textbf{Vai trò trong Đoàn Tư vấn} \\
@@ -220,12 +222,12 @@
       \hline
       4 & [Điền tên Thành viên 4] & [MSSV 4] & Kỹ sư An toàn Thông tin \& DevSecOps \\
       \hline
-    \end{tabular}
-  \end{table}
+    \end{tabularx}
+  \end{center}
 
   \vfill
   {\normalsize\bfseries HÀ NỘI — THÁNG 11 NĂM 2026}
-  \vspace*{0.4cm}
+  \vspace*{-0.2cm}
 \end{titlepage}
 
 % ==============================================================================
