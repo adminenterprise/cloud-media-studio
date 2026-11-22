@@ -19,12 +19,16 @@
 \usepackage[vietnamese]{babel}
 
 % --- BỘ FONT TIẾNG VIỆT ĐẸP CHUẨN IN ẤN (Hỗ trợ đầy đủ dấu T5 trên pdfLaTeX) ---
-% Mặc định: Times New Roman chuẩn báo cáo ĐH (tgtermes) + Tiêu đề hiện đại (tgheros) + Code sắc nét (zi4)
-\usepackage{tgtermes}       % Times New Roman (chuẩn báo cáo đại học Việt Nam)
-% \usepackage{tgpagella}    % <-- Bỏ dấu % dòng này (và thêm % vào tgtermes) nếu thích font Palatino sang trọng
-\usepackage[scale=0.92]{tgheros} % Font không chân (giống Arial/Helvetica) cho tiêu đề & sơ đồ
-\usepackage[scaled=0.88]{zi4}    % Font Inconsolata cực đẹp cho các khối code
-\usepackage{microtype}           % Tự động tinh chỉnh khoảng cách chữ cho văn bản mịn và đều mắt
+% Lựa chọn font theo phong cách:
+% - MẶC ĐỊNH HIỆN TẠI: Font Palatino (tgpagella) — Sang trọng, hiện đại, nét chữ thanh thoát chuẩn báo cáo quốc tế
+% - ĐỔI SANG TIMES: Bỏ % dòng tgtermes và thêm % vào tgpagella (nếu trường yêu cầu Times New Roman)
+% - ĐỔI SANG SANS HIỆN ĐẠI (Apple/Helvetica): Bỏ % dòng \renewcommand{\familydefault}{\sfdefault}
+\usepackage{tgpagella}           % Font Palatino sang trọng, thanh lịch, đẹp hơn nhiều so với Times
+% \usepackage{tgtermes}          % Times New Roman truyền thống
+% \renewcommand{\familydefault}{\sfdefault} % <-- Bỏ % nếu muốn toàn bộ báo cáo dùng font không chân hiện đại
+\usepackage[scale=0.92]{tgheros} % Font không chân (Helvetica/Arial) dùng cho Tiêu đề & Sơ đồ
+\usepackage[scaled=0.88]{zi4}    % Font Inconsolata cực sắc nét cho code
+\usepackage{microtype}           % Tự động tinh chỉnh kerning/khoảng cách chữ cho văn bản mịn mắt
 
 % --- Căn lề chuẩn báo cáo đồ án đại học ---
 \usepackage[top=2.5cm, bottom=2.5cm, left=3.0cm, right=2.0cm]{geometry}
@@ -47,7 +51,6 @@
 \usepackage{subcaption}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{tocloft}
 \usepackage{enumitem}
 \usepackage{listings}
 \usepackage{tikz}
@@ -85,19 +88,21 @@
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
-% --- Định dạng tiêu đề Chương & Mục (dùng font không chân hiện đại) ---
+% --- Định dạng tiêu đề Chương & Mục (Chuẩn, đẹp và tương thích 100% với pdfLaTeX trên Overleaf) ---
 \titleformat{\chapter}[display]
   {\normalfont\sffamily\huge\bfseries\color{PrimaryBlue}}
-  {\chaptertitlename\ \thechapter}{10pt}{\LARGE}
-\titlespacing*{\chapter}{0pt}{-10pt}{18pt}
+  {\chaptertitlename\ \thechapter}{12pt}{\LARGE}
+\titlespacing*{\chapter}{0pt}{10pt}{18pt}
 
 \titleformat{\section}
   {\normalfont\sffamily\Large\bfseries\color{PrimaryBlue}}
-  {\thesection}{0.8em}{}
+  {\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{14pt plus 4pt minus 2pt}{6pt}
 
 \titleformat{\subsection}
   {\normalfont\sffamily\large\bfseries\color{black}}
-  {\thesubsection}{0.8em}{}
+  {\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt plus 3pt minus 2pt}{4pt}
 
 % --- Cấu hình khối mã nguồn (Code Listings) ---
 \lstset{
