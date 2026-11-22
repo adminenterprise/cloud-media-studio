@@ -1,0 +1,757 @@
+% ==============================================================================
+% BÁO CÁO BÀI TẬP LỚN CUỐI KỲ — HỌC PHẦN: ĐIỆN TOÁN ĐÁM MÂY
+% Đề tài: Cloud Media Studio trên nền tảng AWS Public Cloud (ap-southeast-1)
+% Trình biên dịch khuyến nghị trên Overleaf: pdfLaTeX (mặc định của Overleaf)
+% ==============================================================================
+% HƯỚNG DẪN NHANH TRÊN OVERLEAF:
+% 1. Tải file main.tex này lên Overleaf (hoặc tạo dự án trống rồi dán toàn bộ vào main.tex).
+% 2. Bấm Recompile: File sẽ biên dịch ra PDF hoàn chỉnh ngay lập tức (có sẵn khung chờ 18 ảnh).
+% 3. Tạo thư mục "images" trên Overleaf, tải lần lượt 18 ảnh chụp màn hình đặt tên:
+%    anh01.png, anh02.png, ..., anh18.png
+%    -> Khung chờ sẽ TỰ ĐỘNG biến thành ảnh thật của bạn mà không cần sửa code!
+% ==============================================================================
+
+\documentclass[12pt,a4paper]{report}
+
+% --- Tiếng Việt chuẩn cho pdfLaTeX trên Overleaf ---
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{lmodern}
+
+% --- Căn lề chuẩn báo cáo đồ án đại học ---
+\usepackage[top=2.5cm, bottom=2.5cm, left=3.0cm, right=2.0cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{1.0cm}
+\setlength{\parskip}{6pt}
+
+% --- Đồ họa, Bảng biểu, Hộp khung & Code ---
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, calc}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+
+% --- Bảng màu thương hiệu kỹ thuật ---
+\definecolor{PrimaryBlue}{HTML}{1E3A8A}
+\definecolor{AccentIndigo}{HTML}{4F46E5}
+\definecolor{SuccessGreen}{HTML}{059669}
+\definecolor{LightBg}{HTML}{F8FAFC}
+\definecolor{BorderGray}{HTML}{CBD5E1}
+\definecolor{CodeBg}{HTML}{F1F5F9}
+\definecolor{CodeKeyword}{HTML}{1D4ED8}
+\definecolor{CodeString}{HTML}{047857}
+\definecolor{CodeComment}{HTML}{64748B}
+
+% --- Cấu hình siêu liên kết (Hyperref) ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=PrimaryBlue,
+    urlcolor=AccentIndigo,
+    citecolor=PrimaryBlue,
+    pdftitle={Bao cao BTL Dien toan Dam may - Cloud Media Studio},
+    pdfauthor={Nhom Tu van NovaCloud Consulting}
+}
+
+% --- Header & Footer ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Báo cáo Bài tập lớn — Học phần: Điện toán Đám mây}}
+\fancyhead[R]{\small\textit{Cloud Media Studio (AWS)}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% --- Định dạng tiêu đề Chương & Mục ---
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{PrimaryBlue}}
+  {\chaptertitlename\ \thechapter}{10pt}{\LARGE}
+\titlespacing*{\chapter}{0pt}{-10pt}{18pt}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{PrimaryBlue}}
+  {\thesection}{0.8em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{black}}
+  {\thesubsection}{0.8em}{}
+
+% --- Cấu hình khối mã nguồn (Code Listings) ---
+\lstset{
+    backgroundcolor=\color{CodeBg},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{CodeComment}\itshape,
+    frame=single,
+    rulecolor=\color{BorderGray},
+    keepspaces=true,
+    keywordstyle=\color{CodeKeyword}\bfseries,
+    numbers=left,
+    numbersep=6pt,
+    numberstyle=\tiny\color{CodeComment},
+    showspaces=false,
+    showstringspaces=false,
+    stringstyle=\color{CodeString},
+    tabsize=2,
+    xleftmargin=12pt
+}
+
+% --- Macro thông minh tự hiển thị khung chờ nếu chưa up ảnh, tự chèn ảnh khi đã up ---
+\newcommand{\anhminhchung}[4]{%
+  \begin{figure}[H]
+    \centering
+    \IfFileExists{#1}{%
+      \includegraphics[width=0.94\textwidth, height=0.38\textheight, keepaspectratio]{#1}%
+    }{%
+      \begin{tcolorbox}[
+        colback=LightBg,
+        colframe=AccentIndigo,
+        boxrule=0.8pt,
+        arc=4pt,
+        width=0.94\textwidth,
+        title={\bfseries\small [KHUNG CHỜ ẢNH MINH CHỨNG — Tải tệp \texttt{#1} vào thư mục \texttt{images/} trên Overleaf]}
+      ]
+        \vspace{0.3cm}
+        \centering
+        \small\textbf{Hướng dẫn chụp màn hình:}\\[4pt]
+        \footnotesize\textit{#3}
+        \vspace{0.3cm}
+      \end{tcolorbox}
+    }%
+    \caption{#2}
+    \label{#4}
+  \end{figure}
+}
+
+% --- Kiểu cột bảng tự động xuống dòng ---
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\begin{document}
+
+% ==============================================================================
+% TRANG BÌA CHÍNH THỨC (CÓ KHUNG VIỀN ĐÔI)
+% ==============================================================================
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width=2pt, color=PrimaryBlue]
+      ($(current page.north west) + (2.0cm, -1.8cm)$) rectangle
+      ($(current page.south east) + (-1.5cm, 1.8cm)$);
+    \draw[line width=0.6pt, color=PrimaryBlue]
+      ($(current page.north west) + (2.15cm, -1.95cm)$) rectangle
+      ($(current page.south east) + (-1.65cm, 1.95cm)$);
+  \end{tikzpicture}
+
+  \centering
+  \vspace*{0.4cm}
+  {\large\bfseries BỘ GIÁO DỤC VÀ ĐÀO TẠO}\\[4pt]
+  {\large\bfseries [ĐIỀN TÊN TRƯỜNG ĐẠI HỌC CỦA BẠN]}\\[4pt]
+  {\normalsize\bfseries KHOA CÔNG NGHỆ THÔNG TIN}
+
+  \vspace{1.2cm}
+  {\Large\bfseries BÁO CÁO BÀI TẬP LỚN CUỐI KỲ}\\[6pt]
+  {\large\bfseries HỌC PHẦN: ĐIỆN TOÁN ĐÁM MÂY}
+
+  \vspace{1.0cm}
+  \begin{tcolorbox}[colback=LightBg, colframe=PrimaryBlue, boxrule=1.2pt, arc=4pt, width=0.92\textwidth]
+    \centering
+    \vspace{0.25cm}
+    {\Large\bfseries\color{PrimaryBlue} HỒ SƠ TƯ VẤN, THIẾT KẾ, TRIỂN KHAI VÀ BÀN GIAO HỆ THỐNG ĐÁM MÂY}\\[10pt]
+    {\large\bfseries ĐỀ TÀI: XÂY DỰNG NỀN TẢNG QUẢN TRỊ, CHUYỂN ĐỔI WEBP TỰ ĐỘNG VÀ PHÂN PHỐI ĐA PHƯƠNG TIỆN (CLOUD MEDIA STUDIO) TRÊN AWS PUBLIC CLOUD}
+    \vspace{0.25cm}
+  \end{tcolorbox}
+
+  \vspace{1.0cm}
+  \begin{flushleft}
+    \hspace{1.0cm}\textbf{Giảng viên hướng dẫn:} \dotfill\ [Điền tên Giảng viên]\hspace{0.6cm}\\[8pt]
+    \hspace{1.0cm}\textbf{Đơn vị tư vấn (Nhóm thực hiện):} Đội ngũ Kỹ sư \textbf{NovaCloud Consulting}\\[8pt]
+    \hspace{1.0cm}\textbf{Khách hàng doanh nghiệp:} Công ty Truyền thông \textbf{Lumina Creative Agency}\\[8pt]
+    \hspace{1.0cm}\textbf{Nền tảng triển khai:} Amazon Web Services (AWS) — Vùng \texttt{ap-southeast-1} (Singapore)\\[8pt]
+    \hspace{1.0cm}\textbf{Địa chỉ ứng dụng (CDN):} \url{https://d10b9bys5mn60c.cloudfront.net}\\[8pt]
+    \hspace{1.0cm}\textbf{Kho mã nguồn GitHub:} \url{https://github.com/adminenterprise/cloud-media-studio}
+  \end{flushleft}
+
+  \vspace{0.6cm}
+  \begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{|c|l|c|l|}
+      \hline
+      \rowcolor{PrimaryBlue!12}
+      \textbf{STT} & \textbf{Họ và tên Sinh viên} & \textbf{MSSV} & \textbf{Vai trò trong Đoàn Tư vấn} \\
+      \hline
+      1 & [Điền tên Thành viên 1 — Nhóm trưởng] & [MSSV 1] & Trưởng nhóm Giải pháp \& Hạ tầng Mạng \\
+      \hline
+      2 & [Điền tên Thành viên 2] & [MSSV 2] & Kỹ sư Ứng dụng \& Tính toán Serverless \\
+      \hline
+      3 & [Điền tên Thành viên 3] & [MSSV 3] & Chuyên viên Dữ liệu \& Tối ưu Chi phí FinOps \\
+      \hline
+      4 & [Điền tên Thành viên 4] & [MSSV 4] & Kỹ sư An toàn Thông tin \& DevSecOps \\
+      \hline
+    \end{tabular}
+  \end{table}
+
+  \vfill
+  {\normalsize\bfseries HÀ NỘI — THÁNG 11 NĂM 2026}
+  \vspace*{0.4cm}
+\end{titlepage}
+
+% ==============================================================================
+% PHẦN MỞ ĐẦU: MỤC LỤC, DANH MỤC HÌNH, BẢNG, TỪ VIẾT TẮT
+% ==============================================================================
+\pagenumbering{roman}
+
+\tableofcontents
+\clearpage
+
+\listoffigures
+\clearpage
+
+\listoftables
+\clearpage
+
+\chapter*{DANH MỤC TỪ VIẾT TẮT VÀ THUẬT NGỮ KỸ THUẬT}
+\addcontentsline{toc}{chapter}{DANH MỤC TỪ VIẾT TẮT VÀ THUẬT NGỮ KỸ THUẬT}
+
+\begin{longtable}{|L{2.4cm}|L{4.8cm}|L{7.2cm}|}
+  \hline
+  \rowcolor{PrimaryBlue!12}
+  \textbf{Từ viết tắt} & \textbf{Thuật ngữ đầy đủ} & \textbf{Giải nghĩa trong phạm vi dự án} \\
+  \hline
+  \endfirsthead
+  \hline
+  \rowcolor{PrimaryBlue!12}
+  \textbf{Từ viết tắt} & \textbf{Thuật ngữ đầy đủ} & \textbf{Giải nghĩa trong phạm vi dự án} \\
+  \hline
+  \endhead
+  \textbf{ALB} & Application Load Balancer & Bộ cân bằng tải tầng ứng dụng (Layer 7) phân phối lưu lượng HTTP/HTTPS giữa nhiều vùng sẵn sàng. \\ \hline
+  \textbf{ARM64} & Advanced RISC Machine 64-bit & Kiến trúc vi xử lý tiết kiệm năng lượng dùng trên dòng chip AWS Graviton2. \\ \hline
+  \textbf{AZ} & Availability Zone & Vùng sẵn sàng gồm các trung tâm dữ liệu độc lập về điện và mạng tại Singapore (\texttt{1a}, \texttt{1b}). \\ \hline
+  \textbf{CDN} & Content Delivery Network & Mạng phân phối nội dung toàn cầu qua các trạm biên (Amazon CloudFront). \\ \hline
+  \textbf{CORS} & Cross-Origin Resource Sharing & Cơ chế bảo mật cho phép giao diện tại miền CloudFront gửi yêu cầu \texttt{PUT} trực tiếp sang S3. \\ \hline
+  \textbf{ECR / ECS} & Elastic Container Registry / Service & Kho chứa ảnh Docker riêng tư và cụm điều phối container không máy chủ (AWS Fargate). \\ \hline
+  \textbf{FinOps} & Cloud Financial Operations & Phương pháp quản trị và tối ưu hóa chi phí vận hành đám mây theo số liệu thực tế. \\ \hline
+  \textbf{IaC} & Infrastructure as Code & Phương pháp khai báo và cấp phát hạ tầng mạng, lưu trữ thông qua mã nguồn (Terraform). \\ \hline
+  \textbf{IAM} & Identity and Access Management & Dịch vụ quản lý định danh, nhóm quyền và chính sách truy cập trên AWS. \\ \hline
+  \textbf{OAC} & Origin Access Control & Chuẩn xác thực chữ ký số SigV4 cho phép duy nhất CloudFront đọc dữ liệu từ kho S3 khóa kín. \\ \hline
+  \textbf{OIDC} & OpenID Connect & Giao thức liên kết danh tính giúp GitHub Actions mượn quyền AWS tạm thời không dùng khóa tĩnh. \\ \hline
+  \textbf{PoLP} & Principle of Least Privilege & Nguyên tắc đặc quyền tối thiểu: mỗi nhân sự hoặc dịch vụ chỉ có đúng quyền cần thiết. \\ \hline
+  \textbf{SigV4} & AWS Signature Version 4 & Thuật toán ký số mật mã học dùng để cấp phát đường dẫn S3 Presigned PUT URL. \\ \hline
+  \textbf{SOP} & Standard Operating Procedure & Quy trình thao tác chuẩn nằm trong sổ tay vận hành bàn giao cho đội IT khách hàng. \\ \hline
+  \textbf{UAT} & User Acceptance Testing & Quá trình kiểm thử nghiệm thu thực tế trên hệ thống trước khi ký bàn giao. \\ \hline
+  \textbf{VPC} & Virtual Private Cloud & Mạng riêng ảo cô lập về mặt logic trên hạ tầng đám mây công cộng AWS. \\ \hline
+  \textbf{WAF} & Web Application Firewall & Tường lửa ứng dụng web ngăn chặn tấn công SQL Injection, XSS và spam yêu cầu. \\ \hline
+\end{longtable}
+
+\clearpage
+\pagenumbering{arabic}
+
+% ==============================================================================
+% CHƯƠNG 1: ĐẶT VẤN ĐỀ
+% ==============================================================================
+\chapter{ĐẶT VẤN ĐỀ: KHẢO SÁT HIỆN TRẠNG VÀ YÊU CẦU BAN ĐẦU TỪ KHÁCH HÀNG}
+
+\section{Hồ sơ khách hàng doanh nghiệp và quy mô dữ liệu truyền thông}
+Trong bài tập lớn này, nhóm đóng vai trò là đội ngũ kỹ sư của \textbf{NovaCloud Consulting} --- đơn vị chuyên tư vấn kiến trúc và triển khai hạ tầng ứng dụng lên đám mây cho các doanh nghiệp vừa và nhỏ. Khách hàng đặt hàng dự án là \textbf{Lumina Creative Agency}, một công ty truyền thông tại Hà Nội chuyên chụp ảnh sản phẩm độ phân giải cao (4K UHD), thiết kế ấn phẩm quảng cáo và dựng các đoạn video ngắn cho hơn 30 thương hiệu thời trang, mỹ phẩm và bán lẻ trực tuyến tại Việt Nam cùng khu vực Đông Nam Á.
+
+Qua khảo sát thực tế tại văn phòng khách hàng, trung bình mỗi tuần đội ngũ 18 nhiếp ảnh gia và nhân viên thiết kế của Lumina tạo ra từ 450 đến 600 tệp hình ảnh gốc kèm hàng chục video ngắn. Trước khi chuyển đổi lên đám mây, toàn bộ kho tư liệu này nằm trên một máy chủ vật lý tự quản lý (On-Premise NAS kết hợp Web Server tự dựng) đặt tại phòng kỹ thuật của công ty và nối ra ngoài bằng đường truyền cáp quang văn phòng.
+
+\begin{table}[H]
+  \centering
+  \caption{Số liệu khảo sát đặc tả các nhóm tài nguyên truyền thông tại khách hàng trước khi lên Cloud}
+  \label{tab:khaosat}
+  \footnotesize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|L{3.2cm}|C{1.8cm}|C{2.1cm}|C{2.2cm}|Y|Y|}
+    \hline
+    \rowcolor{PrimaryBlue!12}
+    \textbf{Nhóm tài nguyên} & \textbf{Định dạng} & \textbf{Độ phân giải} & \textbf{Dung lượng} & \textbf{Truy cập 30 ngày đầu} & \textbf{Truy cập sau 30 ngày} \\
+    \hline
+    Ảnh sản phẩm gốc (Master) & \texttt{.PNG}, \texttt{.TIFF} & 3840x2160 (4K) & 8,0 -- 24,0 MB & Rất cao (duyệt mẫu, nhúng web) & Rất thấp (lưu đối chiếu hợp đồng) \\ \hline
+    Banner chiến dịch & \texttt{.JPG}, \texttt{.PNG} & 2560x1440 (2K) & 3,0 -- 7,5 MB & Cao (phân phối trang bán hàng) & Hiếm khi mở lại sau đợt sale \\ \hline
+    Ảnh thu nhỏ (Thumbnail) & \texttt{.JPG} (cắt tay) & 320w, 768w, 1200w & 150 -- 600 KB & Liên tục trên di động \& máy tính & Thấp \\ \hline
+    Video ngắn (Teaser) & \texttt{.MP4} & 1920x1080 (60fps) & 25,0 -- 80,0 MB & Trung bình -- Cao trong 2 tuần đầu & Lưu trữ hồ sơ dài hạn (1--3 năm) \\ \hline
+  \end{tabularx}
+\end{table}
+
+\section{Ba điểm nghẽn kỹ thuật và chi phí trên hạ tầng máy chủ vật lý cũ}
+Việc duy trì máy chủ tự quản lý tại văn phòng cùng quy trình xử lý tệp tin thủ công đã đẩy khách hàng vào ba điểm nghẽn kéo dài:
+
+\begin{enumerate}[leftmargin=0.7cm]
+  \item \textbf{Nghẽn băng thông và tốc độ tải trang chậm trên thiết bị di động:} Để kịp tiến độ giao bài cho nhãn hàng, nhân viên thiết kế thường tải thẳng ảnh \texttt{.PNG} hoặc \texttt{.JPG} gốc nặng từ 4 MB đến hơn 15 MB lên máy chủ rồi nhúng trực tiếp vào trang giới thiệu sản phẩm. Người mua hàng mở bằng điện thoại qua mạng 4G phải chờ 6 đến 12 giây trang mới tải xong. Ngược lại, nếu yêu cầu nhân viên mở Photoshop xuất tay từng bức ảnh ra 3 kích cỡ nhỏ trước khi tải lên thì mỗi ngày tốn thêm 2--3 giờ lao động thủ công và rất dễ nhầm phiên bản.
+  \item \textbf{Xung đột tài nguyên tính toán theo chu kỳ (Đỉnh tải treo máy --- Đáy tải bỏ không):} Tác vụ giải mã và nén ảnh 4K ngốn nhiều CPU. Vào chiều thứ Sáu hoặc trước các đợt khuyến mãi lớn (11/11, 12/12), khi cả đội cùng tải hàng chục bộ ảnh lên máy chủ vật lý (8 vCPU, 16 GB RAM), CPU chạm ngưỡng 100\% gây treo cả trang tra cứu của khách hàng bên ngoài. Thế nhưng từ 19 giờ tối đến 8 giờ sáng hôm sau và cuối tuần, máy chủ gần như nằm không dưới 3\% tải nhưng vẫn tiêu tốn điện năng và chi phí bảo trì cố định.
+  \item \textbf{Chi phí lưu trữ phình to vì dồn chung dữ liệu nóng và dữ liệu lạnh:} Hơn 85\% lượng truy cập vào một bức ảnh quảng cáo chỉ diễn ra trong 30 ngày đầu của chiến dịch. Sau mốc này, tệp tin chỉ giữ lại theo hợp đồng từ 1 đến 3 năm để đối chiếu khi cần. Việc để toàn bộ kho ảnh cũ nhiều năm nằm chung trên cụm ổ cứng SSD tốc độ cao với dữ liệu mới khiến công ty phải mua thêm ổ cứng mở rộng mỗi quý.
+\end{enumerate}
+
+\anhminhchung{images/anh01.png}{Cấu trúc tổ chức kho mã nguồn hợp nhất (Monorepo) của dự án Cloud Media Studio trên VS Code}{Mở VS Code, bung cây thư mục bên trái thấy rõ các thư mục .github/workflows/, backend/lambda/, finops/terraform/, frontend/, scripts/, terraform/ và tests/.}{fig:anh01}
+
+\section{Đề bài sơ bộ từ phía khách hàng và các ràng buộc thực tế}
+Khi tiếp xúc lần đầu, đại diện khách hàng Lumina Creative Agency đưa ra yêu cầu theo thói quen vận hành máy chủ cũ: \textit{``Công ty muốn thuê một máy chủ ảo EC2 cấu hình thật mạnh trên AWS bật 24/7 để chạy web và nén ảnh, đồng thời tạo một kho S3 mở công khai (Public) cho nhân viên cứ thế quăng file lên cho tiện.''}
+
+Ràng buộc cứng về tài chính mà khách hàng đặt ra là toàn bộ quá trình triển khai thử nghiệm, kiểm thử và vận hành giai đoạn đầu phải nằm gọn trong hạn mức ngân sách \textbf{200 USD AWS Credit}.
+
+% ==============================================================================
+% CHƯƠNG 2: PHÂN TÍCH, THẢO LUẬN & CHỐT KẾ HOẠCH VỚI KHÁCH HÀNG
+% ==============================================================================
+\chapter{PHÂN TÍCH, THẢO LUẬN VÀ CHỐT KẾ HOẠCH GIẢI PHÁP VỚI KHÁCH HÀNG}
+
+Đứng trước yêu cầu thô ban đầu, đội ngũ tư vấn không thực hiện một cách máy móc mà chỉ ra các rủi ro về bảo mật và nguy cơ cháy ngân sách trong phương án cũ, từ đó thảo luận với khách hàng qua 3 vòng làm việc để đi tới kế hoạch chốt cuối cùng.
+
+\section{Biên bản 3 vòng thảo luận tư vấn và quá trình định hình kiến trúc}
+
+\subsection{Vòng 1: Khởi tạo khung hạ tầng lõi và phản biện bài toán máy chủ 24/7}
+Ở tuần đầu tiên, đội tư vấn dựng khung hạ tầng mạng lõi và kho lưu trữ trạng thái hạ tầng tập trung (\texttt{enterprise-devsecops-tfstate-586643076560}). Khi tính toán thử nghiệm chi phí vận hành tại vùng Singapore (\texttt{ap-southeast-1}) nếu bật liên tục 24/7 các thiết bị cố định theo ý tưởng ban đầu của khách hàng: riêng 01 cổng \textbf{NAT Gateway} tiêu tốn khoảng \texttt{42,5 USD/tháng}, 01 bộ cân bằng tải \textbf{ALB} tiêu tốn thêm \texttt{18,5 USD/tháng}, cộng tiền thuê máy chủ EC2 chạy suốt đêm sẽ đẩy tổng hóa đơn lên \textbf{90 -- 120 USD/tháng} dù ban đêm không ai dùng.
+
+Nhóm tư vấn thuyết phục khách hàng chuyển tác vụ nén ảnh sang mô hình \textbf{Serverless hướng sự kiện (AWS Lambda chạy chip ARM64 Graviton2)}: bình thường hàm nằm ngủ tốn \textbf{0,00 USD}; chỉ khi có ảnh mới rơi vào S3 thì hàm mới thức dậy xử lý trong ~2 giây rồi giải phóng tài nguyên. Các khối tính phí theo giờ (NAT Gateway, ALB, ECS Fargate) vẫn được mã hóa hoàn chỉnh bằng Terraform nhưng gắn công tắc bật/tắt (\texttt{enable\_nat\_gateway}, \texttt{enable\_alb}, \texttt{enable\_waf}) để ngày thường giữ chi phí cố định ở mức tối thiểu.
+
+\subsection{Vòng 2: Bác bỏ phương án mở S3 công khai và chốt S3 Presigned URL + CloudFront OAC}
+Kỹ sư An toàn thông tin (Thành viên 4) phân tích hai rủi ro lớn nếu mở kho S3 công khai: (1) lộ ấn phẩm quảng cáo chưa công bố của nhãn hàng, và (2) kẻ xấu đẩy dữ liệu rác làm cháy gói 200 USD hoặc lấy cắp khóa AWS nếu nhúng trên trình duyệt. Khách hàng đồng ý phương án thay thế:
+\begin{itemize}[leftmargin=0.7cm]
+  \item Khóa kín hoàn toàn S3 (\texttt{Block All Public Access = ON}); chiều đọc đi qua \textbf{Amazon CloudFront CDN} gắn chứng chỉ chữ ký số \textbf{Origin Access Control (OAC)}.
+  \item Chiều tải lên đi qua cổng \textbf{AWS Lambda Function URL} (\texttt{cloud-media-studio-api}) để cấp phát \textbf{S3 Presigned PUT URL} ký theo thuật toán \texttt{AWS4-HMAC-SHA256} có hạn dùng đúng \textbf{300 giây (5 phút)}. Trình duyệt đẩy thẳng tệp nhị phân lớn lên S3 mà không lộ khóa AWS và không bị vướng giới hạn payload 6 MB của Lambda.
+\end{itemize}
+
+\subsection{Vòng 3: Tái định vị sản phẩm sang Cloud Media Studio chuyên sâu}
+Ban đầu nhóm dựng bản khung quản trị chung (\texttt{enterprise-cloud-devsecops}). Sau buổi làm việc sâu với đội thiết kế của Lumina, hai bên thống nhất giữ nguyên nền mạng Dual-VPC đã kiểm định và tái cấu trúc toàn bộ tầng ứng dụng sang nền tảng chuyên dụng \textbf{Cloud Media Studio}: tải ảnh gốc lên là phải nén ra tệp \texttt{.webp} thật kèm 3 bản Thumbnail trong S3 và có nút chuyển kho lạnh \textbf{S3 Glacier} ngay trên giao diện.
+
+\anhminhchung{images/anh02.png}{Nhật ký phiên bản Git và quy trình gộp Pull Request thể hiện tiến trình phát triển từ khung lõi sang Cloud Media Studio}{Mở Terminal trong VS Code gõ lệnh git log --oneline --graph --decorate -n 20 (hoặc chụp tab Pull requests -> Closed trên GitHub hiển thị các PR \#23, \#24, \#25 và danh sách nhánh thành viên).}{fig:anh02}
+
+\section{Bài toán kinh tế đám mây: So sánh chi phí 3 phương án kiến trúc}
+Chuyên viên FinOps (Thành viên 3) lập bảng đối chiếu chi phí hàng tháng cho quy mô 500 GB dữ liệu lưu trữ lũy kế (trong đó 80\% là ảnh chiến dịch cũ trên 30 ngày) và 50.000 lượt xử lý/tháng tại vùng Singapore:
+
+\begin{table}[H]
+  \centering
+  \caption{So sánh dự toán chi phí vận hành hàng tháng giữa 3 phương án (Đơn vị: USD/tháng)}
+  \label{tab:finops}
+  \footnotesize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|L{3.1cm}|Y|Y|Y|}
+    \hline
+    \rowcolor{PrimaryBlue!12}
+    \textbf{Hạng mục chi phí} & \textbf{PA 1: Máy chủ vật lý (Cũ)} & \textbf{PA 2: EC2 + ALB + NAT bật 24/7} & \textbf{PA 3 (Chốt): Serverless ARM64 + Presigned S3 + Glacier} \\
+    \hline
+    Tính toán \& Nén ảnh & ~45,00 USD (Khấu hao, điện) & ~33,50 USD (2 máy \texttt{t3.small}) & \textbf{0,00 USD} (Lambda ARM64 trong Free Tier) \\ \hline
+    Cân bằng tải \& NAT & ~25,00 USD (IP tĩnh, cáp quang) & ~61,00 USD (ALB + NAT GW 24/7) & \textbf{0,00 USD} (Function URL + Presigned PUT) \\ \hline
+    Lưu trữ 500 GB ảnh & ~20,00 USD (Mua SSD định kỳ) & 12,50 USD (100\% S3 Standard) & \textbf{4,10 USD} (100GB Standard + 400GB Glacier IR) \\ \hline
+    Băng thông phân phối & Nghẽn giờ cao điểm, không CDN & ~8,00 USD (Chưa nén WebP) & \textbf{~0,85 USD} (WebP nhẹ >80\% + 1TB CDN Free) \\ \hline
+    \rowcolor{SuccessGreen!12}
+    \textbf{TỔNG CỘNG / THÁNG} & \textbf{~90,00 USD} & \textbf{~115,00 USD} (Lố gói 200\$) & \textbf{~4,95 USD (Tiết kiệm >95\%)} \\ \hline
+  \end{tabularx}
+\end{table}
+
+\section{Ma trận chốt kế hoạch (Yêu cầu chi tiết $\leftrightarrow$ Giải pháp đề xuất)}
+Bảng \ref{tab:matran} trình bày kế hoạch đã ký chốt với khách hàng, thể hiện rõ sự kết hợp giữa \textbf{các dịch vụ AWS cơ bản} và \textbf{các dịch vụ hỗ trợ nâng cao} trong kiến trúc tổng thể:
+
+\begin{table}[H]
+  \centering
+  \caption{Ma trận ánh xạ Yêu cầu Khách hàng $\leftrightarrow$ Giải pháp Đề xuất \& Dịch vụ mở rộng}
+  \label{tab:matran}
+  \scriptsize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|C{1.1cm}|L{3.5cm}|Y|L{2.5cm}|L{3.2cm}|}
+    \hline
+    \rowcolor{PrimaryBlue!12}
+    \textbf{Mã} & \textbf{Yêu cầu đã chốt với KH} & \textbf{Giải pháp kỹ thuật đề xuất} & \textbf{Dịch vụ cơ bản} & \textbf{Dịch vụ hỗ trợ mở rộng} \\
+    \hline
+    \textbf{YC-01} & Tải ảnh 4K trực tiếp lên S3 không lộ khóa AWS, không vướng hạn mức 6 MB. & Cổng API cấp phát S3 Presigned PUT URL (SigV4) hạn 5 phút để trình duyệt PUT thẳng lên S3. & Amazon S3, AWS IAM & \textbf{Lambda Function URL}, \textbf{S3 Presigned URL}, \textbf{S3 CORS} \\ \hline
+    \textbf{YC-02} & Tự động nén ảnh giảm >70\% sang WebP và cắt 3 cỡ Thumbnail dưới 3 giây. & Bắt sự kiện S3 trên tiền tố \texttt{uploads/} kích hoạt Lambda chạy thư viện \texttt{sharp} xuất 4 tệp \texttt{.webp}. & IAM Role, CloudWatch & \textbf{S3 Event Notifications}, \textbf{AWS Lambda ARM64 (Graviton2)}, \textbf{Sharp} \\ \hline
+    \textbf{YC-03} & Khóa S3 gốc nhưng khách Việt Nam mở ảnh nhanh dưới 50 ms. & Bật \texttt{Block Public Access}; phân phối giao diện và ảnh qua trạm biên CDN dùng OAC. & S3 Bucket Policy & \textbf{Amazon CloudFront CDN}, \textbf{Origin Access Control (OAC)} \\ \hline
+    \textbf{YC-04} & Hạ tầng mạng cô lập 3 tầng trên 2 AZ và tách riêng mạng quản trị. & Thiết kế 2 VPC nối qua Peering, chia 6 Subnets Multi-AZ, đóng gói sẵn container ECS. & VPC, Subnets, IGW, NAT, SG, EC2, RDS & \textbf{Dual-VPC Peering}, \textbf{ECS Fargate}, \textbf{Amazon ECR}, \textbf{ALB} \\ \hline
+    \textbf{YC-05} & Chống chèn mã độc SQLi/XSS và chặn spam yêu cầu làm treo dịch vụ. & Lọc mẫu tấn công trả mã \texttt{403} và giới hạn 100 req/phút/IP trả mã \texttt{429}. & Security Groups, Parameterized SQL & \textbf{AWS WAFv2}, \textbf{Rate-Limiter}, kiểm thử tải \textbf{Grafana k6} \\ \hline
+    \textbf{YC-06} & Dữ liệu cũ >30 ngày giảm 84\% phí lưu trữ; không vượt trần 200 USD. & Luật vòng đời S3 + nút chuyển Glacier trên Web; cảnh báo sớm ở mốc 20\$ và 50\$. & S3 Storage Classes & \textbf{S3 Glacier Instant Retrieval}, \textbf{AWS Budgets}, \textbf{Terraform Flags} \\ \hline
+    \textbf{YC-07} & IT khách hàng tự cập nhật code tự động mà không giữ khóa AWS tĩnh. & Mã hóa hạ tầng bằng Terraform; 3 luồng GitHub Actions mượn quyền OIDC, quét Trivy. & Git, AWS CLI & \textbf{Terraform (S3 Remote State)}, \textbf{GitHub Actions OIDC}, \textbf{Aqua Trivy} \\ \hline
+  \end{tabularx}
+\end{table}
+
+\section{Thiết kế ma trận phân quyền IAM Least Privilege}
+Để quản trị an toàn trên tài khoản AWS \texttt{586643076560}, nhóm áp dụng nguyên tắc đặc quyền tối thiểu (PoLP), tuyệt đối không dùng tài khoản Root, bắt buộc mật khẩu $\ge$ 12 ký tự kết hợp Virtual MFA và phân tách 4 nhóm quyền độc lập (\texttt{finops/rbac-matrix.md}):
+
+\begin{table}[H]
+  \centering
+  \caption{Tóm tắt ma trận phân quyền truy cập dịch vụ AWS giữa 4 vị trí kỹ sư}
+  \label{tab:rbac}
+  \scriptsize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|L{4.0cm}|C{1.4cm}|C{1.4cm}|C{1.4cm}|C{1.4cm}|Y|}
+    \hline
+    \rowcolor{PrimaryBlue!12}
+    \textbf{Nhóm dịch vụ AWS} & \textbf{TV1 (Mạng)} & \textbf{TV2 (App)} & \textbf{TV3 (Data)} & \textbf{TV4 (Sec)} & \textbf{Cơ sở kiểm soát quyền hạn} \\
+    \hline
+    VPC, Subnets, Peering, SG, CDN & \textbf{FULL} & READ & READ & READ & Tránh xung đột dải IP CIDR và luật cổng mạng. \\ \hline
+    ECS Fargate, ECR, EC2, Lambda & READ & \textbf{FULL} & DENY & LIMITED & TV2 quản trị compute; TV4 chỉ push ảnh từ CI/CD. \\ \hline
+    S3, Glacier, RDS, DynamoDB & LIMITED & R/W Assets & \textbf{FULL} & DENY & TV3 nắm độc quyền dữ liệu lõi và phân tầng kho lạnh. \\ \hline
+    CloudWatch, AWS Budgets & READ & READ & \textbf{FULL} & READ & Cả 4 người cùng theo dõi trần ngân sách 200 USD. \\ \hline
+    WAFv2, Secrets Manager, KMS, OIDC & LIMITED & READ & DENY & \textbf{FULL} & TV4 quản lý tập trung khóa mã hóa và tường lửa. \\ \hline
+  \end{tabularx}
+\end{table}
+
+\anhminhchung{images/anh03.png}{Thiết lập nhóm quyền IAM theo vai trò và liên kết tin cậy OpenID Connect (OIDC) giữa GitHub Actions với AWS IAM}{Mở AWS Console -> IAM -> Identity providers (thấy token.actions.githubusercontent.com) và Roles -> github-action tab Trust relationships (hoặc IAM -> User groups).}{fig:anh03}
+
+% ==============================================================================
+% CHƯƠNG 3: THIẾT KẾ CHI TIẾT KIẾN TRÚC HỆ THỐNG TRÊN AWS
+% ==============================================================================
+\chapter{THIẾT KẾ CHI TIẾT KIẾN TRÚC HỆ THỐNG TRÊN AWS}
+
+\section{Kiến trúc tổng thể kết hợp Mạng 3 tầng cô lập và Đường ống Serverless}
+Sau khi khách hàng ký duyệt kế hoạch, nhóm lập bản vẽ kiến trúc lai ghép gồm hai nhánh bổ trợ lẫn nhau tại vùng \textbf{Singapore (\texttt{ap-southeast-1})}: nhánh Serverless chủ lực vận hành trực tuyến 24/7 với chi phí chờ bằng 0 USD (CloudFront OAC + Lambda Function URL + S3 Presigned PUT + Lambda \texttt{sharp} ARM64), đặt song hành cùng khối mạng doanh nghiệp Dual-VPC Multi-AZ sẵn sàng cho các dịch vụ container ECS Fargate và cơ sở dữ liệu nội bộ.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{0.96\textwidth}{!}{%
+  \begin{tikzpicture}[
+    node distance=0.8cm and 0.8cm,
+    box/.style={rectangle, draw=PrimaryBlue, thick, rounded corners=4pt, fill=LightBg, align=center, font=\footnotesize, minimum height=1.0cm, inner sep=6pt},
+    aws/.style={rectangle, draw=AccentIndigo, thick, rounded corners=4pt, fill=AccentIndigo!8, align=center, font=\footnotesize, minimum height=1.0cm, inner sep=6pt},
+    storage/.style={rectangle, draw=SuccessGreen, thick, rounded corners=4pt, fill=SuccessGreen!10, align=center, font=\footnotesize, minimum height=1.0cm, inner sep=6pt},
+    arrow/.style={-{Stealth[length=2.5mm]}, thick, color=PrimaryBlue}
+  ]
+    % Top tier
+    \node[box, fill=PrimaryBlue!12] (user) {\textbf{Người dùng / Trình duyệt}\\(Máy tính \& Điện thoại)};
+    \node[aws, below left=1.0cm and 0.6cm of user] (cf) {\textbf{Amazon CloudFront CDN}\\\texttt{d10b9bys5mn60c.cloudfront.net}\\(OAC SigV4 — PriceClass\_100)};
+    \node[aws, below right=1.0cm and 0.6cm of user] (api) {\textbf{AWS Lambda Function URL}\\\texttt{cloud-media-studio-api}\\(Presigned PUT, SQLi 403, Rate 429)};
+
+    % S3 central
+    \node[storage, below=2.5cm of user, minimum width=7.2cm] (s3) {\textbf{Amazon S3 Bucket (Khóa Public Access + Bật CORS)}\\\texttt{cloud-media-studio-assets-586643076560}\\Phân vùng: \texttt{uploads/} \quad|\quad \texttt{processed/} \quad|\quad \texttt{thumbnails/}};
+
+    % Lambda processor + CloudWatch + Glacier
+    \node[aws, below left=1.1cm and -0.4cm of s3] (proc) {\textbf{AWS Lambda ARM64 (Graviton2)}\\\texttt{cloud-media-studio-image-processor}\\Động cơ \texttt{sharp}: Nén WebP \& 3 Thumbnails};
+    \node[storage, below right=1.1cm and -0.4cm of s3] (glacier) {\textbf{S3 Glacier Instant Retrieval}\\Chuyển tự động >30 ngày / On-demand\\Tiết kiệm \textbf{84\%} chi phí lưu trữ};
+    \node[box, below=0.8cm of proc] (cw) {\textbf{Amazon CloudWatch Logs}\\Nhật ký nén ảnh thời gian thực};
+
+    % Dual VPC tier
+    \node[box, below=0.8cm of glacier] (vpc) {\textbf{Dual-VPC Multi-AZ (10.0.0.0/16 $\leftrightarrow$ 10.1.0.0/16)}\\6 Subnets (Public / Private App / Private DB)\\ECS Fargate + ECR + ALB/WAFv2 + RDS MySQL};
+
+    % Arrows
+    \draw[arrow] (user) -- node[left, font=\tiny]{1. Xem Web \& WebP} (cf);
+    \draw[arrow] (user) -- node[right, font=\tiny]{2. Xin vé Presigned} (api);
+    \draw[arrow, dashed, color=SuccessGreen] (user) -- node[fill=white, font=\tiny, inner sep=1pt]{3. HTTP PUT trực tiếp} (s3);
+    \draw[arrow] (cf) -- node[left, font=\tiny]{OAC GetObject} (s3);
+    \draw[arrow] (api) -- node[right, font=\tiny]{List / Archive / Del} (s3);
+    \draw[arrow] (s3) -- node[left, font=\tiny]{4. Event \texttt{uploads/}} (proc);
+    \draw[arrow, bend left=20, color=SuccessGreen] (proc.north) to node[right, font=\tiny]{5. Ghi \texttt{.webp}} (s3.south west);
+    \draw[arrow] (proc) -- (cw);
+    \draw[arrow] (s3) -- node[right, font=\tiny]{Lifecycle / Copy} (glacier);
+  \end{tikzpicture}%
+  }
+  \caption{Sơ đồ kiến trúc tổng thể kết hợp Đường ống Serverless Cloud-Native và Khối mạng Dual-VPC trên AWS}
+  \label{fig:arch_overall}
+\end{figure}
+
+\section{Thiết kế quy hoạch địa chỉ IP mạng Dual-VPC Multi-AZ và VPC Peering}
+Trưởng nhóm Mạng (Thành viên 1) quy hoạch hai mạng VPC độc lập tại vùng Singapore nối với nhau qua kết nối nội bộ \textbf{VPC Peering (\texttt{pcx-05d1fb108616399d3})}:
+
+\begin{table}[H]
+  \centering
+  \caption{Bảng quy hoạch không gian địa chỉ IP (CIDR) của 8 Subnets trên 2 mạng VPC}
+  \label{tab:cidr}
+  \scriptsize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|L{2.5cm}|L{2.0cm}|L{2.8cm}|C{1.9cm}|C{2.0cm}|Y|}
+    \hline
+    \rowcolor{PrimaryBlue!12}
+    \textbf{Mạng VPC} & \textbf{Tên Subnet} & \textbf{Mã Subnet AWS} & \textbf{CIDR} & \textbf{Vùng AZ} & \textbf{Phân lớp \& Chức năng} \\
+    \hline
+    Production VPC \texttt{10.0.0.0/16} & \texttt{public[0]} & \texttt{subnet-008c209c...} & \texttt{10.0.1.0/24} & \texttt{1a} & Edge Tier: ALB nhánh A, NAT GW, IGW. \\ \hline
+    Production VPC & \texttt{public[1]} & \texttt{subnet-0cd575a9...} & \texttt{10.0.2.0/24} & \texttt{1b} & Edge Tier: ALB nhánh B dự phòng HA. \\ \hline
+    Production VPC & \texttt{private\_app[0]} & \texttt{subnet-041b427a...} & \texttt{10.0.10.0/24} & \texttt{1a} & Compute Tier: ECS Fargate nhánh A (Không IP Public). \\ \hline
+    Production VPC & \texttt{private\_app[1]} & \texttt{subnet-00234b95...} & \texttt{10.0.11.0/24} & \texttt{1b} & Compute Tier: ECS Fargate nhánh B. \\ \hline
+    Production VPC & \texttt{private\_db[0]} & \texttt{subnet-00a181d4...} & \texttt{10.0.20.0/24} & \texttt{1a} & Data Tier: RDS MySQL chính (Cô lập Internet). \\ \hline
+    Production VPC & \texttt{private\_db[1]} & \texttt{subnet-0f53091f...} & \texttt{10.0.21.0/24} & \texttt{1b} & Data Tier: RDS Standby Multi-AZ. \\ \hline
+    Management VPC \texttt{10.1.0.0/16} & \texttt{management[0]} & \texttt{subnet-04e6888f...} & \texttt{10.1.1.0/24} & \texttt{1a} & Quản trị nội bộ Bastion SSM qua VPC Peering. \\ \hline
+    Management VPC & \texttt{management[1]} & \texttt{subnet-0da3fe22...} & \texttt{10.1.2.0/24} & \texttt{1b} & Dự phòng quản trị \& công cụ kiểm thử. \\ \hline
+  \end{tabularx}
+\end{table}
+
+\anhminhchung{images/anh04.png}{Sơ đồ ánh xạ tài nguyên (Resource Map) thể hiện cấu trúc 6 Subnets chia làm 3 lớp Public, Private App và Private DB tại vùng Singapore}{Mở AWS Console (Singapore) -> VPC -> Your VPCs -> Chọn Production VPC (10.0.0.0/16) -> Tab Resource map.}{fig:anh04}
+
+\anhminhchung{images/anh05.png}{Đường truyền nội bộ VPC Peering kết nối trực tiếp vùng quản trị với vùng vận hành sản phẩm}{Mở VPC -> Peering connections, chụp kết nối pcx-05d1fb108616399d3 hiển thị trạng thái xanh lá Active giữa 10.0.0.0/16 và 10.1.0.0/16.}{fig:anh05}
+
+\section{Thiết kế chuỗi tường lửa Security Groups theo cơ chế SG-to-SG}
+Thay vì mở cổng theo dải IP rộng, toàn bộ tường lửa trong \texttt{terraform/security\_groups.tf} áp dụng tham chiếu chéo định danh (SG-to-SG Chaining):
+
+\begin{table}[H]
+  \centering
+  \caption{Thiết kế quy tắc kiểm soát lưu lượng của 5 nhóm Security Groups}
+  \label{tab:sg}
+  \scriptsize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|L{3.0cm}|L{2.8cm}|L{3.5cm}|Y|}
+    \hline
+    \rowcolor{PrimaryBlue!12}
+    \textbf{Tên Security Group} & \textbf{Mã SG trên AWS} & \textbf{Inbound (Nhận vào)} & \textbf{Outbound (Đi ra) \& Ý nghĩa} \\
+    \hline
+    \texttt{cloud-media-studio-alb-sg} & \texttt{sg-02b4d6d6d4d29f93c} & TCP 80, 443 từ \texttt{0.0.0.0/0} & Chỉ đẩy xuống \texttt{app-sg} cổng 3000. \\ \hline
+    \texttt{cloud-media-studio-app-sg} & \texttt{sg-04e15c5b51f42038f} & Cổng 3000 từ \texttt{alb-sg}; 22 từ \texttt{bastion-sg} & Cổng 3306 tới \texttt{db-sg}; 2049 tới \texttt{efs-sg}; 443/53 ra AWS API. \\ \hline
+    \texttt{cloud-media-studio-db-sg} & \texttt{sg-0634b9520e3b1edfe} & \textbf{Chỉ nhận cổng 3306 từ \texttt{app-sg}} & \textbf{Zero Egress} — Khóa tuyệt đối tầng dữ liệu. \\ \hline
+    \texttt{cloud-media-studio-efs-sg} & \texttt{sg-05b21097ef7de8668} & Cổng 2049 (NFS) từ \texttt{app-sg} & Không mở chiều ra. \\ \hline
+    \texttt{cloud-media-studio-bastion-sg} & \texttt{sg-0e1c35f05ea821ebd} & Giới hạn IP quản trị / SSM & Cổng 22 sang \texttt{app-sg}, 443 về AWS SSM. \\ \hline
+  \end{tabularx}
+\end{table}
+
+\anhminhchung{images/anh06.png}{Cấu hình chuỗi tường lửa Security Groups tham chiếu chéo bảo vệ tuyệt đối tầng cơ sở dữ liệu}{Mở AWS Console -> VPC -> Security Groups -> Chọn cloud-media-studio-db-sg (sg-0634b9520e3b1edfe), chụp tab Inbound rules thấy rõ Source là mã sg-04e15c5b51f42038f (app-sg) trên cổng 3306.}{fig:anh06}
+
+\section{Thiết kế luồng S3 Presigned PUT URL và mạng biên CloudFront OAC}
+Hàm \texttt{cloud-media-studio-api} dùng thông tin định danh tạm thời của IAM Execution Role để ký phát hành đường dẫn \texttt{S3 Presigned PUT URL} theo chuẩn \texttt{AWS4-HMAC-SHA256} với thời hạn đúng 300 giây (\texttt{X-Amz-Expires=300}). Khi trình duyệt gửi lệnh \texttt{PUT} trực tiếp tới S3, tập luật \textbf{S3 CORS} xác nhận nguồn hợp lệ từ miền \texttt{https://d10b9bys5mn60c.cloudfront.net} và lưu đối tượng với mã hóa \texttt{AES-256}. Ở chiều đọc, chính sách Bucket Policy chỉ cho phép duy nhất CloudFront Distribution \texttt{E23QIJLQ2A8EEN} thông qua chứng thực \textbf{OAC (\texttt{E3DJWPIUQH63YQ})}.
+
+\anhminhchung{images/anh07.png}{Khóa kín truy cập công khai trên S3 và mở tập luật CORS phục vụ luồng tải tệp trực tiếp qua Presigned URL}{Mở bucket cloud-media-studio-assets-586643076560 -> Tab Permissions, chụp mục Block all public access: On và khung Cross-origin resource sharing (CORS) cho phép tên miền CloudFront thực hiện lệnh PUT.}{fig:anh07}
+
+\anhminhchung{images/anh08.png}{Phân phối ứng dụng và tài nguyên qua mạng biên Amazon CloudFront với lớp giá tối ưu PriceClass\_100}{Mở AWS Console -> CloudFront -> Distributions -> E23QIJLQ2A8EEN, chụp thông tin chung ở tab General (d10b9bys5mn60c.cloudfront.net) và tab Origins gắn OAC.}{fig:anh08}
+
+\section{Thiết kế động cơ nén ảnh WebP (\texttt{sharp} ARM64) và lưu trữ lạnh S3 Glacier}
+Hàm \texttt{cloud-media-studio-image-processor} biên dịch thư viện C++ \texttt{sharp/libvips} cho tập lệnh \texttt{linux-arm64}: ngay khi có tệp mới trong \texttt{uploads/}, hàm tải luồng byte vào RAM 512 MB, xuất song song 01 bản WebP chính vào \texttt{processed/<tên>.webp} (chất lượng 80) và 03 phiên bản ảnh thu nhỏ vào \texttt{thumbnails/mobile/} (320w), \texttt{tablet/} (768w), \texttt{desktop/} (1200w).
+
+Bên cạnh bảng quan hệ \texttt{media\_items} khai báo trong \texttt{db/init.sql} cho tầng RDS MySQL, hệ thống triển khai chính sách chuyển tầng lưu trữ lạnh kép: tự động chuyển sang \textbf{S3 Glacier} sau 30 ngày qua \texttt{S3 Lifecycle Rule} (\texttt{finops/terraform/s3.tf}) và hỗ trợ chuyển đổi tức thì sang \textbf{S3 Glacier Instant Retrieval (\texttt{GLACIER\_IR})} qua API \texttt{CopyObjectCommand} ngay trên giao diện Web, cắt giảm 84\% đơn giá lưu trữ từ \texttt{0,025 USD/GB} xuống \texttt{0,004 USD/GB}.
+
+% ==============================================================================
+% CHƯƠNG 4: QUÁ TRÌNH TRIỂN KHAI, CẤU HÌNH VÀ NHẬT KÝ GỠ LỖI THỰC TẾ
+% ==============================================================================
+\chapter{QUÁ TRÌNH TRIỂN KHAI CÀI ĐẶT, CẤU HÌNH VÀ NHẬT KÝ GỠ LỖI THỰC TẾ}
+
+\section{Khởi tạo nền tảng định danh IAM và S3 Remote Backend cho Terraform}
+Nhóm cấu hình kho lưu trạng thái hạ tầng tập trung trên Amazon S3 (\texttt{terraform/providers.tf}) kết hợp bảng khóa DynamoDB nhằm ngăn xung đột khi nhiều kỹ sư chạy lệnh hạ tầng đồng thời:
+
+\begin{lstlisting}[caption={Cấu hình S3 Remote Backend trong tệp \texttt{terraform/providers.tf}}]
+terraform {
+  required_version = ">= 1.5.0"
+  required_providers {
+    aws = { source = "hashicorp/aws", version = "~> 5.0" }
+  }
+  backend "s3" {
+    bucket         = "enterprise-devsecops-tfstate-586643076560"
+    key            = "network/terraform.tfstate"
+    region         = "ap-southeast-1"
+    dynamodb_table = "enterprise-devsecops-tflocks"
+    encrypt        = true
+  }
+}
+\end{lstlisting}
+
+Nhóm thực hiện chuỗi lệnh chuẩn hóa để kiểm định và đối soát toàn bộ 12 tệp hạ tầng trong thư mục \texttt{terraform/}:
+\begin{lstlisting}[language=bash, caption={Chuỗi lệnh kiểm định và đối soát trạng thái hạ tầng Terraform}]
+terraform -chdir=terraform init
+terraform -chdir=terraform fmt -check
+terraform -chdir=terraform validate
+terraform -chdir=terraform plan "-var-file=terraform.tfvars.example" -lock=false
+\end{lstlisting}
+
+\anhminhchung{images/anh09.png}{Kiểm tra cú pháp và đối soát trạng thái hạ tầng thực tế với kho S3 Remote Backend bằng Terraform}{Mở Terminal trong VS Code chạy terraform -chdir=terraform validate (báo Success!) và terraform plan thấy các dòng Refreshing state... từ AWS Singapore.}{fig:anh09}
+
+\section{Triển khai hai hàm AWS Lambda ARM64 và khóa bộ lọc sự kiện S3}
+Hai hàm Serverless chủ lực được khai báo đồng bộ trong \texttt{terraform/lambda.tf} kèm biến môi trường \texttt{LD\_LIBRARY\_PATH} cho thư viện \texttt{libvips} và bộ lọc tiền tố \texttt{uploads/} chống vòng lặp vô hạn:
+
+\begin{lstlisting}[caption={Khai báo Lambda ARM64 và bộ lọc S3 Event Notification trong \texttt{terraform/lambda.tf}}]
+resource "aws_lambda_function" "image_processor" {
+  function_name    = "${var.project_name}-image-processor"
+  filename         = "${path.module}/lambda_payload.zip"
+  source_code_hash = filebase64sha256("${path.module}/lambda_payload.zip")
+  role             = aws_iam_role.lambda_image_processor.arn
+  handler          = "index.handler"
+  runtime          = "nodejs22.x"
+  architectures    = ["arm64"]
+  memory_size      = 512
+  timeout          = 30
+  environment {
+    variables = {
+      TARGET_FORMAT   = "WEBP"
+      LD_LIBRARY_PATH = "/var/task/node_modules/@img/sharp-libvips-linux-arm64/lib:/var/lang/lib"
+    }
+  }
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = var.s3_static_assets_bucket_name
+  lambda_function {
+    id                  = "cms-s3-uploads-webp-trigger"
+    lambda_function_arn = aws_lambda_function.image_processor.arn
+    events              = ["s3:ObjectCreated:Put", "s3:ObjectCreated:Post"]
+    filter_prefix       = "uploads/"
+  }
+}
+\end{lstlisting}
+
+Đoạn mã xử lý ảnh nhị phân lõi bên trong \texttt{backend/lambda/image\_processor/index.js}:
+\begin{lstlisting}[caption={Xử lý nén WebP và cắt song song 3 bản Thumbnail bằng \texttt{sharp}}]
+const getRes = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: srcKey }));
+const inputBuffer = await streamToBuffer(getRes.Body);
+
+const webpBuffer = await sharp(inputBuffer)
+  .rotate()
+  .webp({ quality: 80, effort: 4 })
+  .toBuffer();
+
+const thumbConfigs = [
+  { label: 'mobile',  width: 320,  key: `thumbnails/mobile/${baseName}_320.webp` },
+  { label: 'tablet',  width: 768,  key: `thumbnails/tablet/${baseName}_768.webp` },
+  { label: 'desktop', width: 1200, key: `thumbnails/desktop/${baseName}_1200.webp` }
+];
+\end{lstlisting}
+
+\anhminhchung{images/anh10.png}{Hai hàm xử lý không máy chủ vận hành trên chip ARM64 Graviton2 gắn bộ lọc sự kiện tiền tố chống lặp vô hạn}{Mở AWS Console -> Lambda -> Functions thấy rõ 2 hàm cloud-media-studio-api và cloud-media-studio-image-processor chạy nodejs22.x / arm64 (hoặc tab Triggers hiển thị Prefix: uploads/).}{fig:anh10}
+
+\section{Thiết lập đường ống DevSecOps CI/CD không khóa tĩnh (OIDC + Trivy)}
+Nhóm dựng 3 quy trình tự động hóa trên GitHub Actions (\texttt{deploy-frontend.yml}, \texttt{ci.yml}, \texttt{terraform.yml}). Mỗi khi đẩy mã nguồn mới, GitHub mượn quyền tạm thời qua \textbf{AWS OIDC}, quét lỗ hổng container bằng \textbf{Aqua Security Trivy}, đồng bộ bản build \texttt{dist/} lên S3 (bảo vệ 3 thư mục chứa ảnh) và phát lệnh xóa cache CloudFront:
+
+\begin{lstlisting}[caption={Trích đoạn luồng triển khai xác thực OIDC và xóa cache biên trong \texttt{deploy-frontend.yml}}]
+- name: Configure AWS Credentials (OIDC - Zero Secret Keys)
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: arn:aws:iam::586643076560:role/github-action
+    aws-region: ap-southeast-1
+
+- name: AWS S3 Sync and CloudFront Invalidation
+  run: |
+    aws s3 cp dist/index.html s3://cloud-media-studio-assets-586643076560/index.html \
+      --content-type "text/html" --cache-control "max-age=0,no-cache,no-store,must-revalidate"
+    aws s3 sync dist/ s3://cloud-media-studio-assets-586643076560/ \
+      --exclude "index.html" --exclude "uploads/*" --exclude "processed/*" --exclude "thumbnails/*"
+    aws cloudfront create-invalidation --distribution-id E23QIJLQ2A8EEN --paths "/*"
+\end{lstlisting}
+
+\section{Nhật ký 6 sự cố kỹ thuật thực chiến và cách khắc phục}
+Trong quá trình triển khai thực tế, nhóm đã gặp và trực tiếp gỡ dứt điểm 6 sự cố kỹ thuật tiêu biểu:
+
+\begin{table}[H]
+  \centering
+  \caption{Tổng hợp 6 sự cố kỹ thuật thực tế phát sinh trong quá trình triển khai và giải pháp}
+  \label{tab:debug}
+  \scriptsize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|C{0.7cm}|L{3.8cm}|L{4.2cm}|Y|}
+    \hline
+    \rowcolor{PrimaryBlue!12}
+    \textbf{STT} & \textbf{Hiện tượng lỗi gặp phải} & \textbf{Nguyên nhân gốc rễ} & \textbf{Cách khắc phục dứt điểm} \\
+    \hline
+    1 & Đẩy code mới lên Git nhưng link CloudFront vẫn hiện trang cũ. & CloudFront lưu đệm \texttt{index.html} mặc định 24 giờ tại các trạm biên. & Gắn header \texttt{no-cache} cho \texttt{index.html} và tự động gọi \texttt{create-invalidation --paths "/*"}. \\ \hline
+    2 & Chạy CI/CD cập nhật giao diện làm xóa mất ảnh trong \texttt{uploads/}. & Lệnh \texttt{aws s3 sync --delete} xóa các thư mục không có trong \texttt{dist/}. & Bổ sung 3 cờ loại trừ \texttt{--exclude "uploads/*"}, \texttt{processed/*}, \texttt{thumbnails/*}. \\ \hline
+    3 & Nguy cơ Lambda tự kích hoạt vòng lặp vô hạn khi ghi file \texttt{.webp}. & Bắt sự kiện \texttt{ObjectCreated} trên toàn bucket thay vì lọc tiền tố. & Áp bộ lọc \texttt{filter\_prefix = "uploads/"}, bỏ qua sự kiện \texttt{Copy} và kiểm tra đầu hàm. \\ \hline
+    4 & Lambda báo lỗi \texttt{ERR\_DLOPEN\_FAILED: libvips-cpp.so.42}. & Đóng gói chéo \texttt{sharp} từ Windows lên Linux ARM64 thiếu đường dẫn \texttt{.so}. & Ghim chuẩn \texttt{@img/sharp-linux-arm64@0.33.5} + \texttt{libvips@1.0.4} và khai báo \texttt{LD\_LIBRARY\_PATH}. \\ \hline
+    5 & Luồng CI \texttt{terraform.yml} báo đỏ \texttt{EBADPLATFORM} trên PR \#25. & Runner Ubuntu của GitHub dùng chip \texttt{x64} từ chối cài gói nhị phân \texttt{arm64}. & Chuyển gói \texttt{arm64} sang \texttt{optionalDependencies} và thêm cờ \texttt{--os=linux --cpu=arm64 --force} (\texttt{dcf36fa}). \\ \hline
+    6 & Tải ảnh xong bấm \texttt{F5} hoặc mở trên máy khác bị mất danh sách. & Bản nháp đầu chỉ lưu mảng tệp tin tạm trên RAM của trình duyệt. & Xây dựng API \texttt{/api/s3-media} đồng bộ trực tiếp danh sách thật từ S3 khi tải trang. \\ \hline
+  \end{tabularx}
+\end{table}
+
+\anhminhchung{images/anh11.png}{Nhật ký GitHub Actions ghi nhận quá trình phát hiện lỗi EBADPLATFORM và khắc phục thành công sau bản vá dcf36fa}{Mở tab GitHub -> Actions, chụp danh sách các lần chạy workflow có dòng báo dấu X đỏ phía dưới và dòng báo tích xanh lá cây ngay phía trên sau khi sửa lỗi.}{fig:anh11}
+
+\anhminhchung{images/anh12.png}{Đường ống triển khai tự động xác thực không khóa tĩnh qua AWS OIDC, đồng bộ S3 và làm mới bộ nhớ biên CloudFront}{Bấm vào phiên chạy tích xanh gần nhất của workflow Deploy Frontend to CloudFront \& S3 trên GitHub Actions, mở rộng bước OIDC, S3 Sync và CloudFront Invalidation.}{fig:anh12}
+
+\anhminhchung{images/anh13.png}{Chốt chặn quét lỗ hổng bảo mật ảnh Docker bằng Aqua Security Trivy trước khi lưu trữ lên kho Amazon ECR}{Mở phiên chạy thành công của workflow CI trên GitHub Actions chụp bước Trivy scan backend image (hoặc màn hình Amazon ECR -> cloud-media-studio-backend \& ECS Cluster).}{fig:anh13}
+
+% ==============================================================================
+% CHƯƠNG 5: KẾT QUẢ KIỂM THỬ NGHIỆM THU HỆ THỐNG (UAT)
+% ==============================================================================
+\chapter{KẾT QUẢ KIỂM THỬ NGHIỆM THU HỆ THỐNG (UAT)}
+
+\section{Nghiệm thu giao diện quản trị và hiệu năng nén ảnh WebP thực tế}
+Truy cập trực tiếp tên miền công khai \url{https://d10b9bys5mn60c.cloudfront.net} (không bật bất kỳ máy chủ cục bộ nào), giao diện phản hồi từ trạm biên Singapore trong khoảng \textbf{28 -- 45 ms} và hiển thị nhãn xanh \texttt{AWS Serverless Connected (Presigned S3 + Real WebP)}.
+
+Để đo lường định lượng, nhóm chạy kịch bản kiểm thử tự động \texttt{scripts/verify-live-cloud-pipeline.js} đẩy bức ảnh PNG thử nghiệm \texttt{cloud-studio-showcase-banner.png} (kích thước \texttt{1600x1000}, dung lượng gốc \textbf{3,04 MB}) trực tiếp lên S3 qua Presigned PUT URL. Kết quả đối chứng trên AWS S3 và CloudFront thể hiện tại Bảng \ref{tab:uat_webp}:
+
+\begin{table}[H]
+  \centering
+  \caption{Kết quả đo đạc thực tế dung lượng và mã phản hồi CDN của 5 phiên bản tệp trên S3}
+  \label{tab:uat_webp}
+  \footnotesize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|L{3.5cm}|L{4.6cm}|C{2.2cm}|C{2.1cm}|Y|}
+    \hline
+    \rowcolor{PrimaryBlue!12}
+    \textbf{Phiên bản tệp tin} & \textbf{Đường dẫn thực tế trên S3} & \textbf{Dung lượng} & \textbf{Tỷ lệ giảm} & \textbf{CloudFront CDN} \\
+    \hline
+    1. Tệp PNG gốc (1600x1000) & \texttt{uploads/...banner.png} & \textbf{3,04 MB} & Bản gốc (0\%) & \texttt{HTTP 200} (\texttt{image/png}) \\ \hline
+    2. Bản nén chính WebP & \texttt{processed/...banner.webp} & \textbf{74,4 KB} & \textbf{Giảm 97,6\%} & \texttt{HTTP 200} (\texttt{image/webp}) \\ \hline
+    3. Thumbnail Mobile (320w) & \texttt{thumbnails/mobile/...\_320.webp} & \textbf{5,8 KB} & \textbf{Giảm 99,8\%} & \texttt{HTTP 200} (\texttt{image/webp}) \\ \hline
+    4. Thumbnail Tablet (768w) & \texttt{thumbnails/tablet/...\_768.webp} & \textbf{30,0 KB} & \textbf{Giảm 99,0\%} & \texttt{HTTP 200} (\texttt{image/webp}) \\ \hline
+    5. Thumbnail Desktop (1200w) & \texttt{thumbnails/desktop/...\_1200.webp} & \textbf{55,6 KB} & \textbf{Giảm 98,2\%} & \texttt{HTTP 200} (\texttt{image/webp}) \\ \hline
+  \end{tabularx}
+\end{table}
+
+\anhminhchung{images/anh14.png}{Thực nghiệm tải tệp ảnh trực tiếp từ trình duyệt trên tên miền CloudFront lên S3 qua Presigned URL và nhận kết quả nén WebP thời gian thực}{Mở https://d10b9bys5mn60c.cloudfront.net -> Tab Upload Media, chụp màn hình ngay sau khi tải xong 1 bức ảnh thật lên S3: thấy rõ nhãn xanh AWS Serverless Connected, 5 bước tích xanh và khung kết quả dung lượng gốc vs WebP + 3 link Thumbnail.}{fig:anh14}
+
+\section{Nghiệm thu đối chứng S3, chuyển kho lạnh Glacier và CloudWatch Logs}
+Mở trực tiếp \textbf{AWS S3 Console} tại bucket \texttt{cloud-media-studio-assets-586643076560}, cả ba thư mục \texttt{uploads/}, \texttt{processed/} và \texttt{thumbnails/} đều ghi nhận đầy đủ các tệp nhị phân thực tế. Khi người kiểm thử bấm nút \textbf{Move to Glacier (FinOps)} trong cửa sổ chi tiết tệp trên giao diện Web và làm mới lại S3 Console, cột \textit{Storage class} của tệp lập tức đổi từ \texttt{Standard} sang \textbf{\texttt{Glacier Instant Retrieval}}. Khi nhấn phím \texttt{F5} tải lại trang web trên trình duyệt, trạng thái \texttt{GLACIER\_IR} vẫn được đồng bộ chính xác từ S3.
+
+\anhminhchung{images/anh15.png}{Đối chứng trực tiếp trên AWS S3 Console các tệp .webp do hàm Lambda sinh tự động và trạng thái chuyển kho lạnh Glacier Instant Retrieval}{Mở AWS S3 Console -> cloud-media-studio-assets-586643076560, chụp màn hình các tệp tin trong uploads/ (có dòng file đã bấm Move to Glacier hiện cột Storage class là Glacier Instant Retrieval) và bản nén .webp trong processed/.}{fig:anh15}
+
+\anhminhchung{images/anh16.png}{Bản ghi nhật ký trên Amazon CloudWatch xác nhận hàm Lambda hoàn tất giải mã và nén 4 tệp ảnh WebP trong một lần gọi}{Mở AWS CloudWatch -> Log groups -> /aws/lambda/cloud-media-studio-image-processor, chụp bản ghi log hiển thị dòng [Processing] và [Success] đã ghi thật processed/...webp + 3 Thumbnails.}{fig:anh16}
+
+\section{Nghiệm thu phòng vệ bảo mật (SQLi 403, Rate-Limit 429) và ngân sách AWS Budgets}
+Hai kịch bản kiểm thử an ninh cho kết quả đạt 100\% yêu cầu đặt ra:
+\begin{itemize}[leftmargin=0.7cm]
+  \item \textbf{Chặn tấn công SQL Injection:} Gửi truy vấn chứa chuỗi độc hại \texttt{GET /api/search?q=' OR 1=1 --} vào cổng Serverless API; hệ thống lập tức chặn đứng và phản hồi \textbf{\texttt{HTTP 403 Forbidden}} (\texttt{WAF\_SQLI\_XSS\_BLOCKED}).
+  \item \textbf{Chống xả rác yêu cầu (Rate Limiting):} Kịch bản bắn tải \texttt{tests/run-rate-limit-test.js} gửi liên tiếp 125 yêu cầu từ cùng một IP; đúng 100 yêu cầu đầu nhận \texttt{HTTP 200 OK}, từ yêu cầu thứ 101 hệ thống cắt chặn tức thì bằng mã \textbf{\texttt{HTTP 429 Too Many Requests}}.
+  \item \textbf{Kiểm soát trần ngân sách 200 USD:} Toàn bộ quá trình dựng mạng, kiểm thử và vận hành thực tế trên tài khoản \texttt{586643076560} được giám sát qua \textbf{AWS Budgets} (\texttt{cloud-media-studio-budget-200usd}), chi phí phát sinh chỉ ở mức vài USD nhờ kiến trúc Serverless ARM64 và công tắc Terraform.
+\end{itemize}
+
+\anhminhchung{images/anh17.png}{Kết quả thực thi bộ kịch bản kiểm thử nghiệm thu tự động toàn trình và cơ chế phòng vệ SQL Injection / Rate Limiting trên AWS}{Mở Terminal trong VS Code chạy node scripts/verify-live-cloud-pipeline.js (PASS 6/6 bước có chặn SQLi 403) và node tests/run-rate-limit-test.js (chặn 429 Too Many Requests).}{fig:anh17}
+
+\anhminhchung{images/anh18.png}{Giám sát hạn mức ngân sách 200 USD trên AWS Console và công cụ mô phỏng hiệu quả tiết kiệm lưu trữ S3 Glacier}{Chụp màn hình AWS Budgets trong trang Billing and Cost Management của AWS Console (kèm tab FinOps \& Cost trên giao diện Web Cloud Media Studio).}{fig:anh18}
+
+% ==============================================================================
+% CHƯƠNG 6: BÀN GIAO HỆ THỐNG & CHUYỂN GIAO CÔNG NGHỆ
+% ==============================================================================
+\chapter{BÀN GIAO HỆ THỐNG, CHUYỂN GIAO CÔNG NGHỆ VÀ ĐỊNH HƯỚNG MỞ RỘNG}
+
+\section{Biên bản danh mục tài sản hạ tầng và mã nguồn bàn giao}
+Sau khi hoàn tất nghiệm thu UAT ở Chương 5, đội ngũ tư vấn \textbf{NovaCloud Consulting} tiến hành đóng gói và bàn giao toàn bộ tài sản số cho bộ phận kỹ thuật của khách hàng \textbf{Lumina Creative Agency}:
+
+\begin{table}[H]
+  \centering
+  \caption{Danh mục tài sản hạ tầng, mã nguồn và công cụ bàn giao cho khách hàng}
+  \label{tab:bangiao}
+  \footnotesize
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|L{3.5cm}|L{4.8cm}|Y|C{2.0cm}|}
+    \hline
+    \rowcolor{PrimaryBlue!12}
+    \textbf{Hạng mục bàn giao} & \textbf{Định danh / Đường dẫn} & \textbf{Mô tả chức năng} & \textbf{Trạng thái} \\
+    \hline
+    Cổng Web CDN & \texttt{d10b9bys5mn60c.cloudfront.net} & Giao diện quản trị Cloud Media Studio (\texttt{E23QIJLQ2A8EEN}) & Hoạt động 24/7 \\ \hline
+    Cổng Serverless API & \texttt{cloud-media-studio-api} & Lambda Function URL cấp Presigned URL, Archive, Search & Hoạt động 24/7 \\ \hline
+    Động cơ nén WebP & \texttt{cloud-media-studio-image-processor} & Hàm Lambda ARM64 \texttt{sharp} nén WebP \& 3 Thumbnails & Hoạt động 24/7 \\ \hline
+    Kho lưu trữ S3 & \texttt{cloud-media-studio-assets-586643076560} & Khóa OAC, bật CORS, 3 phân vùng + Lifecycle Glacier & Đã bảo mật \\ \hline
+    Mã hạ tầng IaC & \texttt{terraform/} \& \texttt{finops/terraform/} & Dual-VPC, 6 Subnets, SG, ECR, ECS, Budgets, IAM & Đồng bộ State \\ \hline
+    Đường ống CI/CD & \texttt{.github/workflows/*.yml} & 3 workflows xác thực AWS OIDC + Trivy Scanner & Tích xanh \\ \hline
+    Công cụ vận hành & \texttt{scripts/verify-live-cloud-pipeline.js} & Kiểm định sức khỏe 6 bước \& theo dõi log CloudWatch & Đã nghiệm thu \\ \hline
+  \end{tabularx}
+\end{table}
+
+\section{Sổ tay quy trình vận hành chuẩn (Operational Runbook --- 4 SOP)}
+Để đội IT nội bộ của khách hàng chủ động làm chủ hệ thống sau bàn giao, nhóm chuyển giao 4 quy trình thao tác chuẩn:
+
+\begin{enumerate}[leftmargin=0.7cm]
+  \item \textbf{SOP-01 (Cập nhật giao diện Web):} Chỉnh sửa tệp \texttt{frontend/index.html}, chạy \texttt{npm run build} rồi đẩy lên GitHub (\texttt{git push}). Workflow \texttt{deploy-frontend.yml} sẽ tự mượn quyền OIDC, đồng bộ S3 an toàn (không ảnh hưởng dữ liệu người dùng) và làm mới bộ nhớ biên CloudFront trong 45 giây.
+  \item \textbf{SOP-02 (Bật/tắt cụm chịu tải cao theo mùa chiến dịch):} Ngày thường giữ \texttt{enable\_nat\_gateway}, \texttt{enable\_alb}, \texttt{enable\_waf = false} trong \texttt{terraform/terraform.tfvars} để chi phí cố định bằng 0 USD. Khi vào đợt mở bán lớn cần chạy thêm cụm container ECS Fargate và WAFv2, đổi 3 biến sang \texttt{true} và chạy \texttt{terraform -chdir=terraform apply}; kết thúc chiến dịch trả về \texttt{false} để thu hồi tài nguyên.
+  \item \textbf{SOP-03 (Kiểm tra sức khỏe định kỳ \& chẩn đoán sự cố):} Chạy lệnh \texttt{node scripts/verify-live-cloud-pipeline.js} để kiểm chứng toàn trình 6 bước trong 10 giây, hoặc chạy \texttt{node scripts/realtime-lambda.js watch} để theo dõi luồng nhật ký nén ảnh thời gian thực từ CloudWatch.
+  \item \textbf{SOP-04 (Quản trị nhân sự mới \& giám sát hóa đơn):} Cấp phát nhân viên mới vào đúng 1 trong 4 nhóm IAM Group đã định nghĩa sẵn kèm bắt buộc bật MFA; theo dõi hòm thư cảnh báo từ \textbf{AWS Budgets} ở các mốc 20 USD và 50 USD.
+\end{enumerate}
+
+\section{Kết luận và lộ trình nâng cấp giai đoạn 2}
+Hệ thống \textbf{Cloud Media Studio} đã hoàn thành trọn vẹn bài toán thực tế của khách hàng \textbf{Lumina Creative Agency}: loại bỏ hoàn toàn máy chủ vật lý hay bị treo tại văn phòng, tự động nén ảnh giảm tới \textbf{97,6\%} dung lượng sang chuẩn WebP, đạt tốc độ phản hồi biên dưới \textbf{45 ms}, cắt giảm \textbf{84\%} chi phí lưu trữ dữ liệu cũ bằng S3 Glacier và giữ tổng hóa đơn nằm gọn trong ngân sách 200 USD.
+
+Trong giai đoạn 2 khi khách hàng mở rộng sang sản xuất phim quảng cáo dung lượng lớn, đội ngũ tư vấn đề xuất hai hướng nâng cấp:
+\begin{enumerate}[leftmargin=0.7cm]
+  \item \textbf{Tải lên phân mảnh đa luồng (S3 Multipart Presigned Upload):} Cắt nhỏ tệp video gốc từ 5 GB -- 50 GB thành từng mảnh 10 MB tải song song, tự động nối lại khi mạng chập chờn.
+  \item \textbf{Chuyển mã video thích ứng và gắn thẻ tự động bằng AI:} Tích hợp \textbf{AWS Elemental MediaConvert} xuất luồng phát trực tuyến phân đoạn HLS/DASH và kết nối \textbf{Amazon Rekognition} tự động nhận diện vật thể trong ảnh để gắn nhãn từ khóa tìm kiếm.
+\end{enumerate}
+
+\end{document}
