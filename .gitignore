@@ -73,3 +73,4 @@ member1.md
 member*.md
 node_modules/
 backend/media-data.json
+latex/
