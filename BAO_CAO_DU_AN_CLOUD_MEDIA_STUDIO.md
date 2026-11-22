@@ -157,13 +157,9 @@ Giải pháp thay thế được nhóm tư vấn đề xuất và được khác
 
 Đội tư vấn quyết định giữ nguyên nền móng mạng Dual-VPC, Remote State S3 và đường ống bảo mật đã xây dựng, đồng thời thực hiện đợt tái cấu trúc toàn diện (rebrand & refactor) sang nền tảng chuyên dụng **Cloud Media Studio** như phiên bản hoàn chỉnh hiện tại.
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #02: Các nhánh làm việc của nhóm và lịch sử gộp Pull Request trên GitHub]**
-> - **Cách chụp:** Mở trang GitHub của dự án -> Tab *Pull requests -> Closed* (hiển thị các PR `#23`, `#24`, `#25` đã được kiểm duyệt và gộp code) kèm menu thả xuống danh sách các nhánh thành viên (`main`, `mquan`, `thehung`, `doduc`, `ducdien`).
-> - **Gợi ý chú thích ảnh:** *Hình 2.1. Quản lý nhánh phát triển theo từng thành viên và quy trình kiểm duyệt Pull Request trước khi hợp nhất mã nguồn.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #03: Lịch sử Git Commit phản ánh tiến trình phát triển từ khung hạ tầng lõi sang Cloud Media Studio]**
-> - **Cách chụp:** Mở Terminal trong VS Code gõ lệnh `git log --oneline --graph --decorate -n 22` và chụp màn hình kết quả hiển thị chuỗi commit tiến hóa liên tục của dự án.
-> - **Gợi ý chú thích ảnh:** *Hình 2.2. Nhật ký phiên bản Git ghi lại toàn bộ tiến trình từ bước dựng hạ tầng lõi, tái cấu trúc sang Cloud Media Studio cho tới khi hoàn thiện luồng Serverless Presigned URL.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #02: Lịch sử Git Commit & các nhánh Pull Request phản ánh tiến trình chuyển đổi từ khung lõi sang Cloud Media Studio]**
+> - **Cách chụp:** Mở Terminal trong VS Code gõ `git log --oneline --graph --decorate -n 20` (hoặc chụp trang *GitHub -> Pull requests -> Closed* hiển thị các PR `#23`, `#24`, `#25` và danh sách nhánh `main`, `mquan`, `thehung`, `doduc`, `ducdien`).
+> - **Gợi ý chú thích ảnh:** *Hình 2.1. Nhật ký phiên bản Git và quy trình gộp Pull Request thể hiện tiến trình phát triển liên tục từ khung hạ tầng lõi sang nền tảng Cloud Media Studio.*
 
 ### 2.2. Bài toán kinh tế đám mây: So sánh chi phí giữa 3 phương án kiến trúc
 
@@ -213,17 +209,9 @@ Sau khi xem bảng phân tích kinh tế và kỹ thuật ở trên, đại di�
 | **CloudWatch, CloudTrail, AWS Budgets** | `READ` | `READ` | **FULL** | `READ` | Mở quyền đọc chi phí cho cả 4 thành viên cùng giám sát hạn mức 200 USD. |
 | **AWS WAFv2, Secrets Manager, KMS, OIDC** | `LIMITED` (Gắn ALB) | `READ` (Lấy Secret) | `DENY` | **FULL** | Kỹ sư bảo mật nắm độc quyền quản trị khóa mã hóa, bộ luật tường lửa và vai trò CI/CD. |
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #04: Tài liệu Ma trận phân quyền RBAC trong kho mã nguồn dự án]**
-> - **Cách chụp:** Mở tệp `finops/rbac-matrix.md` ở chế độ xem bảng trên VS Code hoặc trên giao diện GitHub, chụp rõ bảng ánh xạ quyền hạn của 4 nhóm kỹ sư.
-> - **Gợi ý chú thích ảnh:** *Hình 2.3. Đặc tả ma trận phân quyền IAM Least Privilege được chuẩn hóa trong hồ sơ dự án.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #05: Cấu hình nhóm quyền IAM User Groups và tài khoản trên AWS Console]**
-> - **Cách chụp:** Mở *AWS Console -> IAM -> User groups* (hoặc *Users*), chụp màn hình danh sách các nhóm quyền và định danh người dùng trên tài khoản `586643076560`.
-> - **Gợi ý chú thích ảnh:** *Hình 2.4. Thiết lập các nhóm quyền IAM thực tế trên AWS Console phục vụ quản trị dự án.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #06: Cấu hình nhà cung cấp định danh OIDC GitHub và IAM Role `github-action`]**
-> - **Cách chụp:** Mở *AWS Console -> IAM -> Identity providers* hiển thị `token.actions.githubusercontent.com`, chụp kèm màn hình *Roles -> `github-action` -> Tab Trust relationships* có điều kiện lọc kho mã nguồn `cloud-media-studio`.
-> - **Gợi ý chú thích ảnh:** *Hình 2.5. Liên kết tin cậy OpenID Connect (OIDC) giữa GitHub Actions và AWS IAM giúp loại bỏ hoàn toàn khóa truy cập tĩnh.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #03: Cấu hình phân quyền AWS IAM User Groups và liên kết định danh OIDC GitHub]**
+> - **Cách chụp:** Mở *AWS Console -> IAM -> Identity providers* (thấy `token.actions.githubusercontent.com`) hoặc *IAM -> Roles -> `github-action`* tab *Trust relationships* (kèm màn hình *User groups*).
+> - **Gợi ý chú thích ảnh:** *Hình 2.2. Thiết lập nhóm quyền IAM theo vai trò và liên kết tin cậy OpenID Connect (OIDC) giữa GitHub Actions với AWS IAM.*
 
 ---
 
@@ -280,17 +268,13 @@ flowchart TD
 
 Tại các bảng định tuyến (`Route Tables`), nhóm thiết lập các tuyến đường tĩnh (`aws_route`) chỉ định rõ: chỉ những gói tin mang địa chỉ đích thuộc dải `10.1.0.0/16` hoặc `10.0.0.0/16` mới được đi xuyên qua cổng nối `pcx-05d1fb108616399d3` trên hạ tầng cáp trục (Backbone) của AWS mà không bao giờ lộ ra ngoài mạng Internet công cộng.
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #07: Danh sách 2 mạng Production VPC và Management VPC trên AWS Console]**
-> - **Cách chụp:** Mở *AWS Console (Singapore) -> VPC -> Your VPCs*, chụp màn hình thấy rõ cả 2 mạng `vpc-06381f9c162585d44` (`10.0.0.0/16`) và `vpc-0c977ce7dd69da37c` (`10.1.0.0/16`) ở trạng thái `Available`.
-> - **Gợi ý chú thích ảnh:** *Hình 3.1. Hai không gian mạng Production VPC và Management VPC được khởi tạo tách biệt tại vùng Singapore.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #04: Sơ đồ Resource Map của Production VPC hiển thị 6 Subnets Multi-AZ và Route Tables]**
+> - **Cách chụp:** Mở *AWS Console (Singapore) -> VPC -> Your VPCs -> Chọn Production VPC (`10.0.0.0/16`) -> Tab Resource map*, chụp toàn bộ sơ đồ luồng nối từ VPC qua 6 Subnets tới các bảng định tuyến và Internet Gateway.
+> - **Gợi ý chú thích ảnh:** *Hình 3.1. Sơ đồ ánh xạ tài nguyên (Resource Map) thể hiện cấu trúc 6 Subnets chia làm 3 lớp Public, Private App và Private DB tại vùng Singapore.*
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #08: Sơ đồ Resource Map của Production VPC hiển thị 6 Subnets và Route Tables]**
-> - **Cách chụp:** Bấm vào Production VPC -> chọn tab *Resource map*, chụp toàn bộ sơ đồ luồng nối từ VPC qua 6 Subnets tới các bảng định tuyến và Internet Gateway.
-> - **Gợi ý chú thích ảnh:** *Hình 3.2. Sơ đồ ánh xạ tài nguyên (Resource Map) thể hiện cấu trúc 6 Subnets chia làm 3 lớp Public, Private App và Private DB.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #09: Kết nối VPC Peering ở trạng thái Active giữa hai mạng]**
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #05: Kết nối VPC Peering ở trạng thái Active giữa Production VPC và Management VPC]**
 > - **Cách chụp:** Mở *VPC -> Peering connections*, chụp kết nối `pcx-05d1fb108616399d3` hiển thị trạng thái xanh lá `Active` giữa dải `10.0.0.0/16` và `10.1.0.0/16`.
-> - **Gợi ý chú thích ảnh:** *Hình 3.3. Đường truyền nội bộ VPC Peering kết nối trực tiếp vùng quản trị với vùng vận hành sản phẩm.*
+> - **Gợi ý chú thích ảnh:** *Hình 3.2. Đường truyền nội bộ VPC Peering kết nối trực tiếp vùng quản trị với vùng vận hành sản phẩm.*
 
 ### 3.3. Thiết kế chuỗi tường lửa Security Groups theo cơ chế tham chiếu chéo (SG-to-SG)
 
@@ -306,9 +290,9 @@ Một sai lầm phổ biến khi cấu hình tường lửa trên đám mây là
 | **4. Shared EFS SG**<br>`cloud-media-studio-efs-sg` | `sg-05b21097ef7de8668` | Cổng `2049` (NFS) chỉ nhận từ **`app-sg`** | Không mở chiều ra | Bảo vệ hệ thống tệp chia sẻ giữa các container ứng dụng. |
 | **5. Bastion & Mgmt SG**<br>`cloud-media-studio-bastion-sg` | `sg-0e1c35f05ea821ebd`<br>`sg-09754b92a9d99f347` | Cổng quản trị giới hạn theo IP quản trị viên / SSM Endpoint | Cổng `22` sang **`app-sg`** và `443` về máy chủ AWS SSM | Phục vụ công tác chẩn đoán, bảo trì hệ thống qua kênh mã hóa nội bộ. |
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #10: Danh sách 5 Security Groups và quy tắc Inbound tham chiếu SG-to-SG của tầng Database]**
-> - **Cách chụp:** Mở *AWS Console -> VPC -> Security Groups*, chụp danh sách 5 Security Groups đã tạo và bấm vào `cloud-media-studio-db-sg` (`sg-0634b9520e3b1edfe`) chụp tab *Inbound rules* thấy rõ cột *Source* là mã `sg-04e15c5b51f42038f` (`app-sg`) trên cổng `3306`.
-> - **Gợi ý chú thích ảnh:** *Hình 3.4. Cấu hình chuỗi tường lửa Security Groups tham chiếu chéo bảo vệ tuyệt đối tầng cơ sở dữ liệu.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #06: Quy tắc tường lửa Security Group tham chiếu chéo SG-to-SG bảo vệ tầng Database]**
+> - **Cách chụp:** Mở *AWS Console -> VPC -> Security Groups -> Chọn `cloud-media-studio-db-sg` (`sg-0634b9520e3b1edfe`)*, chụp tab *Inbound rules* thấy rõ cột *Source* là mã `sg-04e15c5b51f42038f` (`app-sg`) trên cổng `3306`.
+> - **Gợi ý chú thích ảnh:** *Hình 3.3. Cấu hình chuỗi tường lửa Security Groups tham chiếu chéo bảo vệ tuyệt đối tầng cơ sở dữ liệu.*
 
 ### 3.4. Thiết kế luồng tải tệp trực tiếp qua S3 Presigned PUT URL và mạng biên CloudFront OAC
 
@@ -339,21 +323,13 @@ sequenceDiagram
 - **Cơ chế ký số S3 Presigned PUT URL (`AWS4-HMAC-SHA256`):** Hàm `cloud-media-studio-api` sử dụng bộ thông tin định danh tạm thời (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`) do môi trường thực thi AWS Lambda cấp phát tự động cho vai trò `cloud-media-studio-lambda-image-processor-role`. Thuật toán băm chuỗi yêu cầu chuẩn hóa (Canonical Request) qua 4 lớp khóa dẫn xuất theo ngày, vùng (`ap-southeast-1`), dịch vụ (`s3`) và gắn tham số `X-Amz-Expires=300` cùng `UNSIGNED-PAYLOAD`. Chiếc vé URL sinh ra chỉ có tác dụng cho đúng một thao tác `PUT` vào đúng một đường dẫn `uploads/<tên_file>` trong vòng 5 phút; quá 5 phút đường dẫn tự vô hiệu hóa.
 - **Cấu hình S3 CORS và CloudFront OAC:** Để trình duyệt đang mở ở miền `https://d10b9bys5mn60c.cloudfront.net` được phép bắn dữ liệu nhị phân sang miền `https://cloud-media-studio-assets-586643076560.s3.ap-southeast-1.amazonaws.com`, nhóm cấu hình tập luật CORS trên S3 cho phép phương thức `GET, PUT, POST, HEAD` từ miền CloudFront. Ở chiều ngược lại, chính sách Bucket Policy chỉ cho phép duy nhất dịch vụ `cloudfront.amazonaws.com` có mã phân phối `E23QIJLQ2A8EEN` được quyền đọc đối tượng (`s3:GetObject`) thông qua bộ điều khiển `Origin Access Control` (`E3DJWPIUQH63YQ`).
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #11: Danh sách các S3 Buckets trên tài khoản AWS 586643076560]**
-> - **Cách chụp:** Mở *AWS Console -> Amazon S3 -> Buckets*, chụp màn hình thấy rõ kho lưu trạng thái hạ tầng `enterprise-devsecops-tfstate-586643076560` và kho tài nguyên sản phẩm `cloud-media-studio-assets-586643076560`.
-> - **Gợi ý chú thích ảnh:** *Hình 3.5. Hệ thống kho lưu trữ đối tượng S3 tách biệt giữa nơi lưu trạng thái Terraform và nơi chứa tài nguyên đa phương tiện.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #07: Cấu hình khóa Public Access, OAC Bucket Policy và CORS trên Amazon S3 Bucket]**
+> - **Cách chụp:** Mở bucket `cloud-media-studio-assets-586643076560` -> Tab *Permissions*, chụp mục *Block all public access: On* và cấu hình *Cross-origin resource sharing (CORS)* cho phép tên miền CloudFront thực hiện lệnh `PUT`.
+> - **Gợi ý chú thích ảnh:** *Hình 3.4. Khóa kín truy cập công khai trên S3 và mở tập luật CORS phục vụ luồng tải tệp trực tiếp qua Presigned URL.*
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #12: Cấu hình khóa truy cập công khai và Bucket Policy chỉ cho phép CloudFront OAC]**
-> - **Cách chụp:** Mở bucket `cloud-media-studio-assets-586643076560` -> Tab *Permissions*, chụp mục *Block all public access: On* và đoạn mã JSON của *Bucket policy* có điều kiện `AWS:SourceArn` khớp với mã phân phối `E23QIJLQ2A8EEN`.
-> - **Gợi ý chú thích ảnh:** *Hình 3.6. Khóa kín quyền truy cập công khai trên S3 và áp dụng chính sách ủy quyền độc quyền cho CloudFront OAC.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #13: Cấu hình tập luật CORS trên S3 Bucket phục vụ luồng Presigned URL]**
-> - **Cách chụp:** Kéo xuống cuối tab *Permissions* của bucket `cloud-media-studio-assets-586643076560`, chụp khung *Cross-origin resource sharing (CORS)* hiển thị tên miền CloudFront và phương thức `PUT`.
-> - **Gợi ý chú thích ảnh:** *Hình 3.7. Cấu hình S3 CORS cho phép trình duyệt khách đẩy trực tiếp luồng ảnh qua đường dẫn Presigned URL.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #14: Cấu hình mạng phân phối biên Amazon CloudFront và Origin Access Control]**
-> - **Cách chụp:** Mở *AWS Console -> CloudFront -> Distributions -> `E23QIJLQ2A8EEN`*, chụp thông tin chung ở tab *General* (`d10b9bys5mn60c.cloudfront.net`) và cấu hình nguồn S3 gắn OAC ở tab *Origins*.
-> - **Gợi ý chú thích ảnh:** *Hình 3.8. Phân phối ứng dụng và tài nguyên qua mạng biên Amazon CloudFront với lớp giá tối ưu PriceClass_100.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #08: Cấu hình mạng phân phối biên Amazon CloudFront và Origin Access Control]**
+> - **Cách chụp:** Mở *AWS Console -> CloudFront -> Distributions -> `E23QIJLQ2A8EEN`*, chụp thông tin chung ở tab *General* (`d10b9bys5mn60c.cloudfront.net`, trạng thái `Enabled`) và tab *Origins* (gắn OAC `E3DJWPIUQH63YQ`).
+> - **Gợi ý chú thích ảnh:** *Hình 3.5. Phân phối ứng dụng và tài nguyên qua mạng biên Amazon CloudFront với lớp giá tối ưu PriceClass_100.*
 
 ### 3.5. Thiết kế động cơ nén ảnh WebP & kết xuất 3 cỡ Thumbnail trên chip ARM64 Graviton2
 
@@ -454,13 +430,9 @@ terraform -chdir=terraform validate
 terraform -chdir=terraform plan "-var-file=terraform.tfvars.example" -lock=false
 ```
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #15: Kết quả kiểm tra định dạng và tính hợp lệ của mã nguồn Terraform]**
-> - **Cách chụp:** Mở Terminal trong VS Code chạy hai lệnh `terraform -chdir=terraform fmt -check` và `terraform -chdir=terraform validate`, chụp dòng thông báo xanh lá `Success! The configuration is valid.`
-> - **Gợi ý chú thích ảnh:** *Hình 4.1. Kiểm tra cú pháp và tính toàn vẹn của toàn bộ 12 tệp cấu hình hạ tầng Terraform.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #16: Kết quả chạy `terraform plan` đồng bộ trạng thái từ S3 Remote Backend]**
-> - **Cách chụp:** Chạy lệnh `terraform -chdir=terraform plan "-var-file=terraform.tfvars.example" -lock=false` trên Terminal, chụp màn hình các dòng `Refreshing state...` đối chiếu trực tiếp với tài nguyên thật trên vùng Singapore.
-> - **Gợi ý chú thích ảnh:** *Hình 4.2. Đối soát trạng thái hạ tầng thực tế từ kho lưu trữ tập trung S3 Remote Backend.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #09: Kết quả kiểm tra tính hợp lệ và đối soát S3 Remote Backend bằng Terraform]**
+> - **Cách chụp:** Mở Terminal trong VS Code chạy `terraform -chdir=terraform validate` (báo `Success! The configuration is valid.`) và `terraform -chdir=terraform plan "-var-file=terraform.tfvars.example" -lock=false` (thấy các dòng `Refreshing state...`).
+> - **Gợi ý chú thích ảnh:** *Hình 4.1. Kiểm tra cú pháp và đối soát trạng thái hạ tầng thực tế với kho S3 Remote Backend bằng Terraform.*
 
 ### 4.3. Giai đoạn 3: Đóng gói và triển khai hai hàm AWS Lambda chạy kiến trúc ARM64
 
@@ -548,13 +520,9 @@ const thumbConfigs = [
 ];
 ```
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #17: Danh sách 2 hàm AWS Lambda chạy trên kiến trúc ARM64 Graviton2]**
-> - **Cách chụp:** Mở *AWS Console -> Lambda -> Functions*, chụp danh sách hiển thị cả 2 hàm `cloud-media-studio-api` và `cloud-media-studio-image-processor` với thông số `nodejs22.x` và kiến trúc `arm64`.
-> - **Gợi ý chú thích ảnh:** *Hình 4.3. Hai hàm xử lý không máy chủ vận hành trên vi xử lý ARM64 Graviton2 tại vùng Singapore.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #18: Cấu hình S3 Event Notification gắn bộ lọc tiền tố `uploads/` vào hàm Lambda]**
-> - **Cách chụp:** Mở chi tiết hàm `cloud-media-studio-image-processor` -> Tab *Configuration -> Triggers*, mở rộng chi tiết trigger S3 thấy rõ dòng `Prefix: uploads/`.
-> - **Gợi ý chú thích ảnh:** *Hình 4.4. Cấu hình kích hoạt tự động từ S3 với bộ lọc tiền tố giúp ngăn chặn triệt để nguy cơ lặp vô hạn.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #10: Hai hàm AWS Lambda ARM64 Graviton2 và cấu hình S3 Trigger lọc tiền tố `uploads/`]**
+> - **Cách chụp:** Mở *AWS Console -> Lambda -> Functions* (thấy cả 2 hàm `cloud-media-studio-api` và `cloud-media-studio-image-processor` chạy `nodejs22.x / arm64`) hoặc mở tab *Configuration -> Triggers* của hàm `image-processor` thấy rõ dòng `Prefix: uploads/`.
+> - **Gợi ý chú thích ảnh:** *Hình 4.2. Hai hàm xử lý không máy chủ vận hành trên chip ARM64 Graviton2 gắn bộ lọc sự kiện tiền tố chống lặp vô hạn.*
 
 ### 4.4. Giai đoạn 4: Thiết lập đường ống DevSecOps CI/CD tích hợp quét bảo mật Aqua Trivy
 
@@ -606,25 +574,17 @@ Trong suốt quá trình từ lúc dựng khung cho tới khi ghép nối thành
 | **5** | Luồng GitHub Actions `terraform.yml` báo lỗi đỏ `npm error code EBADPLATFORM` khi đóng gói Lambda trên Pull Request `#25`. | Máy chạy GitHub Actions (`ubuntu-latest`) dùng chip `x64`, nên khi chạy `npm install` gói nhị phân `arm64` mà không có cờ ép kiến trúc thì `npm` từ chối cài đặt. | Chuyển 2 gói nhị phân `linux-arm64` sang mục `optionalDependencies` trong `package.json` và thêm cờ `--os=linux --cpu=arm64 --libc=glibc --include=optional --force` (`commit dcf36fa`). |
 | **6** | Tải ảnh xong bấm phím `F5` làm mới trình duyệt hoặc mở từ máy tính khác thì không thấy danh sách ảnh vừa tải. | Phiên bản đầu tiên chỉ lưu danh sách ảnh tạm thời trong biến mảng trên RAM của trình duyệt đang mở. | Xây dựng API `/api/s3-media` trên Lambda Function URL quét trực tiếp 3 thư mục `uploads/`, `processed/`, `thumbnails/` từ S3 thật mỗi khi trang web khởi chạy hoặc nhấn `F5`. |
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #19: Minh chứng gỡ lỗi thực chiến — Lần chạy báo lỗi đỏ `EBADPLATFORM` và lần chạy báo tích xanh sau bản vá `dcf36fa` trên GitHub Actions]**
-> - **Cách chụp:** Mở tab *GitHub -> Actions*, chụp màn hình danh sách các lần chạy workflow có dòng báo lỗi đỏ trước đó và ngay phía trên là dòng báo tích xanh lá cây thành công sau khi đẩy commit sửa lỗi.
-> - **Gợi ý chú thích ảnh:** *Hình 4.5. Nhật ký GitHub Actions ghi nhận quá trình phát hiện và khắc phục lỗi tương thích kiến trúc chéo x64 - ARM64.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #11: Minh chứng gỡ lỗi thực chiến — Lỗi `EBADPLATFORM` báo đỏ và lần chạy tích xanh sau bản vá `dcf36fa` trên GitHub Actions]**
+> - **Cách chụp:** Mở tab *GitHub -> Actions*, chụp danh sách các lần chạy workflow có dòng báo lỗi đỏ trước đó và ngay phía trên là dòng báo tích xanh lá cây thành công sau khi đẩy commit sửa lỗi.
+> - **Gợi ý chú thích ảnh:** *Hình 4.3. Nhật ký GitHub Actions ghi nhận quá trình phát hiện và khắc phục lỗi tương thích kiến trúc chéo x64 - ARM64.*
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #20: Lịch sử làm mới bộ nhớ đệm CloudFront Invalidation hoàn tất trên AWS Console]**
-> - **Cách chụp:** Mở *AWS Console -> CloudFront -> `E23QIJLQ2A8EEN` -> Tab Invalidations*, chụp danh sách các yêu cầu làm mới đường dẫn `/*` ở trạng thái `Completed`.
-> - **Gợi ý chú thích ảnh:** *Hình 4.6. Các lệnh xóa bộ nhớ đệm (Cache Invalidation) được kích hoạt tự động từ đường ống CI/CD giúp cập nhật giao diện tức thì.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #12: Chi tiết đường ống `Deploy Frontend to CloudFront & S3` xác thực OIDC và xóa cache CloudFront]**
+> - **Cách chụp:** Bấm vào phiên chạy tích xanh gần nhất của workflow `Deploy Frontend to CloudFront & S3` trên GitHub Actions, mở rộng chi tiết bước *Configure AWS Credentials (OIDC)*, bước *AWS S3 Sync* và bước *CloudFront Origin Invalidation*.
+> - **Gợi ý chú thích ảnh:** *Hình 4.4. Đường ống triển khai tự động xác thực không khóa tĩnh qua AWS OIDC, đồng bộ S3 và làm mới bộ nhớ biên CloudFront.*
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #21: Chi tiết các bước thực thi thành công của đường ống `Deploy Frontend to CloudFront & S3`]**
-> - **Cách chụp:** Bấm vào phiên chạy tích xanh gần nhất của workflow `Deploy Frontend to CloudFront & S3` trên GitHub Actions, mở rộng chi tiết bước xác thực OIDC, bước S3 Sync và bước tạo Invalidation.
-> - **Gợi ý chú thích ảnh:** *Hình 4.7. Đường ống triển khai tự động xác thực không khóa tĩnh qua AWS OIDC và đồng bộ an toàn lên S3.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #22: Báo cáo rà quét lỗ hổng bảo mật Container bằng Aqua Security Trivy]**
-> - **Cách chụp:** Mở phiên chạy thành công của workflow *CI* trên GitHub Actions, chụp màn hình bước *Trivy scan backend image* hiển thị bảng kết quả kiểm tra an ninh.
-> - **Gợi ý chú thích ảnh:** *Hình 4.8. Tích hợp chốt chặn quét lỗ hổng bảo mật tự động bằng công cụ Aqua Security Trivy trong quy trình đóng gói.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #23: Kho lưu trữ ảnh Docker Amazon ECR và cụm điều phối Amazon ECS Cluster]**
-> - **Cách chụp:** Mở *AWS Console -> Amazon ECR -> Repositories* chụp danh sách kho chứa (`cloud-media-studio-backend`) và mở *Amazon ECS -> Clusters* chụp cụm `cloud-media-studio-cluster`.
-> - **Gợi ý chú thích ảnh:** *Hình 4.9. Hạ tầng kho chứa ảnh container Amazon ECR và cụm điều phối ECS Fargate đã được cấu hình sẵn sàng tại vùng Singapore.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #13: Báo cáo rà quét lỗ hổng Container bằng Aqua Security Trivy và kho Amazon ECR]**
+> - **Cách chụp:** Mở phiên chạy thành công của workflow *CI* trên GitHub Actions chụp bước *Trivy scan backend image* (hoặc chụp màn hình *Amazon ECR -> `cloud-media-studio-backend`* & *Amazon ECS -> `cloud-media-studio-cluster`*).
+> - **Gợi ý chú thích ảnh:** *Hình 4.5. Chốt chặn quét lỗ hổng bảo mật ảnh Docker bằng Aqua Security Trivy trước khi lưu trữ lên kho Amazon ECR.*
 
 ---
 
@@ -639,13 +599,9 @@ Truy cập trực tiếp vào địa chỉ phân phối toàn cầu **`https://d
 - Tại phân hệ **Upload Media**, hệ thống tự động kết nối tới cổng Serverless API và hiển thị nhãn trạng thái màu xanh lá: **`🟢 AWS Serverless Connected (Presigned S3 + Real WebP)`**.
 - Khi người dùng chọn một tệp ảnh `.PNG` hoặc `.JPG` từ máy tính cá nhân và bấm nút **`⚡ Kích Hoạt Lambda Thật Trên AWS S3`**, toàn bộ 5 bước trên thanh tiến trình (Xin vé Presigned URL -> Đẩy trực tiếp lên S3 -> Phát sự kiện S3 Event -> Lambda ARM64 nén WebP & cắt 3 Thumbnails -> Phân phối ra CloudFront Edge) chạy hoàn tất thực tế trong khoảng **2,2 đến 3,1 giây**.
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #24: Giao diện Đăng nhập và Bảng điều khiển trung tâm Overview Dashboard trên tên miền CloudFront]**
-> - **Cách chụp:** Mở trình duyệt tại `https://d10b9bys5mn60c.cloudfront.net`, chụp màn hình tổng quan *Overview Dashboard* hiển thị các thẻ chỉ số lưu trữ, băng thông CDN và biểu đồ lưu lượng.
-> - **Gợi ý chú thích ảnh:** *Hình 5.1. Giao diện quản trị trung tâm của nền tảng Cloud Media Studio vận hành trực tuyến trên tên miền CloudFront CDN.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #25: Màn hình Upload Media báo kết nối AWS Serverless và kết quả nén WebP thật sau khi tải ảnh]**
-> - **Cách chụp:** Tại tab *Upload Media*, chụp màn hình ngay sau khi tải xong một bức ảnh thật lên S3: thấy rõ huy hiệu xanh `AWS Serverless Connected`, 5 bước báo dấu tích xanh và khung thông báo kết quả hiện rõ dung lượng gốc, dung lượng sau khi nén WebP kèm đường dẫn mở 3 bản Thumbnail (`320w`, `768w`, `1200w`).
-> - **Gợi ý chú thích ảnh:** *Hình 5.2. Thực nghiệm tải tệp ảnh trực tiếp từ trình duyệt lên S3 qua Presigned URL và nhận kết quả nén WebP thời gian thực.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #14: Giao diện Cloud Media Studio trên CloudFront lúc tải ảnh thật qua Presigned URL và nén WebP giảm >90%]**
+> - **Cách chụp:** Mở `https://d10b9bys5mn60c.cloudfront.net` -> Tab *Upload Media*, chụp màn hình ngay sau khi tải xong 1 bức ảnh thật lên S3: thấy rõ nhãn xanh `AWS Serverless Connected`, 5 bước báo dấu tích xanh và khung kết quả hiện dung lượng gốc vs dung lượng sau nén WebP kèm đường dẫn mở 3 bản Thumbnail (`320w`, `768w`, `1200w`).
+> - **Gợi ý chú thích ảnh:** *Hình 5.1. Thực nghiệm tải tệp ảnh trực tiếp từ trình duyệt trên tên miền CloudFront lên S3 qua Presigned URL và nhận kết quả nén WebP thời gian thực.*
 
 ### 5.2. Nghiệm thu chất lượng và tỷ lệ nén ảnh WebP thực tế của hàm Lambda `sharp`
 
@@ -665,28 +621,20 @@ Ngay khi tệp chạm vào thư mục `uploads/`, hàm `cloud-media-studio-image
 
 Số liệu thực nghiệm chứng minh giải pháp đã giải quyết triệt để điểm nghẽn số 1 của khách hàng Lumina Creative Agency: thay vì bắt khách mua hàng trên điện thoại phải tải bức ảnh gốc nặng **3,04 MB**, giờ đây trang web chỉ cần nạp bản Thumbnail Mobile nặng đúng **5,8 KB** (nhẹ hơn gấp 500 lần) hoặc bản WebP đầy đủ nặng **74,4 KB** mà mắt thường khó phân biệt được sự khác biệt về độ sắc nét.
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #26: Đối chứng 3 thư mục `uploads/`, `processed/` và `thumbnails/` trên AWS S3 Console]**
-> - **Cách chụp:** Mở *AWS Console -> Amazon S3 -> `cloud-media-studio-assets-586643076560`*, chụp màn hình danh sách các tệp tin nằm trong `uploads/` (3,04 MB), `processed/` (74,4 KB) và `thumbnails/mobile/`, `tablet/`, `desktop/`.
-> - **Gợi ý chú thích ảnh:** *Hình 5.3. Đối chứng trực tiếp trên AWS S3 Console các tệp tin `.webp` và 3 cỡ ảnh thu nhỏ do hàm Lambda sinh ra tự động.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #15: Đối chứng 3 thư mục `uploads/`, `processed/` và `thumbnails/` kèm lớp lưu trữ `Glacier Instant Retrieval` trên AWS S3 Console]**
+> - **Cách chụp:** Mở *AWS Console -> Amazon S3 -> `cloud-media-studio-assets-586643076560`*, chụp màn hình danh sách các tệp tin thực tế nằm trong `uploads/` (kèm dòng file đã bấm *Move to Glacier* hiển thị cột `Storage class` là **`Glacier Instant Retrieval`**) và bản nén `.webp` trong `processed/`.
+> - **Gợi ý chú thích ảnh:** *Hình 5.2. Đối chứng trực tiếp trên AWS S3 Console các tệp `.webp` do hàm Lambda sinh tự động và trạng thái chuyển kho lạnh Glacier Instant Retrieval.*
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #27: Nhật ký thực thi thời gian thực của hàm Lambda trên Amazon CloudWatch Logs]**
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #16: Nhật ký thực thi thời gian thực của hàm Lambda trên Amazon CloudWatch Logs]**
 > - **Cách chụp:** Mở *AWS Console -> CloudWatch -> Log groups -> `/aws/lambda/cloud-media-studio-image-processor`*, chụp bản ghi log hiển thị dòng `[Processing] File gốc...` và `[Success] Đã ghi thật lên S3: processed/...webp (74.4 KB, giảm 97.6%) + 3 Thumbnails!`.
-> - **Gợi ý chú thích ảnh:** *Hình 5.4. Bản ghi nhật ký trên Amazon CloudWatch xác nhận hàm Lambda hoàn tất giải mã và nén 4 tệp ảnh WebP trong một lần gọi.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #28: Cửa sổ File Details trong Media Library hiển thị đầy đủ liên kết mở 4 phiên bản ảnh WebP]**
-> - **Cách chụp:** Tại mục *Media Library* trên trang web, bấm vào thẻ ảnh vừa tải lên để mở popup *File Details*, chụp rõ bảng thông số có dòng `S3 Bucket URI` (`uploads/... -> processed/...`) và dòng `WebP & Thumbnails` chứa các liên kết bấm mở trực tiếp từng cỡ ảnh.
-> - **Gợi ý chú thích ảnh:** *Hình 5.5. Giao diện tra cứu chi tiết tài nguyên cung cấp đầy đủ đường dẫn CDN cho từng kích cỡ màn hình.*
+> - **Gợi ý chú thích ảnh:** *Hình 5.3. Bản ghi nhật ký trên Amazon CloudWatch xác nhận hàm Lambda hoàn tất giải mã và nén 4 tệp ảnh WebP trong một lần gọi.*
 
 ### 5.3. Nghiệm thu tính năng chuyển đổi lớp lưu trữ lạnh S3 Glacier Instant Retrieval
 
 Để kiểm chứng bài toán tối ưu chi phí lưu trữ cho dữ liệu cũ (YC-06):
 1. Tại cửa sổ *File Details* của tài nguyên trên giao diện Web, người kiểm thử bấm nút **`Move to Glacier (FinOps)`** (gọi tới endpoint `POST /api/s3-archive`).
 2. Hệ thống thực thi lệnh chuyển lớp lưu trữ trực tiếp trên AWS S3 và trả về thông báo xác nhận thành công.
-3. Khi làm mới lại trang *AWS S3 Console* tại thư mục `uploads/`, cột **Storage class** của đối tượng đã chuyển thực tế từ `Standard` sang **`Glacier Instant Retrieval` (`GLACIER_IR`)**. Ngay cả khi người dùng nhấn phím `F5` tải lại trang web trên trình duyệt, nhãn trạng thái của tệp trong thư viện vẫn hiển thị chuẩn xác là `GLACIER_IR` nhờ đọc trực tiếp thuộc tính từ S3.
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #29: Đối tượng tệp tin trên AWS S3 Console chuyển sang lớp `Glacier Instant Retrieval`]**
-> - **Cách chụp:** Sau khi bấm nút *Move to Glacier* trên web, mở *AWS S3 Console -> `cloud-media-studio-assets-586643076560` -> `uploads/`*, chụp dòng tệp tin có cột `Storage class` hiển thị rõ chữ **`Glacier Instant Retrieval`**.
-> - **Gợi ý chú thích ảnh:** *Hình 5.6. Kiểm chứng tính năng chuyển đổi trực tiếp đối tượng trên Amazon S3 sang lớp lưu trữ lạnh Glacier Instant Retrieval giúp giảm 84% chi phí.*
+3. Khi làm mới lại trang *AWS S3 Console* tại thư mục `uploads/`, cột **Storage class** của đối tượng đã chuyển thực tế từ `Standard` sang **`Glacier Instant Retrieval` (`GLACIER_IR`)** (như minh họa tại *Hình 5.2*). Ngay cả khi người dùng nhấn phím `F5` tải lại trang web trên trình duyệt, nhãn trạng thái của tệp trong thư viện vẫn hiển thị chuẩn xác là `GLACIER_IR` nhờ đọc trực tiếp thuộc tính từ S3.
 
 ### 5.4. Nghiệm thu khả năng phòng vệ bảo mật (Chặn SQL Injection `403` & Rate Limiting `429`)
 
@@ -708,13 +656,9 @@ HTTP 403 {
 2. **Nghiệm thu kịch bản bắn tải chống Spam / DDoS (`tests/run-rate-limit-test.js` & `tests/k6-rate-limit.js`):**
    Công cụ kiểm thử bắn liên tiếp 125 yêu cầu HTTP trong thời gian ngắn từ cùng một địa chỉ IP. Đúng 100 yêu cầu đầu tiên trong cửa sổ 60 giây được xử lý bình thường với mã `HTTP 200 OK`; bắt đầu từ yêu cầu thứ 101 trở đi, hệ thống lập tức kích hoạt chốt chặn trả về mã **`HTTP 429 Too Many Requests`** với header `X-RateLimit-Remaining: 0`.
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #30: Biên bản chạy bộ kiểm thử tự động 6 bước `verify-live-cloud-pipeline.js` thành công 100%]**
-> - **Cách chụp:** Mở Terminal trong VS Code chạy lệnh `node scripts/verify-live-cloud-pipeline.js`, chụp toàn bộ kết quả từ `[TEST 1]` đến `[TEST 6]` kèm dòng kết luận `✅ TẤT CẢ 6 BÀI TEST END-TO-END TRÊN AWS CLOUD ĐỀU THÀNH CÔNG 100%!`.
-> - **Gợi ý chú thích ảnh:** *Hình 5.7. Kết quả thực thi bộ kịch bản kiểm thử nghiệm thu tự động toàn trình trực tiếp trên hạ tầng AWS Singapore.*
-
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #31: Kết quả bắn tải kiểm thử Rate Limit chặn các yêu cầu vượt ngưỡng ở mã `429 Too Many Requests`]**
-> - **Cách chụp:** Mở Terminal chạy lệnh kiểm thử tải `node tests/run-rate-limit-test.js` (hoặc `k6`), chụp bảng thống kê số lượng yêu cầu hợp lệ (`200 OK`) và số lượng yêu cầu spam bị chặn đứng (`429 Too Many Requests`).
-> - **Gợi ý chú thích ảnh:** *Hình 5.8. Thực nghiệm kiểm thử khả năng chống xả rác yêu cầu (Rate Limiting) bảo vệ tài nguyên tính toán của hệ thống.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #17: Biên bản chạy bộ kiểm thử tự động `verify-live-cloud-pipeline.js` (PASS 6/6 bước + Chặn SQLi `403`) và kiểm thử Rate Limit `429`]**
+> - **Cách chụp:** Mở Terminal trong VS Code chạy `node scripts/verify-live-cloud-pipeline.js` (chụp đủ từ `[TEST 1]` đến `[TEST 6]` có dòng chặn SQLi `HTTP 403` và kết quả nén WebP) cùng kết quả chạy `node tests/run-rate-limit-test.js` (`429 Too Many Requests`).
+> - **Gợi ý chú thích ảnh:** *Hình 5.4. Kết quả thực thi bộ kịch bản kiểm thử nghiệm thu tự động toàn trình và cơ chế phòng vệ SQL Injection / Rate Limiting trên AWS.*
 
 ### 5.5. Nghiệm thu hiệu quả tài chính trên bảng điều khiển AWS Budgets
 
@@ -722,9 +666,9 @@ Kiểm tra thực tế trên bảng điều khiển **AWS Billing and Cost Manag
 - Ngân sách `cloud-media-studio-budget-200usd` được thiết lập chặt chẽ với 3 mốc cảnh báo tự động gửi về hòm thư quản trị viên ở các ngưỡng 10% (20 USD), 25% (50 USD) và dự báo cuối tháng 80% (160 USD).
 - Nhờ kiến trúc Serverless ARM64 kết hợp chiến thuật công tắc hạ tầng trong Terraform, tổng chi phí tiêu thụ thực tế của toàn bộ dự án trong suốt quá trình phát triển và chạy nghiệm thu được giữ ở mức tối thiểu (chỉ vài USD trên tổng hạn mức 200 USD), đạt 100% cam kết tài chính với khách hàng.
 
-> **[CHỖ CHÈN ẢNH MINH CHỨNG #32: Màn hình giám sát ngân sách AWS Budgets và công cụ ước tính chi phí FinOps trên giao diện Web]**
-> - **Cách chụp:** Chụp màn hình mục *AWS Budgets* trong trang quản trị *Billing and Cost Management* của AWS Console, ghép cạnh ảnh chụp tab *FinOps & Cost* trên giao diện Web Cloud Media Studio.
-> - **Gợi ý chú thích ảnh:** *Hình 5.9. Giám sát hạn mức ngân sách 200 USD trên AWS Console và công cụ mô phỏng hiệu quả tiết kiệm lưu trữ S3 Glacier.*
+> **[CHỖ CHÈN ẢNH MINH CHỨNG #18: Màn hình giám sát ngân sách AWS Budgets $200 và công cụ ước tính chi phí FinOps trên giao diện Web]**
+> - **Cách chụp:** Chụp màn hình mục *AWS Budgets* trong trang quản trị *Billing and Cost Management* của AWS Console (kèm tab *FinOps & Cost* trên giao diện Web Cloud Media Studio).
+> - **Gợi ý chú thích ảnh:** *Hình 5.5. Giám sát hạn mức ngân sách 200 USD trên AWS Console và công cụ mô phỏng hiệu quả tiết kiệm lưu trữ S3 Glacier.*
 
 ---
 
