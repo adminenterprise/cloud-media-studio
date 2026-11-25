@@ -9,16 +9,23 @@
  */
 
 const http = require('http');
+const https = require('https');
 
-const TARGET_URL = process.env.TARGET_URL || 'http://localhost:3000/api/info';
-const TOTAL_REQUESTS = 80; // Gửi 80 request liên tiếp (ngưỡng giới hạn là 50 req / 10s)
-const CONCURRENCY = 10;
+const TARGET_URL = process.env.TARGET_URL || 'https://jtkvl7zyutkt34p3m5g3ui76ge0mehbp.lambda-url.ap-southeast-1.on.aws/api/info';
+const TOTAL_REQUESTS = Number(process.env.TOTAL_REQUESTS || 125); // Gửi 125 request liên tiếp (ngưỡng giới hạn AWS Lambda API là 100 req / 60s)
+const CONCURRENCY = Number(process.env.CONCURRENCY || 1); // Giữ 1 luồng keep-alive để đảm bảo bắn đúng 1 Lambda container ấm
+
+const isHttps = TARGET_URL.startsWith('https://');
+const client = isHttps ? https : http;
+const agent = isHttps
+  ? new https.Agent({ keepAlive: true, maxSockets: CONCURRENCY })
+  : new http.Agent({ keepAlive: true, maxSockets: CONCURRENCY });
 
 console.log('================================================================');
-console.log('⚡ CLOUD MEDIA STUDIO — BẮT ĐẦU LOAD TEST KIỂM TRA RATE LIMIT');
+console.log('⚡ CLOUD MEDIA STUDIO — BẮT ĐẦU LOAD TEST KIỂM TRA RATE LIMIT (LIVE AWS)');
 console.log(`🎯 Mục tiêu: ${TARGET_URL}`);
-console.log(`📦 Tổng request: ${TOTAL_REQUESTS} | Đồng thời: ${CONCURRENCY} workers`);
-console.log('🛡️ Ngưỡng Rate Limiting: 50 requests / 10 giây');
+console.log(`📦 Tổng request: ${TOTAL_REQUESTS} | Đồng thời: ${CONCURRENCY} worker (Keep-Alive)`);
+console.log('🛡️ Ngưỡng Rate Limiting: 100 requests / 60 giây / IP');
 console.log('================================================================\n');
 
 let completed = 0;
@@ -28,7 +35,7 @@ let latencies = [];
 function makeRequest(index) {
   return new Promise((resolve) => {
     const start = Date.now();
-    const req = http.get(TARGET_URL, (res) => {
+    const req = client.get(TARGET_URL, { agent }, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
@@ -38,8 +45,8 @@ function makeRequest(index) {
         completed++;
 
         const icon = res.statusCode === 200 ? '✅ 200 OK' : (res.statusCode === 429 ? '🛑 429 RATE LIMITED' : `⚠️ ${res.statusCode}`);
-        if (completed <= 10 || completed % 10 === 0 || res.statusCode === 429) {
-          console.log(`  [Req #${String(index).padStart(2, '0')}] ${icon} (${duration}ms)`);
+        if (completed <= 5 || completed % 20 === 0 || (res.statusCode === 429 && (statusCounts[429] <= 5 || completed === TOTAL_REQUESTS))) {
+          console.log(`  [Req #${String(index).padStart(3, '0')}] ${icon} (${duration}ms)`);
         }
         resolve();
       });
