@@ -41,7 +41,9 @@ jobs:
           node-version: "22"
 
       - name: Configure AWS Credentials (OIDC - Zero Secret Keys)
+        id: aws-auth
         uses: aws-actions/configure-aws-credentials@v4
+        continue-on-error: true
         with:
           role-to-assume: arn:aws:iam::586643076560:role/github-action
           aws-region: ap-southeast-1
@@ -62,13 +64,23 @@ jobs:
       - name: Terraform Format Check
         run: terraform fmt -check
 
+      - name: Terraform Init & Validate (Local Backend Fallback for PR without AWS Auth)
+        if: steps.aws-auth.outcome != 'success'
+        run: |
+          echo "::warning ::AWS OIDC credentials not available for this event (PR trust policy). Running offline validation."
+          terraform init -backend=false
+          terraform validate
+
       - name: Terraform Init (S3 Remote Backend)
+        if: steps.aws-auth.outcome == 'success'
         run: |
           cp terraform.tfvars.example terraform.tfvars
           terraform init
 
       - name: Terraform Validate
+        if: steps.aws-auth.outcome == 'success'
         run: terraform validate
 
       - name: Terraform Plan
+        if: steps.aws-auth.outcome == 'success'
         run: terraform plan -no-color -lock=false

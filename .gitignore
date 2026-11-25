@@ -73,3 +73,10 @@ member1.md
 member*.md
 node_modules/
 backend/media-data.json
+latex/
+scratch/
+*.mp4
+*.pdf
+BAO_CAO_DU_AN_CLOUD_MEDIA_STUDIO.md
+DANH_SACH_18_ANH_MINH_CHUNG.md
+KICH_BAN_VIDEO_VA_SLIDE_CUOI_KY.md
