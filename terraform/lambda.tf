@@ -95,6 +95,7 @@ resource "aws_s3_bucket_cors_configuration" "assets_cors" {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "PUT", "POST", "HEAD"]
     allowed_origins = [
+      "https://cloudmedia.duccloud.men",
       "https://d10b9bys5mn60c.cloudfront.net",
       "http://localhost:3000",
       "http://localhost:8080",
@@ -182,7 +183,7 @@ resource "aws_lambda_function" "media_api" {
   environment {
     variables = {
       ASSETS_BUCKET = var.s3_static_assets_bucket_name
-      CDN_DOMAIN    = "https://d10b9bys5mn60c.cloudfront.net"
+      CDN_DOMAIN    = "https://cloudmedia.duccloud.men"
       ENVIRONMENT   = var.environment
     }
   }

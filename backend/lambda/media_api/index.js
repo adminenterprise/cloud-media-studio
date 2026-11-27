@@ -23,7 +23,7 @@ const {
 
 const REGION = process.env.AWS_REGION || 'ap-southeast-1';
 const BUCKET = process.env.ASSETS_BUCKET || 'cloud-media-studio-assets-586643076560';
-const CDN_DOMAIN = process.env.CDN_DOMAIN || 'https://d10b9bys5mn60c.cloudfront.net';
+const CDN_DOMAIN = process.env.CDN_DOMAIN || 'https://cloudmedia.duccloud.men';
 
 const s3 = new S3Client({ region: REGION });
 
