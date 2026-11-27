@@ -89,6 +89,7 @@ jobs:
         run: |
           echo "=========================================================="
           echo "🎉 CI/CD PIPELINE THÀNH CÔNG!"
-          echo "🌐 CloudFront Live URL: https://d10b9bys5mn60c.cloudfront.net"
+          echo "🌐 Custom Domain URL : https://cloudmedia.duccloud.men"
+          echo "🌐 CloudFront Origin : https://d10b9bys5mn60c.cloudfront.net"
           echo "=========================================================="
 
