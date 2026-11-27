@@ -71,7 +71,7 @@ Hệ thống được triển khai tại vùng **`ap-southeast-1` (Singapore)** 
 
 | STT | Họ và tên | MSSV | Vai trò & Phân mảng phụ trách |
 | :-: | :--- | :-: | :--- |
-| 1 | **Nguyễn Minh Quân** | `24022825` | Trưởng nhóm — Kiến trúc giải pháp, Dual-VPC Peering, 6 Subnets Multi-AZ, CloudFront + ACM, Terraform IaC |
+| 1 | **Nguyễn Minh Quân** | `24022825` | Kiến trúc giải pháp, Dual-VPC Peering, 6 Subnets Multi-AZ, CloudFront + ACM, Terraform IaC |
 | 2 | **Trần Đức Diễn** | `24021407` | Ứng dụng & Serverless — Giao diện Web Studio, 2 hàm Lambda ARM64 (`media_api`, `image_processor` dùng `sharp`), ECS Fargate |
 | 3 | **Phạm Thế Hùng** | `24022795` | Dữ liệu & FinOps — S3 Bucket & Lifecycle Glacier, RDS MySQL schema, AWS Budgets ($200), CloudWatch Logs & tối ưu chi phí |
 | 4 | **Đỗ Trung Đức** | `23020045` | An toàn thông tin & DevSecOps — IAM PoLP & OIDC Zero-Keys, Security Groups SG-to-SG, WAFv2 / SQLi 403 / Rate-Limit 429, CI/CD Trivy |
